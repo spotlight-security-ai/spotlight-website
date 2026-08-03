@@ -1,0 +1,295 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StatCounter from '../components/StatCounter.astro';
+import { url } from '../lib/url';
+
+const DEMO_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform';
+
+// Threat-landscape stats — values + suffixes pulled directly from the
+// Elementor counter widgets in the WP export.
+const stats = [
+  { value: 70, suffix: '%', caption: 'Surge in cyberattacks on US utilities' },
+  { value: 13, suffix: 'x', caption: 'Per second — another target hit' },
+  { value: 24, suffix: 'hr+', caption: 'Average time to fix a critical issue' },
+  { value: 60, suffix: '+', caption: 'New vulnerabilities per day in our grid' },
+  { value: 67, suffix: '%', caption: 'Say they can’t adequately defend' },
+  { value: 1, suffix: '', caption: 'Person defending critical infra in 55% of orgs' },
+];
+
+const stages = [
+  { n: '01', name: 'Detect', text: 'Agents live on every endpoint and flag issues the moment they appear.' },
+  { n: '02', name: 'Explain', text: 'Our LLM translates every alert into plain English — what, why, and how serious.' },
+  { n: '03', name: 'Decide', text: 'Ranked remediation options, from the fastest fix to deeper hardening.' },
+  { n: '04', name: 'Fix', text: 'One click pushes the remediation to the device. No professional services.' },
+];
+---
+
+<Layout>
+  <!-- ============================================ HERO -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="tag reveal"><span class="dot"></span> Agentic OT/IT Security</span>
+      <h1 class="reveal">
+        Your network doesn’t just need an alert.
+        <span class="gradient-text">It needs a fix.</span>
+      </h1>
+      <p class="hero-lead reveal">
+        Spotlight deploys AI agents directly onto your attack surface. When a
+        threat is found, we don’t send a ticket — we remediate it. No
+        professional services. No waiting. Just protection.
+      </p>
+      <div class="hero-cta reveal">
+        <a class="btn btn-primary" href={DEMO_URL} target="_blank" rel="noopener">Book a Demo</a>
+        <a class="btn btn-ghost" href={url('/platform/')}>See how it works →</a>
+      </div>
+
+      <!-- Alert-vs-Fix contrast: the core positioning -->
+      <div class="contrast reveal">
+        <div class="contrast-col legacy">
+          <span class="c-label">Legacy tools</span>
+          <div class="c-line"><span class="c-icon warn">!</span> Threat detected on SCADA-NODE-04</div>
+          <div class="c-line dim">→ Ticket #4471 created</div>
+          <div class="c-line dim">→ Awaiting professional services…</div>
+          <div class="c-line dim">→ ETA: 24hr+</div>
+        </div>
+        <div class="contrast-arrow" aria-hidden="true">vs</div>
+        <div class="contrast-col spotlight">
+          <span class="c-label">Spotlight</span>
+          <div class="c-line"><span class="c-icon warn">!</span> Threat detected on SCADA-NODE-04</div>
+          <div class="c-line"><span class="c-icon ok">✓</span> Explained in plain English</div>
+          <div class="c-line"><span class="c-icon ok">✓</span> Remediation pushed to agent</div>
+          <div class="c-line good">→ Resolved in 43 seconds</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ THREAT LANDSCAPE -->
+  <section class="section threat">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">The threat landscape</span>
+        <h2>Critical infrastructure is <span class="gradient-text">already under attack.</span></h2>
+        <p class="lead">
+          The grid, utilities, and water systems that power daily life are the
+          first targets in modern conflict. And most organizations are not ready.
+        </p>
+      </div>
+      <div class="stat-grid">
+        {stats.map((s) => (
+          <StatCounter value={s.value} suffix={s.suffix} caption={s.caption} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ WHY SPOTLIGHT -->
+  <section class="section why">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Why Spotlight</span>
+        <h2>Other tools stop at the alert.<br /><span class="gradient-text">We go all the way to the fix.</span></h2>
+        <p class="lead">
+          Legacy cybersecurity platforms were built for IT environments and
+          bolt-on OT support. They identify problems, generate tickets, and
+          wait for expensive professional services to intervene. Spotlight was
+          built differently — from the attack surface up.
+        </p>
+      </div>
+
+      <div class="stage-strip">
+        {stages.map((s) => (
+          <div class="stage card reveal">
+            <span class="stage-n">{s.n}</span>
+            <h3>{s.name}</h3>
+            <p>{s.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="why-grid">
+        <div class="card feature reveal">
+          <h3>We turn smart devices into controllable, self-defending systems.</h3>
+          <p>Four stages. One dashboard. No professional services.</p>
+        </div>
+        <div class="card feature reveal">
+          <h3>Built for the organizations that can’t afford to go dark.</h3>
+          <p>
+            Spotlight is purpose-built for critical infrastructure environments —
+            where downtime isn’t an inconvenience, it’s a public safety event.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ PRICING TEASER -->
+  <section class="section pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-card reveal">
+        <span class="eyebrow">Pricing</span>
+        <h2>Transparent pricing.<br /><span class="gradient-text">No professional services required.</span></h2>
+        <p class="lead">
+          One of the most powerful things about Spotlight is what we don’t charge
+          for. No expensive remediation engagements. No surprise service fees.
+          Just software that works.
+        </p>
+        <div class="price-row">
+          <div class="price-figure">
+            <span class="price">$100</span>
+            <span class="price-unit">/ month<br />per 25 endpoints</span>
+          </div>
+          <ul class="price-points">
+            <li><span class="c-icon ok">✓</span> No professional services fees</li>
+            <li><span class="c-icon ok">✓</span> No hidden or surprise costs</li>
+            <li><span class="c-icon ok">✓</span> Detection <em>and</em> remediation included</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ DEMO CTA -->
+  <section class="section cta">
+    <div class="container cta-inner reveal">
+      <h2>See Spotlight in action</h2>
+      <p class="lead" style="margin-inline:auto;text-align:center;">
+        Book a live demo and watch our agents find and fix a real vulnerability
+        on your network — in under a day.
+      </p>
+      <a class="btn btn-primary" href={DEMO_URL} target="_blank" rel="noopener">Book a Demo</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* ---------- hero ---------- */
+  .hero { padding-block: clamp(72px, 11vw, 150px) clamp(48px, 7vw, 90px); }
+  .hero-inner { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4.6rem);
+    max-width: 16ch;
+    margin: 1.2rem 0 0;
+  }
+  .hero-lead {
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    color: var(--muted);
+    max-width: 56ch;
+    margin: 1.5rem 0 0;
+  }
+  .hero-cta { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; justify-content: center; }
+
+  /* alert-vs-fix contrast panel */
+  .contrast {
+    margin-top: clamp(48px, 7vw, 84px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    text-align: left;
+  }
+  .contrast-col {
+    background: var(--card);
+    border: 1px solid var(--box-border);
+    border-radius: var(--radius);
+    padding: 22px;
+    font-family: var(--font-mono);
+    font-size: 0.83rem;
+  }
+  .contrast-col.spotlight { border-color: var(--tag-green-border); background: var(--tag-green-bg); }
+  .contrast-col.legacy { opacity: 0.85; }
+  .c-label {
+    display: block;
+    font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--light-white); margin-bottom: 14px;
+  }
+  .spotlight .c-label { color: var(--green); }
+  .c-line { display: flex; align-items: center; gap: 0.6em; padding: 5px 0; color: var(--text); }
+  .c-line.dim { color: var(--light-white); }
+  .c-line.good { color: var(--green); font-weight: 500; }
+  .c-icon {
+    display: inline-grid; place-items: center;
+    width: 18px; height: 18px; border-radius: 50%; font-size: 0.7rem; flex: none;
+  }
+  .c-icon.warn { background: var(--tag-orange-bg); color: var(--orange); }
+  .c-icon.ok { background: var(--tag-green-bg); color: var(--green); }
+  .contrast-arrow {
+    align-self: center;
+    font-family: var(--font-mono); color: var(--light-white); font-size: 0.8rem;
+  }
+
+  /* ---------- section heads ---------- */
+  .section-head { max-width: 640px; margin-bottom: 56px; }
+  .section-head h2 { font-size: clamp(1.9rem, 3.6vw, 3rem); }
+
+  /* ---------- threat stats ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* ---------- why / stages ---------- */
+  .stage-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stage { position: relative; }
+  .stage-n {
+    font-family: var(--font-mono); font-size: 0.85rem; color: var(--orange);
+    letter-spacing: 0.1em;
+  }
+  .stage h3 { font-size: 1.25rem; margin: 0.5rem 0 0.4rem; }
+  .stage p { color: var(--muted); font-size: 0.92rem; margin: 0; }
+
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .feature h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); }
+  .feature p { color: var(--muted); margin: 0; }
+
+  /* ---------- pricing ---------- */
+  .pricing-card {
+    border: 1px solid var(--box-border);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(120% 100% at 100% 0%, #db332d1a 0%, transparent 55%),
+      var(--card);
+    padding: clamp(32px, 5vw, 64px);
+  }
+  .pricing-card h2 { font-size: clamp(1.9rem, 3.6vw, 3rem); }
+  .price-row {
+    display: flex; align-items: center; gap: clamp(24px, 5vw, 64px);
+    margin-top: 36px; flex-wrap: wrap;
+  }
+  .price-figure { display: flex; align-items: baseline; gap: 0.6rem; }
+  .price {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(3rem, 6vw, 4.5rem); line-height: 1;
+    background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .price-unit { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); }
+  .price-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+  .price-points li { display: flex; align-items: center; gap: 0.6em; color: var(--text); }
+  .price-points em { color: var(--white); font-style: italic; }
+
+  /* ---------- final cta ---------- */
+  .cta-inner { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.4rem; }
+  .cta-inner h2 { font-size: clamp(2rem, 4vw, 3.2rem); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stage-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 680px) {
+    .contrast { grid-template-columns: 1fr; }
+    .contrast-arrow { transform: rotate(90deg); }
+    .stat-grid { grid-template-columns: 1fr; }
+    .stage-strip { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+  }
+</style>
