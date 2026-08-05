@@ -16,29 +16,25 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+# This is a plain static site (HTML/CSS/JS) — no build step. We upload the
+# repo contents directly as the Pages artifact. All internal links are
+# relative, so the site works unchanged at the project sub-path
+# (…github.io/spotlight-website/) or at an apex domain later.
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    env:
-      # Project-site sub-path. When you move to the apex domain
-      # (spotlightsecurity.ai), delete these two lines and add a CNAME.
-      BASE_PATH: /spotlight-website
-      SITE: https://spotlight-security-ai.github.io
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Build with Astro
-        uses: withastro/action@v3
-        # Builds the Astro project at the repo root and uploads the
-        # dist/ folder as the Pages artifact (installs deps from the lockfile).
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

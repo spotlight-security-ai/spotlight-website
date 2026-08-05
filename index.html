@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotlight Security — Agentic OT/IT Security</title>
+  <meta name="description" content="Spotlight deploys AI agents directly onto your attack surface. When a threat is found, we don't send a ticket — we remediate it. No professional services. No waiting. Just protection." />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav">
+        <a class="nav__logo" href="index.html" aria-label="Spotlight Security home">
+          <img src="assets/img/logo-header.png" alt="Spotlight Security" />
+        </a>
+        <ul class="nav__links">
+          <li><a href="platform.html">Platform</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="industries.html">Industries</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+        <div class="nav__cta">
+          <a class="btn btn--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a>
+          <button class="nav__toggle" aria-label="Toggle menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <div class="glow glow--hero"></div>
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow eyebrow--badge">Agentic OT/IT Security</span>
+            <h1 class="hero-title">Your network doesn't just need <span class="grad-text">an alert. It needs a fix.</span></h1>
+            <p class="lead">Spotlight deploys AI agents directly onto your attack surface. When a threat is found, we don't send a ticket — we remediate it. No professional services. No waiting. Just protection.</p>
+            <div class="btn-row">
+              <a class="btn btn--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a>
+              <a class="btn btn--ghost" href="platform.html">See How it Works</a>
+            </div>
+          </div>
+
+          <!-- terminal -->
+          <div class="terminal" data-terminal>
+            <div class="terminal__bar">
+              <span class="terminal__dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></span>
+              <span class="terminal__title">spotlight_agent — cyber_logs.txt</span>
+            </div>
+            <div class="terminal__body">
+              <div data-feed>
+                <div class="log-line">[05:37:41] Scanning 847 endpoints across OT/IT fabric...</div>
+                <div class="log-line ok">[05:37:44] DESKTOP-ITVPPAU — DHCP nominal</div>
+                <div class="log-line ok">[05:37:46] SIA-MED-PLC-e0cbbc256 — DHCP nominal</div>
+                <div class="log-line warn">[05:37:48] IP conflict detected — VLAN 20</div>
+                <div class="log-line crit">[05:37:49] XP10893686-2006 — unauthorized traffic</div>
+                <div class="log-line crit">[05:37:49] Source: 10.0.20.11 → 1,552 unexpected packets</div>
+              </div>
+
+              <div data-stage="1">
+                <hr class="term-sep" />
+                <span class="badge-chip">Issue Identified</span>
+                <p style="color:var(--muted);font-size:14px;margin:14px 0 0;">IP 10.0.20.11 exploiting permissive rule — <span class="risk">risk: unauthorized access</span></p>
+                <p class="term-label" style="margin:16px 0 6px;">Recommended action:</p>
+                <div class="term-code">$ sudo iptables -A INPUT -s 10.0.20.11 -j DROP</div>
+                <p class="term-label" style="margin:14px 0 6px;">or</p>
+                <div class="term-code" style="color:var(--orange);">Take Action with Spotlight →</div>
+              </div>
+
+              <div data-stage="2">
+                <hr class="term-sep" />
+                <span class="badge-chip green">✓ Issue Resolved</span>
+                <p style="color:var(--muted);font-size:13px;margin:12px 0 0;">Remediation time: 0m 43s</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= THREAT LANDSCAPE ================= -->
+    <section class="section">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="eyebrow">The threat landscape</span>
+          <h2 class="display">Critical infrastructure is already under attack.</h2>
+          <p class="lead">The grid, utilities, and water systems that power daily life are the first targets in modern conflict. And most organizations are not ready.</p>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card reveal"><div class="num" data-count="70%">0%</div><div class="lab">Surge in cyberattacks on US utilities</div><p class="desc">A single-year spike as nation-state actors and unsophisticated hackers alike target critical OT systems.</p></div>
+          <div class="stat-card reveal"><div class="num" data-count="13x">0x</div><div class="lab">Per second — another target hit</div><p class="desc">Infrastructure targets are breached at a pace that traditional, alert-only tools simply cannot keep up with.</p></div>
+          <div class="stat-card reveal"><div class="num" data-count="24hr+">0hr+</div><div class="lab">Average time to fix a critical issue</div><p class="desc">For 68% of organizations, while attacks execute in minutes. The gap between detection and remediation is where damage happens.</p></div>
+          <div class="stat-card reveal"><div class="num" data-count="60+">0+</div><div class="lab">New vulnerabilities per day in our grid</div><p class="desc">New weak spots emerge daily across connected infrastructure — far faster than any team can manually patch.</p></div>
+          <div class="stat-card reveal"><div class="num" data-count="67%">0%</div><div class="lab">Say they can't adequately defend</div><p class="desc">Citing lack of skills, budget, and tools purpose-built for OT environments — not retrofitted from IT.</p></div>
+          <div class="stat-card reveal"><div class="num" data-count="1">0</div><div class="lab">Person defending critical infra in 55% of orgs</div><p class="desc">The defender shortage is real. Most organizations cannot staff their way out of this. They need software that acts.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= WHY SPOTLIGHT ================= -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="eyebrow">— Why Spotlight</span>
+          <h2 class="display">Other tools stop at the alert.<br />We go all the way to the fix.</h2>
+          <p class="lead">Legacy cybersecurity platforms were built for IT environments and bolt-on OT support. They identify problems, generate tickets, and wait for expensive professional services to intervene. Spotlight was built differently — from the attack surface up.</p>
+        </div>
+
+        <div class="compare">
+          <div class="compare-card bad reveal">
+            <h4>Legacy platforms</h4>
+            <p class="quote">"We found a problem. Here's your alert."</p>
+            <p>Detection-only tools generate alerts, create tickets, and route issues to professional services engagements that cost thousands and take days. They cover fewer than half of your actual device types and require manual intervention to act.</p>
+            <div class="status">STATUS: ALERTING ONLY</div>
+          </div>
+          <div class="compare__vs">vs.</div>
+          <div class="compare-card good reveal">
+            <h4>Spotlight Security</h4>
+            <p class="quote">"I found the problem. I fixed it. Here's what I did."</p>
+            <p>AI agents deployed directly onto your hardware detect, explain, and remediate — in plain English, with one-click actions. No professional services required. No waiting. Full coverage across IT and OT environments from a single dashboard.</p>
+            <div class="status">STATUS: MONITORING + MANAGEMENT + DETECTION + RESOLUTION</div>
+          </div>
+        </div>
+
+        <p class="big-line reveal">We turn smart devices into <span class="grad-text">controllable, self-defending systems.</span></p>
+      </div>
+    </section>
+
+    <!-- ================= 4 STAGES ================= -->
+    <section class="section">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="eyebrow">— How it works</span>
+          <h2 class="display">Four stages. One dashboard. No professional services.</h2>
+        </div>
+
+        <div class="stage-grid">
+          <div class="stage reveal"><div class="n">01</div><h3>Connects</h3><p>Lightweight agents deploy in minutes across thousands of IT and OT devices — servers, firewalls, PLCs, HMIs, IoT sensors, and more.</p></div>
+          <div class="stage reveal"><div class="n">02</div><h3>Detects</h3><p>Agents live on the attack surface, continuously discovering vulnerabilities, misconfigurations, and anomalous behavior across your full device inventory.</p></div>
+          <div class="stage reveal"><div class="n">03</div><h3>Resolves</h3><p>Our LLM translates complex logs and code into plain English explanations. Administrators remediate directly — one-click actions or guided commands from the dashboard.</p></div>
+          <div class="stage reveal"><div class="n">04</div><h3>Learns</h3><p>Telemetry from every remediation sharpens Spotlight's models — trained on military-grade scenarios and nation-state offensive tradecraft. Every fix makes the next one faster.</p></div>
+        </div>
+
+        <!-- dashboard terminal -->
+        <div class="terminal reveal" style="margin-top:56px;max-width:760px;margin-left:auto;margin-right:auto;">
+          <div class="terminal__bar">
+            <span class="terminal__dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></span>
+            <span class="terminal__title">spotlight_dashboard — site: rural-electric-coop-ok · 847 agents active</span>
+          </div>
+          <div class="terminal__body">
+            <p class="term-label"># Incoming telemetry stream</p>
+            <div class="log-line ok">[05:37:41] DESKTOP-ITVPPAU ......... OK</div>
+            <div class="log-line ok">[05:37:43] 2024-MARY11D ............ OK</div>
+            <div class="log-line ok">[05:37:46] JCOLBERT ............... OK</div>
+            <div class="log-line warn">[05:37:48] MPHP-FLOOR-2-AP1 ...... WARN</div>
+            <div class="log-line crit">[05:37:49] XP10893686-2006 ....... ⚠ FLAG</div>
+            <hr class="term-sep" />
+            <p class="term-label"># Agent analysis complete</p>
+            <div class="log-line">[05:37:49] Vulnerability classified</div>
+            <div class="log-line">[05:37:49] Remediation generated</div>
+            <div class="log-line" style="color:var(--orange);">[05:37:52] Awaiting admin action...</div>
+            <hr class="term-sep" />
+            <div class="panel" style="border:1px solid rgba(255,113,48,0.25);background:rgba(255,113,48,0.04);">
+              <span class="badge-chip">Issue Identified</span>
+              <p style="color:var(--muted);font-size:14px;margin:12px 0;">IP 10.0.20.11 is causing conflicts or exploiting an overly permissive firewall rule. <span class="risk">Risk: unauthorized network access.</span></p>
+              <p class="term-label" style="margin:12px 0 6px;">Recommended Action</p>
+              <div class="term-code">sudo iptables -A INPUT -s 10.0.20.11 -j DROP</div>
+              <p style="color:var(--muted-2);font-size:12.5px;margin:10px 0 16px;">This blocks all inbound traffic from 10.0.20.11, immediately cutting off the problematic connection.</p>
+              <a class="btn btn--primary" style="font-size:13px;padding:11px 20px;" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">⚡ Take Action with Spotlight AI</a>
+            </div>
+            <div class="log-line" style="color:var(--green);margin-top:16px;">[05:38:32] ✓ Action executed</div>
+            <div class="log-line" style="color:var(--green);">[05:38:32] ✓ Issue resolved (0m 43s)</div>
+            <div class="log-line" style="color:var(--green);">[05:38:32] ✓ Telemetry logged for training</div>
+          </div>
+        </div>
+
+        <div class="testimonial reveal">
+          <blockquote>"A CISO will always take a preventive and corrective control over a purely detective one, any day of the week."</blockquote>
+          <div class="who">Michael Smith</div>
+          <div class="role">— AppSec CTO, DigiCert</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= INDUSTRIES PREVIEW ================= -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="eyebrow">Industries</span>
+          <h2 class="display">Built for the organizations that can't afford to go dark.</h2>
+          <p class="lead">Spotlight is purpose-built for critical infrastructure environments — where downtime isn't an inconvenience, it's a public safety event.</p>
+        </div>
+
+        <div class="ind-grid">
+          <div class="ind-card reveal">
+            <div class="ico">⚡</div><h4>Electric Utilities &amp; Co-ops</h4>
+            <p>Protect grid infrastructure, SCADA systems, and substation automation from nation-state actors and opportunistic attackers — without disrupting power delivery operations.</p>
+            <div class="tags"><span class="tag">SCADA</span><span class="tag">DNP3</span><span class="tag">RTUs</span><span class="tag">Energy Management Systems</span></div>
+          </div>
+          <div class="ind-card reveal">
+            <div class="ico">💧</div><h4>Water &amp; Wastewater</h4>
+            <p>Secure treatment plant controls, pump stations, and distribution systems against increasingly targeted attacks on municipal water infrastructure.</p>
+            <div class="tags"><span class="tag">HMIs</span><span class="tag">PLCs</span><span class="tag">Modbus TCP</span><span class="tag">BACnet</span></div>
+          </div>
+          <div class="ind-card reveal">
+            <div class="ico">🏭</div><h4>Manufacturing</h4>
+            <p>Defend production lines, industrial control systems, and connected equipment without halting operations — because in manufacturing, every minute of downtime costs real money.</p>
+            <div class="tags"><span class="tag">OPC UA/DA</span><span class="tag">Industrial IoT</span><span class="tag">DCS</span><span class="tag">Protective Relays</span></div>
+          </div>
+          <div class="ind-card reveal">
+            <div class="ico">🛡️</div><h4>Defense &amp; Federal</h4>
+            <p>Air-gapped deployment options for classified environments. Trained on military-grade scenarios and nation-state TTPs. Built by advisors with NSA and White House Cyber Director experience.</p>
+            <div class="tags"><span class="tag">Air-Gapped</span><span class="tag">NIST Aligned</span><span class="tag">Military TTPs</span><span class="tag">CMMC Ready</span></div>
+          </div>
+        </div>
+
+        <div class="testimonial reveal">
+          <blockquote>"I've never seen anything like it. For someone who's in these environments every day, you have no idea how useful these tools are."</blockquote>
+          <div class="who">Larry Hill</div>
+          <div class="role">— CEO, Hill Technical MSP</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRICING ================= -->
+    <section class="section" id="pricing">
+      <div class="container">
+        <div class="sec-head reveal">
+          <span class="eyebrow">Pricing</span>
+          <h2 class="display">Transparent pricing. No professional services required.</h2>
+          <p class="lead">One of the most powerful things about Spotlight is what we don't charge for. No expensive remediation engagements. No surprise service fees. Just software that works.</p>
+        </div>
+
+        <div class="price-grid">
+          <div class="price-card reveal">
+            <h4>Starter</h4>
+            <div class="price">$100<span>/month</span></div>
+            <div class="sub">25 managed endpoints · 1 seat</div>
+            <ul>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>AI agent deployment across all endpoints</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Continuous vulnerability detection</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Plain-English issue explanations</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>One-click remediation actions</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Dashboard access (1 admin)</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>IT + OT protocol coverage</li>
+            </ul>
+            <a class="btn btn--ghost" href="platform.html">See How it Works</a>
+          </div>
+
+          <div class="price-card featured reveal">
+            <h4>Growth</h4>
+            <div class="price">Custom</div>
+            <div class="sub">Scalable endpoints · Multiple seats · per your environment</div>
+            <ul>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Everything in Starter</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Multi-site deployment</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Multi-tenant admin portal</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Role-based access control (RBAC)</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Advanced telemetry &amp; reporting</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Air-gap &amp; hybrid deployment options</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Priority onboarding support</li>
+            </ul>
+            <a class="btn btn--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a>
+          </div>
+
+          <div class="price-card reveal">
+            <h4>MSP Partner</h4>
+            <div class="price">Partner</div>
+            <div class="sub">pricing available · Manage your clients. Earn commissions.</div>
+            <ul>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Everything in Growth</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Authorized reseller program</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Commission-based revenue model</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Save up to 10 hrs/week per client</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Branded multi-tenant portal</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Sales &amp; technical enablement</li>
+              <li><svg viewBox="0 0 512 512"><path d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"/></svg>Dedicated partner success support</li>
+            </ul>
+            <span class="btn btn--disabled">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
+    <section class="section cta-band">
+      <div class="container">
+        <div class="reveal">
+          <h2>See Spotlight in action</h2>
+          <p class="lead center">One of the most powerful things about Spotlight is what we don't charge for. No expensive remediation engagements. No surprise service fees. Just software that works.</p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a>
+            <a class="btn btn--ghost" href="platform.html">See How it Works</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="col">
+          <img class="footer-logo" src="assets/img/logo-header.png" alt="Spotlight Security" />
+          <p class="about-blurb">Agentic OT/IT security that doesn't just alert — it remediates. AI agents deployed directly onto your attack surface to detect, explain, and fix threats in real time.</p>
+        </div>
+        <div class="col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="platform.html">Platform</a></li>
+            <li><a href="index.html#pricing">Pricing</a></li>
+            <li><a href="industries.html">Industries</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="about.html#mission">Our Mission</a></li>
+            <li><a href="mailto:sales@spotlightsecurity.ai">Contact Sales</a></li>
+            <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <h5>Get in touch</h5>
+          <ul>
+            <li><a href="mailto:sales@spotlightsecurity.ai">sales@spotlightsecurity.ai</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span data-year>2026</span> Spotlight Security. All rights reserved.</span>
+        <span>Protecting critical infrastructure.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
