@@ -70,7 +70,7 @@
 
               <div data-stage="1">
                 <hr class="term-sep" />
-                <span class="badge-chip">Issue Identified</span>
+                <span class="badge badge--crit"><span class="sdot"></span>Issue Identified</span>
                 <p style="color:var(--muted);font-size:14px;margin:14px 0 0;">IP 10.0.20.11 exploiting permissive rule — <span class="risk">risk: unauthorized access</span></p>
                 <p class="term-label" style="margin:16px 0 6px;">Recommended action:</p>
                 <div class="term-code">$ sudo iptables -A INPUT -s 10.0.20.11 -j DROP</div>
@@ -80,7 +80,7 @@
 
               <div data-stage="2">
                 <hr class="term-sep" />
-                <span class="badge-chip green">✓ Issue Resolved</span>
+                <span class="badge badge--ok"><span class="sdot"></span>Issue Resolved</span>
                 <p style="color:var(--muted);font-size:13px;margin:12px 0 0;">Remediation time: 0m 43s</p>
               </div>
             </div>
@@ -206,36 +206,66 @@
           <div class="stage reveal"><div class="n">04</div><h3>Learns</h3><p>Telemetry from every remediation sharpens Spotlight's models — trained on military-grade scenarios and nation-state offensive tradecraft. Every fix makes the next one faster.</p></div>
         </div>
 
-        <!-- dashboard terminal -->
-        <div class="terminal reveal" style="margin-top:56px;max-width:760px;margin-left:auto;margin-right:auto;">
-          <div class="terminal__bar">
-            <span class="terminal__dots"><i class="dot-r"></i><i class="dot-y"></i><i class="dot-g"></i></span>
-            <span class="terminal__title">spotlight_dashboard — site: rural-electric-coop-ok · 847 agents active</span>
-          </div>
-          <div class="terminal__body">
-            <p class="term-label"># Incoming telemetry stream</p>
-            <div class="log-line ok">[05:37:41] DESKTOP-ITVPPAU ......... OK</div>
-            <div class="log-line ok">[05:37:43] 2024-MARY11D ............ OK</div>
-            <div class="log-line ok">[05:37:46] JCOLBERT ............... OK</div>
-            <div class="log-line warn">[05:37:48] MPHP-FLOOR-2-AP1 ...... WARN</div>
-            <div class="log-line crit">[05:37:49] XP10893686-2006 ....... ⚠ FLAG</div>
-            <hr class="term-sep" />
-            <p class="term-label"># Agent analysis complete</p>
-            <div class="log-line">[05:37:49] Vulnerability classified</div>
-            <div class="log-line">[05:37:49] Remediation generated</div>
-            <div class="log-line" style="color:var(--orange);">[05:37:52] Awaiting admin action...</div>
-            <hr class="term-sep" />
-            <div class="panel" style="border:1px solid rgba(255,113,48,0.25);background:rgba(255,113,48,0.04);">
-              <span class="badge-chip">Issue Identified</span>
-              <p style="color:var(--muted);font-size:14px;margin:12px 0;">IP 10.0.20.11 is causing conflicts or exploiting an overly permissive firewall rule. <span class="risk">Risk: unauthorized network access.</span></p>
-              <p class="term-label" style="margin:12px 0 6px;">Recommended Action</p>
-              <div class="term-code">sudo iptables -A INPUT -s 10.0.20.11 -j DROP</div>
-              <p style="color:var(--muted-2);font-size:12.5px;margin:10px 0 16px;">This blocks all inbound traffic from 10.0.20.11, immediately cutting off the problematic connection.</p>
-              <a class="btn btn--primary" style="font-size:13px;padding:11px 20px;" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">⚡ Take Action with Spotlight AI</a>
+        <!-- dashboard mockup — mirrors the product "Command Center" -->
+        <div class="dash reveal" style="margin-top:56px;max-width:840px;margin-left:auto;margin-right:auto;">
+          <div class="dash__bar">
+            <div class="dash__brand">
+              <span class="dash__logo"></span>
+              <span class="dash__title">Command Center<span>rural-electric-coop-ok · 847 agents</span></span>
             </div>
-            <div class="log-line" style="color:var(--green);margin-top:16px;">[05:38:32] ✓ Action executed</div>
-            <div class="log-line" style="color:var(--green);">[05:38:32] ✓ Issue resolved (0m 43s)</div>
-            <div class="log-line" style="color:var(--green);">[05:38:32] ✓ Telemetry logged for training</div>
+            <div class="dash__meta">
+              <span class="dash__chip"><span class="sdot sdot--ok"></span>All agents online</span>
+              <time class="dash__clock">05:38 CST</time>
+            </div>
+          </div>
+          <div class="dash__body">
+            <div class="dash-statgrid">
+              <div class="dash-stat"><span class="lab">Total Devices</span><span class="val accent">847</span><span class="sub">Across site</span></div>
+              <div class="dash-stat"><span class="lab">Critical</span><span class="val crit">1</span><span class="sub">Requires action</span></div>
+              <div class="dash-stat"><span class="lab">Warnings</span><span class="val warn">3</span><span class="sub">Under review</span></div>
+              <div class="dash-stat"><span class="lab">Healthy</span><span class="val">843</span><span class="sub">Nominal</span></div>
+            </div>
+
+            <div class="dash-card">
+              <div class="dash-card__head"><h5>Active Threat Feed</h5><span class="link">View all →</span></div>
+              <div class="dash-feed">
+                <div class="feed-row">
+                  <span class="dev">SCADA-NODE-04</span>
+                  <span class="desc">Unauthorized IP · Modbus port 502</span>
+                  <span class="grow"></span>
+                  <span class="badge badge--crit"><span class="sdot"></span>Critical</span>
+                </div>
+                <div class="feed-row">
+                  <span class="dev">RTU-PUMP-STN-7</span>
+                  <span class="desc">Policy drift detected</span>
+                  <span class="grow"></span>
+                  <span class="badge badge--warn"><span class="sdot"></span>Warning</span>
+                </div>
+                <div class="feed-row">
+                  <span class="dev">FW-PERIMETER-01</span>
+                  <span class="desc">All rules nominal</span>
+                  <span class="grow"></span>
+                  <span class="badge badge--ok"><span class="sdot"></span>Healthy</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="dash-alert">
+              <div class="t"><span class="badge badge--crit" style="margin-right:8px;"><span class="sdot"></span>Critical</span>SCADA-NODE-04 — unauthorized access</div>
+              <div class="d">IP 10.0.20.11 is exploiting an overly permissive firewall rule, probing Modbus port 502. Risk: unauthorized access to operational technology.</div>
+              <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted-2);margin:14px 0 6px;">Recommended action</div>
+              <div style="font-family:var(--mono);color:var(--ok);font-size:13px;">sudo iptables -A INPUT -s 10.0.20.11 -j DROP</div>
+              <div style="display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap;">
+                <a class="dash-action" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">⚡ Take Action with Spotlight AI</a>
+              </div>
+            </div>
+
+            <div class="feed-row" style="border-top:0;padding:2px 0 0;">
+              <span class="badge badge--ok"><span class="sdot"></span>Resolved</span>
+              <span class="desc">Remediation pushed on-device · connection severed · logged for audit</span>
+              <span class="grow"></span>
+              <span class="dev" style="color:var(--muted-2);">0m 43s</span>
+            </div>
           </div>
         </div>
 

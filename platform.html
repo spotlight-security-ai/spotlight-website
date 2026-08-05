@@ -158,7 +158,7 @@
       <div class="container">
         <div class="step-grid">
           <div class="reveal">
-            <div class="panel" style="margin-bottom:18px;">
+            <div class="panel panel--log" style="margin-bottom:18px;">
               <h5>Raw Log Output</h5>
               <div class="term-code" style="color:var(--muted);font-size:12.5px;line-height:1.7;">Jun 1 05:37:49 SCADA-NODE-04 kernel: [UFW BLOCK] IN=eth0 OUT= MAC=00:18:ae:c7:dd:48 SRC=10.0.20.11 DST=10.0.30.52 LEN=1552 TOS=0x00 PREC=0x00 TTL=64 ID=54321 DF PROTO=TCP SPT=45231 DPT=502 WINDOW=65535 RES=0x00 SYN URGP=0 · Source IP/VLAN mismatch detected · DHCP lease conflict · CHILD_SA net-2-0[4190] established SPIs c9eb0d9d (inbound) c2f19100 TS=172.30.1.242/32</div>
             </div>
@@ -192,7 +192,7 @@
           <div class="reveal panel">
             <h5>Recommended Actions — SCADA-NODE-04</h5>
             <div style="border:1px solid rgba(255,113,48,0.3);background:rgba(255,113,48,0.05);border-radius:10px;padding:16px;margin-bottom:14px;">
-              <span class="badge-chip">Recommended</span>
+              <span class="badge badge--accent">Recommended</span>
               <p style="font-family:var(--sans);color:var(--muted);font-size:14px;margin:10px 0;">Block all inbound traffic from IP 10.0.20.11 at the firewall level, immediately isolating the unauthorized device from your OT network segment.</p>
               <div class="term-code">sudo iptables -A INPUT -s 10.0.20.11 -j DROP</div>
             </div>
@@ -214,10 +214,10 @@
       <div class="container">
         <div class="step-grid">
           <div class="reveal panel">
-            <h5 style="color:#ff6b6b;">🚨 Active Threat — SCADA-NODE-04</h5>
+            <h5 style="display:flex;align-items:center;gap:8px;"><span class="badge badge--crit"><span class="sdot"></span>Critical</span>Active Threat — SCADA-NODE-04</h5>
             <p style="font-family:var(--sans);color:var(--muted);font-size:14px;margin:0 0 16px;">Unauthorized device 10.0.20.11 is actively probing Modbus port 502. Blocking is recommended immediately. Spotlight will push the remediation command directly to the affected node.</p>
-            <a class="btn btn--primary" style="width:100%;justify-content:center;" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">⚡ Take Action with Spotlight AI</a>
-            <div class="kv" style="margin-top:18px;border-top:1px solid var(--line);padding-top:16px;"><span class="badge-chip green">✓ Remediation pushed · Issue resolved</span><b>43 seconds</b></div>
+            <a class="dash-action" style="width:100%;justify-content:center;" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">⚡ Take Action with Spotlight AI</a>
+            <div class="kv" style="margin-top:18px;border-top:1px solid var(--line);padding-top:16px;"><span class="badge badge--ok"><span class="sdot"></span>Remediation pushed · Resolved</span><b>43 seconds</b></div>
             <p class="term-label" style="margin:16px 0 6px;">What Spotlight executed</p>
             <div class="term-code">sudo iptables -A INPUT -s 10.0.20.11 -j DROP</div>
             <p style="font-family:var(--sans);color:var(--muted-2);font-size:13px;margin:10px 0 0;">All inbound traffic from 10.0.20.11 is now blocked. The unauthorized connection has been severed. Event logged for audit trail.</p>
