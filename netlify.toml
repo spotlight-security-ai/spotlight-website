@@ -1,0 +1,49 @@
+# Netlify configuration — static site, no build step.
+# The whole repo root is published as-is (plain HTML/CSS/JS).
+
+[build]
+  publish = "."
+  command = ""
+
+# --- Legacy WordPress URLs (trailing-slash paths) → static pages -----------
+# Preserves inbound links / SEO from the old WP site so they don't 404.
+[[redirects]]
+  from = "/platform/"
+  to = "/platform.html"
+  status = 301
+
+[[redirects]]
+  from = "/industries/"
+  to = "/industries.html"
+  status = 301
+
+[[redirects]]
+  from = "/about/"
+  to = "/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/pricing/"
+  to = "/#pricing"
+  status = 301
+
+# --- Canonical host: force www → apex --------------------------------------
+# Duplicates Netlify's automatic primary-domain redirect; keep whichever you
+# prefer. Safe to leave — it only fires once the domain is attached in Netlify.
+[[redirects]]
+  from = "https://www.spotlightsecurity.ai/*"
+  to = "https://spotlightsecurity.ai/:splat"
+  status = 301
+  force = true
+
+# --- Security headers -------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    # Optional CSP — TEST on the *.netlify.app URL first (Google Fonts + inline
+    # styles are allow-listed below), then uncomment to enable:
+    # Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'self'; frame-ancestors 'self'"

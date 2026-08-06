@@ -39,18 +39,17 @@ python3 -m http.server 8891
 ```
 
 Then open <http://127.0.0.1:8891/>. (Any static file server works; relative asset
-paths mean it can also be dropped onto Netlify, GitHub Pages, S3, or any web host.)
+paths mean it can be dropped onto Netlify, S3, or any web host.)
 
-## Deploy (GitHub Pages)
+## Deploy (Netlify)
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`, which publishes the
-repo contents straight to GitHub Pages — **no build step** (it's plain static
-files). The site serves at the project sub-path
-`https://spotlight-security-ai.github.io/spotlight-website/`.
+Hosted on Netlify, deployed from `main` — **no build step** (plain static files).
+Config lives in `netlify.toml`: publish directory `.`, 301 redirects for legacy
+WordPress paths (`/platform/` → `/platform.html`, etc.), `www` → apex canonical
+redirect, and security headers. A branded `404.html` is served on not-found.
 
-Because every internal link is relative, the same files work unchanged if you
-later move to the apex domain `spotlightsecurity.ai` — just add a `CNAME` file
-and point DNS.
+Production domain: `spotlightsecurity.ai` (apex), DNS at Namecheap pointing at
+Netlify (A/ALIAS on `@`, CNAME on `www`). HTTPS is auto-provisioned by Netlify.
 
 ## Notes
 
