@@ -72,7 +72,7 @@
             <div class="subkick">Endpoint Detection</div>
             <h2>Every device.<br />Known and unknown.</h2>
             <p>Spotlight begins with a comprehensive sweep of your entire infrastructure — cataloging every endpoint across IT and OT environments, including devices that were never formally inventoried. Rogue hardware, forgotten assets, and shadow devices all surface here. You can't defend what you don't know exists.</p>
-            <p class="meta">Laptops · Desktops · Servers · Workstations · PLCs · HMIs · RTUs · SCADA · IoT sensors · IP Cameras · Smart Building Devices<br />1,000+ network device variants · full IT + OT protocol support</p>
+            <p class="meta">With an agent: laptops, desktops, servers, workstations. Discovered and assessed from the network: firewalls, switches, PLCs, HMIs, RTUs, IoT sensors, IP cameras, building systems.<br />Agent coverage on Windows, macOS and Linux · everything else discovered and identified from the network</p>
           </div>
           <div class="reveal">
             <div class="device-grid">
@@ -108,20 +108,22 @@
         <div class="step-grid">
           <div class="reveal panel">
             <h5>Agent deployment</h5>
-            <div class="agent-row"><span>🖥️ PROD-SERVER-01</span><span class="live">• Agent Live</span></div>
-            <div class="agent-row"><span>⚙️ SCADA-NODE-04</span><span class="live">• Agent Live</span></div>
-            <div class="agent-row"><span>📦 RTU-PUMP-STN-7</span><span class="live">• Agent Live</span></div>
-            <div class="agent-row"><span>🔥 FW-PERIMETER-01</span><span class="live">• Agent Live</span></div>
-            <div class="agent-row"><span>🖥️ WORKSTATION-14</span><span class="deploy">Deploying...</span></div>
-            <div class="kv" style="margin-top:14px;border-top:1px solid var(--line);padding-top:16px;"><span>Agents Deployed</span><b>847</b></div>
-            <div class="kv"><span>Footprint per Agent</span><b>&lt; 1MB on disk · runs in 512KB RAM</b></div>
+            <div class="agent-row"><span>🖥️ PROD-SERVER-01 · Linux</span><span class="live">• Agent Live</span></div>
+            <div class="agent-row"><span>🖥️ ENG-WKS-07 · Windows</span><span class="live">• Agent Live</span></div>
+            <div class="agent-row"><span>💻 OPS-MBP-03 · macOS</span><span class="live">• Agent Live</span></div>
+            <div class="agent-row"><span>🖥️ WORKSTATION-14 · Windows</span><span class="deploy">Deploying...</span></div>
+            <div class="agent-row"><span>⚙️ SCADA-NODE-04</span><span class="disc">Discovered · no agent</span></div>
+            <div class="agent-row"><span>📦 RTU-PUMP-STN-7</span><span class="disc">Discovered · no agent</span></div>
+            <div class="agent-row"><span>🔥 FW-PERIMETER-01</span><span class="disc">Discovered · no agent</span></div>
+            <div class="kv" style="margin-top:14px;border-top:1px solid var(--line);padding-top:16px;"><span>Agents Deployed</span><b>412 of 847 devices</b></div>
+            <div class="kv"><span>Agent Binary</span><b>Single static binary · no runtime dependencies</b></div>
           </div>
           <div>
             <div class="kicker">Step 02</div>
             <div class="subkick">Deploy Agents</div>
             <h2>Lightweight agents.<br />Right on the attack surface.</h2>
-            <p>Spotlight deploys ultra-lightweight agents directly onto each device. They sit at the source, rather than monitoring traffic from a distance. Our agents not only visualize the attack surface, they also inhabit it. Sub-1MB agents that run in as little as ~500KB of RAM, including on hardware as old as 20 years. All AI analysis runs upstream, never on the device; nothing heavy touches your controllers, and no model sits inside your control network. No new hardware required. The agent adapts to its host: full detection-and-response on a Windows server; a stripped-down, near-zero-overhead visibility monitor on a resource-constrained PLC or camera.</p>
-            <p class="meta">Linux · Windows 7+ · FreeBSD · Custom firmware · QNX<br />Air-gap · hybrid · cloud SaaS · multi-tenant</p>
+            <p>Spotlight deploys ultra-lightweight agents directly onto each device. They sit at the source, rather than monitoring traffic from a distance. Our agents not only visualize the attack surface, they also inhabit it. A single static binary with no runtime dependencies. All AI analysis runs upstream, never on the device; nothing heavy touches your controllers, and no model sits inside your control network. No new hardware required. Devices that cannot take an agent — PLCs, cameras, building systems — are discovered and assessed from the network instead, and are never scanned aggressively.</p>
+            <p class="meta">Windows · macOS (Intel and Apple Silicon) · Linux (.deb and raw binary)<br />Cloud SaaS · multi-tenant · dedicated per-customer gateway</p>
           </div>
         </div>
       </div>
@@ -134,12 +136,12 @@
           <div>
             <div class="kicker">Step 03</div>
             <div class="subkick">Issue Detection</div>
-            <h2>Continuous. Thorough. Unblinking.</h2>
-            <p>Agents scan continuously — not on a schedule, not during maintenance windows. Every configuration change, unusual traffic pattern, and emerging vulnerability is flagged the moment it appears. Misconfigurations, unauthorized access, lateral movement, known CVEs — all in real time.</p>
-            <p class="meta">Misconfigurations · unauthorized access · CVEs · lateral movement<br />OT protocol anomalies · policy drift · firmware vulnerabilities</p>
+            <h2>Scheduled. Thorough. Unblinking.</h2>
+            <p>Agents check in on a schedule you control, so drift surfaces without anyone going to look. New listening ports, new privileged accounts, missing security patches, weak password policy, logging switched off — and firewall rules that no longer match the traffic actually hitting them.</p>
+            <p class="meta">Misconfigurations · exposed services · privilege drift · missing patches · logging gaps<br />Firewall config vs. live traffic · policy drift · MITRE ATT&amp;CK tactic mapping</p>
           </div>
           <div class="reveal panel">
-            <h5>Continuous scan</h5>
+            <h5>Scheduled check-in</h5>
             <div class="scan-row"><span>✓ WORKSTATION-03 ............ clean</span><span class="pill clear">Clear</span></div>
             <div class="scan-row"><span>✓ PROD-SERVER-01 ............ clean</span><span class="pill clear">Clear</span></div>
             <div class="scan-row"><span>✓ FW-PERIMETER-01 .......... clean</span><span class="pill clear">Clear</span></div>
@@ -187,7 +189,7 @@
             <div class="subkick">Recommended Solutions</div>
             <h2>Here's the problem.<br />Here's how to fix it.</h2>
             <p>Spotlight generates precise, ranked remediation options — from the fastest one-command fix to more thorough hardening approaches. Each recommendation explains what it does and why. You decide. Spotlight executes.</p>
-            <p class="meta">Trained on nation-state TTPs · military-grade scenarios · validated against live enterprise and OT ranges</p>
+            <p class="meta">Validated against containerised attack scenarios with scored checkpoints — a reproducible benchmark, not a claim</p>
           </div>
           <div class="reveal panel">
             <h5>Recommended Actions — SCADA-NODE-04</h5>
@@ -227,7 +229,7 @@
             <div class="subkick">One-Click Implementation</div>
             <h2>From identified to resolved. In under a minute.</h2>
             <p>A single click pushes the remediation command directly to the affected agent, which executes it on the device. No remote desktop. No vendor call. No driving to site. Other tools alert. Spotlight acts.</p>
-            <p class="meta">On-device execution · full audit log · no professional services required</p>
+            <p class="meta">On-device execution · full audit log · no mandatory deployment engagement</p>
           </div>
         </div>
       </div>
@@ -242,7 +244,7 @@
             <div class="subkick">Generate Reports</div>
             <h2>Prove your value.<br />Every single month.</h2>
             <p>Every threat detected, every issue resolved — logged automatically and compiled into clear reports. Send them to leadership, attach them to audits, share them with clients. Everything Spotlight does becomes documented evidence of the work being done.</p>
-            <p class="meta">Executive summary · compliance audit (mapped to your framework) · board report · MSP client report · custom date ranges<br />These reports double as the documented evidence cyber-insurance carriers now demand.</p>
+            <p class="meta">Executive summary · audit-ready findings export · board report · MSP client report · custom date ranges<br />These reports double as the documented evidence cyber-insurance carriers now demand.</p>
           </div>
           <div class="reveal panel">
             <h5>Monthly Security Report</h5>
@@ -255,7 +257,7 @@
             <p class="term-label" style="margin:6px 0 4px;">Security posture score · 94/100</p>
             <div class="posture-bar"><i data-fill="94"></i></div>
             <div class="report-tabs">
-              <span>Executive Summary</span><span>Compliance Audit</span><span>Board Report</span><span>MSP Client Report</span>
+              <span>Executive Summary</span><span>Findings Export</span><span>Board Report</span><span>MSP Client Report</span>
             </div>
           </div>
         </div>
@@ -284,7 +286,8 @@
       <div class="footer-grid">
         <div class="col">
           <img class="footer-logo" src="assets/img/logo-header.png" alt="Spotlight Security" />
-          <p class="about-blurb">Agent-based IT/OT/IoT cybersecurity, powered by AI. Find it, explain it, fix it — without professional services.</p>
+          <p class="about-blurb">Security posture management for IT, IoT and OT, powered by AI. Find it, explain it, fix it — with no mandatory deployment engagement.</p>
+          <p class="brand-line">IT-grade security, OT-grade manners.</p>
         </div>
         <div class="col"><h5>Product</h5><ul><li><a href="platform.html">Platform</a></li><li><a href="index.html#pricing">Pricing</a></li><li><a href="industries.html">Industries</a></li><li><a href="about.html">About</a></li></ul></div>
         <div class="col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="about.html#mission">Our Mission</a></li><li><a href="mailto:sales@spotlightsecurity.ai">Contact Sales</a></li><li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a></li></ul></div>
