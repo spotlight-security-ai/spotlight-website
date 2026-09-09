@@ -10,6 +10,7 @@ transparent PNG @2x — roughly 200×80px or larger):
 | `openai.svg`              | OpenAI Cybersecurity Grant                          | Recipient   |
 | `t-challenge.svg`         | Deutsche Telekom / T-Mobile 2026 T-Challenge        | Finalist    |
 | `masschallenge.svg`       | MassChallenge 2025 Security & Resiliency Accelerator| Participant |
+| `black-hat.png`           | Black Hat SecTor 2026 Startup Spotlight Competition | Finalist    |
 
 Notes
 - **Monochrome / white versions are ideal** for the dark theme. If you only have
