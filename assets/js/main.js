@@ -118,6 +118,19 @@
         window.scrollTo({ top: window.scrollY, behavior: "auto" });
       });
     });
+
+    const activateFromHash = () => {
+      const id = window.location.hash.replace("#", "");
+      if (!id || !document.getElementById(id)?.classList.contains("tab-panel")) return;
+      document.querySelectorAll(".tab-btn").forEach((b) =>
+        b.classList.toggle("active", b.getAttribute("data-tab") === id)
+      );
+      document.querySelectorAll(".tab-panel").forEach((p) =>
+        p.classList.toggle("active", p.id === id)
+      );
+    };
+    activateFromHash();
+    window.addEventListener("hashchange", activateFromHash);
   }
 
   /* ---- Platform steps-nav active state ------------------------------- */
