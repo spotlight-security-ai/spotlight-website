@@ -73,7 +73,7 @@
               <h5>What Spotlight actually does here</h5>
               <ul>
               <li>Discovery runs from an agent&rsquo;s own neighbour table, so finding the rest of the estate generates no scan traffic</li>
-              <li>Passive by default: every scan setting can only narrow, and suspected industrial devices are never scanned aggressively</li>
+              <li>Passive by default: active scanning stays off until an administrator turns it on for a specific network, and devices that look industrial are excluded from it automatically</li>
               <li>Firewall configuration reconciled against firewall logs &mdash; rules that no longer match the traffic hitting them</li>
               <li>Sustained-breach alerting with hysteresis: one finding for a busy machine, not twenty</li>
               </ul>
@@ -120,7 +120,7 @@
               <h5>What Spotlight actually does here</h5>
               <ul>
               <li>Discovery runs from an agent&rsquo;s own neighbour table, so finding the rest of the estate generates no scan traffic</li>
-              <li>Passive by default: every scan setting can only narrow, and suspected industrial devices are never scanned aggressively</li>
+              <li>Passive by default: active scanning stays off until an administrator turns it on for a specific network, and devices that look industrial are excluded from it automatically</li>
               <li>Every finding and its fix explained in plain English, with remediation gated on your approval</li>
               <li>Findings carry stable identities, so an acknowledgement survives a policy change</li>
               </ul>
@@ -145,7 +145,7 @@
               <h5>What Spotlight actually does here</h5>
               <ul>
               <li>One-click deployment through an in-LAN relay &mdash; no VPN to stand up, no appliance to ship</li>
-              <li>Passive by default: every scan setting can only narrow, and suspected industrial devices are never scanned aggressively</li>
+              <li>Passive by default: active scanning stays off until an administrator turns it on for a specific network, and devices that look industrial are excluded from it automatically</li>
               <li>Every finding and its fix explained in plain English, with remediation gated on your approval</li>
               <li>Firewall configuration reconciled against firewall logs &mdash; rules that no longer match the traffic hitting them</li>
               </ul>
@@ -170,7 +170,7 @@
               <h5>What Spotlight actually does here</h5>
               <ul>
               <li>One-click deployment through an in-LAN relay &mdash; no VPN to stand up, no appliance to ship</li>
-              <li>Passive by default: every scan setting can only narrow, and suspected industrial devices are never scanned aggressively</li>
+              <li>Passive by default: active scanning stays off until an administrator turns it on for a specific network, and devices that look industrial are excluded from it automatically</li>
               <li>Firewall configuration reconciled against firewall logs &mdash; rules that no longer match the traffic hitting them</li>
               <li>Model portability, including to a model you host yourself</li>
               </ul>
@@ -209,8 +209,8 @@
             <div>
               <span class="eyebrow">IoT Device Fleets</span>
               <h2>Turn an unmonitored device fleet into an inventoried one.</h2>
-              <p>Ten years after Mirai turned half a million cameras and DVRs into a botnet, most connected devices still ship insecure and unmanaged. Spotlight discovers and identifies those devices from the network — cameras, sensors, controllers, kiosks — and puts them in the same inventory as the machines that do take an agent, turning an unmonitored fleet into a visible, managed one.</p>
-              <p>Discovery runs from an agent's own neighbour table, so it generates no scan traffic, and suspected industrial devices are never scanned aggressively. Remediation is approval-gated: you approve, we execute.</p>
+              <p>Ten years after Mirai turned half a million cameras and DVRs into a botnet, most connected devices still ship insecure and unmanaged. Spotlight discovers and identifies those devices from the network — cameras, sensors, controllers, kiosks — puts an agent on the ones that will take one (Linux on ARM included), and keeps the rest in the same inventory as the machines it manages, turning an unmonitored fleet into a visible, managed one.</p>
+              <p>Discovery runs from an agent's own neighbour table, so it generates no scan traffic. Active scanning stays off until an administrator enables it for a network, and anything that looks industrial is excluded from it automatically. Remediation is approval-gated: you approve, we execute.</p>
               <div class="btn-row">
                 <a class="btn btn--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a>
                 <a class="btn btn--ghost" href="#tab-msp">MSP Partner Program</a>
@@ -220,7 +220,7 @@
               <h5>What Spotlight actually does here</h5>
               <ul>
                 <li>Devices surface from an agent&rsquo;s own neighbour table, so discovery generates no scan traffic at all</li>
-                <li>Passive by default: every scan setting can only narrow, and suspected industrial devices are never scanned aggressively</li>
+                <li>Passive by default: active scanning stays off until an administrator turns it on for a specific network, and devices that look industrial are excluded from it automatically</li>
                 <li>Unagentable devices sit in the same inventory as the machines that do take an agent &mdash; one list, one dashboard</li>
                 <li>Every finding and its fix explained in plain English, with remediation gated on your approval</li>
               </ul>
