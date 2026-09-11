@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>See it work | Spotlight Security</title>
+  <meta name="description" content="Watch Spotlight deploy on a real plant network: agents on the machines you already reach find the rest, install onto the ones that will take an agent, and fix what turns up, with you approving every command." />
+  <meta property="og:title" content="See Spotlight work on a real network" />
+  <meta property="og:description" content="Three devices you manage. Two you don't know about. One scan, one install, one approval-gated fix." />
+  <meta property="og:image" content="https://spotlightsecurity.ai/assets/img/logo.png" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+  /* ---- Interactive demo (scoped under .sl; class names prefixed sd- where they would collide with the site stylesheet) ---- */
+.sl{
+  --bg:#0d1030; --bg2:#0b0d1f; --card:rgba(255,255,255,.04); --cardh:rgba(255,255,255,.06);
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.04); --tip:#151833;
+  --txt:#fff; --sec:rgba(255,255,255,.7); --mut:rgba(255,255,255,.5); --dim:rgba(255,255,255,.35);
+  --acc:#db332d; --acc2:#ff7130; --pink:#cf4066; --purple:#a349a0;
+  --crit:#ff5f57; --warn:#febc2e; --ok:#28c840;
+  --critbg:rgba(255,95,87,.1); --warnbg:rgba(254,188,46,.1); --okbg:rgba(40,200,64,.08);
+  --grad:linear-gradient(135deg,#db332d 0%,#ff7130 45%,#cf4066 100%);
+  --sans:Montserrat,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-family:var(--sans);background:var(--bg);color:var(--txt);padding:30px 26px 34px;border-radius:14px;
+}
+.sl b{font-weight:600}
+.sd-k{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--acc2);font-weight:700;text-transform:uppercase}
+.h1{font-size:clamp(22px,2.6vw,32px);line-height:1.15;font-weight:800;letter-spacing:-.01em;margin-top:8px}
+.sub{color:var(--sec);font-size:14.5px;max-width:78ch;line-height:1.6;margin-top:10px}
+.sub b{color:#fff}
+.plat{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;align-items:center;font-size:10.5px}
+.plat em{font-style:normal;font-family:var(--mono);letter-spacing:.12em;font-size:9.5px;color:var(--mut);font-weight:700;margin-right:4px}
+.plat span{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:3px 9px;color:var(--sec);font-weight:500}
+
+/* ===== the one control ===== */
+.go{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:22px}
+.sd-btn{font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;padding:13px 24px;border-radius:9px;border:1px solid transparent;background:var(--grad);color:#fff;cursor:pointer;transition:.18s;display:inline-flex;gap:8px;align-items:center}
+.sd-btn:hover{box-shadow:0 0 26px rgba(255,113,48,.45)}
+.sd-btn[disabled]{opacity:.55;cursor:default;box-shadow:none}
+.sd-btn.ghost{background:transparent;border-color:var(--line);color:var(--sec);font-weight:600;letter-spacing:.04em}
+.sd-btn.ghost:hover{border-color:var(--acc2);color:#fff;box-shadow:none}
+.sd-btn.sm{padding:8px 13px;font-size:11px}
+.hint{font-size:12px;color:var(--mut)}
+.hint b{color:#fff}
+
+/* ===== stat strip (dashboard cards) ===== */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px 11px}
+.stat .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--mut);font-weight:600}
+.stat .v{font-family:var(--mono);font-size:26px;font-weight:700;margin-top:5px;transition:.3s}
+.stat.acc .v{color:var(--acc2)}.stat.warn .v{color:var(--warn)}.stat.ok .v{color:var(--ok)}.stat.crit .v{color:var(--crit)}
+
+/* ===== stage ===== */
+.sd-stage{position:relative;width:100%;height:440px;margin-top:16px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:visible}
+.svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.pipe{fill:none;stroke-linecap:round}
+.pipe.base{stroke:rgba(255,255,255,.08);stroke-width:1.5;stroke-dasharray:3 5}
+.pipe.on{stroke:rgba(255,113,48,.35);stroke-width:1.6}
+.pipe.sd-live{stroke:var(--acc2);stroke-width:2.2;filter:drop-shadow(0 0 6px rgba(255,113,48,.6))}
+.dot{fill:var(--acc2);filter:drop-shadow(0 0 4px var(--acc2))}
+.ring{fill:none;stroke:var(--acc2);stroke-width:1.4;opacity:0}
+.node{position:absolute;transform:translate(-50%,-50%);cursor:pointer;text-align:center;width:150px;transition:transform .3s cubic-bezier(.34,1.4,.5,1),opacity .5s}
+.node:hover{transform:translate(-50%,-50%) scale(1.05)}
+.node.hidden{opacity:0;pointer-events:none}
+.node.pop{animation:pop .6s cubic-bezier(.34,1.6,.5,1)}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(.6);opacity:.2}60%{transform:translate(-50%,-50%) scale(1.12)}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.chip{background:var(--card);border:1px dashed rgba(255,255,255,.22);border-radius:12px;padding:11px 8px 9px;position:relative;transition:border-color .3s,box-shadow .3s,background .3s}
+.node.agent .chip{border-style:solid;border-color:rgba(255,113,48,.55);background:rgba(255,113,48,.06)}
+.node.on .chip{border-color:var(--acc2);box-shadow:0 0 0 1px var(--acc2),0 8px 30px rgba(255,113,48,.22)}
+.node.shadow:not(.agent) .chip{border-color:rgba(254,188,46,.5)}
+.sd-ico{display:flex;justify-content:center;align-items:center;height:34px;margin-bottom:6px;color:var(--mut);transition:color .35s}
+.node.agent .sd-ico{color:var(--acc2)}
+.node.agent .sd-ico svg{animation:mat .55s ease-out}
+@keyframes mat{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
+.sd-nm{font-size:11px;font-weight:600;line-height:1.25;color:#fff}
+.md{font-family:var(--mono);font-size:9px;color:var(--mut);margin-top:3px;line-height:1.3;min-height:12px}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;color:var(--mut);margin-top:5px}
+.st i{width:6px;height:6px;border-radius:50%;background:var(--dim);display:inline-block}
+.node.agent .st{color:#fff}.node.agent .st i{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+.sd-badge{position:absolute;top:-8px;right:-8px;font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.06em;background:#2a3050;color:#9ba1c4;transition:.3s;white-space:nowrap}
+.node.agent .sd-badge{background:var(--grad);color:#fff}
+.node.shadow:not(.agent) .sd-badge{background:var(--warn);color:#3a2600}
+.node.ot:not(.agent) .sd-badge{background:var(--warnbg);color:var(--warn);border:1px solid rgba(254,188,46,.4)}
+.hub{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:270px;text-align:center;background:linear-gradient(180deg,#182052,#101538);border:1px solid rgba(255,113,48,.45);border-radius:13px;padding:12px 12px 10px;box-shadow:0 0 44px rgba(255,113,48,.12)}
+.hub .l1{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--acc2);font-weight:700}
+.hub .l2{font-size:14px;font-weight:700;margin:5px 0 2px}
+.hub .l3{font-size:10px;color:var(--mut)}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--acc2);display:inline-block;margin-right:5px;animation:slp 1.9s infinite;vertical-align:1px}
+@keyframes slp{0%,100%{opacity:1}50%{opacity:.3}}
+.sd-legend{position:absolute;left:14px;top:12px;display:flex;gap:12px;font-size:10.5px;color:var(--mut);font-family:var(--sans)}
+.sd-legend i{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:-1px}
+.sd-pill{position:absolute;right:14px;top:12px;display:flex;gap:8px}
+.sd-pill span{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:10.5px;font-weight:600;color:var(--sec);background:var(--card);transition:.3s}
+.sd-pill span i{width:6px;height:6px;border-radius:50%;background:var(--dim);display:inline-block}
+.sd-pill span.on{border-color:rgba(254,188,46,.45)}.sd-pill span.on i{background:var(--warn);box-shadow:0 0 8px var(--warn)}
+
+/* ===== activity ===== */
+.log{margin-top:12px;background:#070a1c;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.logh{display:flex;justify-content:space-between;align-items:center;padding:9px 15px;border-bottom:1px solid var(--line);background:rgba(255,113,48,.04)}
+.logt{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;font-weight:700;color:var(--acc2)}
+.logc{font-family:var(--mono);font-size:10px;color:var(--mut)}
+.logl{max-height:190px;overflow-y:auto;padding:10px 15px;font-family:var(--mono);font-size:11.5px;line-height:1.75;scroll-behavior:smooth}
+.logl::-webkit-scrollbar{width:6px}.logl::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+.ln{color:#9ba1c4;animation:lin .3s ease-out;white-space:pre-wrap;word-break:break-word}
+@keyframes lin{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.ln .ts{color:#4a5078;margin-right:9px}
+.ln.ok{color:var(--ok)}.ln.hot{color:var(--warn);font-weight:600}.ln.sub{color:#6b7096;padding-left:22px}.ln.big{color:var(--acc2);font-weight:700;font-size:12.5px}
+.logempty{color:#4a5078;font-family:var(--mono);font-size:11.5px}
+.next{display:none;padding:11px 15px;border-top:1px solid rgba(255,113,48,.25);background:rgba(255,113,48,.07);font-size:12.5px;color:#fff;font-weight:500;text-align:center}
+.next.on{display:block;animation:lin .4s ease-out}
+.next b{color:var(--acc2)}
+
+/* ===== comparison ===== */
+.sect{margin-top:26px}
+.sect h2{font-size:clamp(17px,1.9vw,23px);font-weight:800;letter-spacing:-.01em;margin-top:8px}
+.sect .sd-lead{color:var(--sec);font-size:13px;margin-top:6px;line-height:1.55;max-width:80ch}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.sd-col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;transition:border-color .3s}
+.sd-col h4{font-family:var(--mono);font-size:10px;letter-spacing:.13em;font-weight:700;margin-bottom:3px}
+.sd-col.spot{border-color:rgba(255,113,48,.4)}.sd-col.spot h4{color:var(--acc2)}.sd-col.base h4{color:var(--mut)}
+.sd-cap{font-size:10.5px;color:var(--mut);margin-bottom:9px;min-height:12px}
+.lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--mut);text-transform:uppercase;font-weight:600;margin:10px 0 2px}
+.li{display:flex;gap:9px;align-items:flex-start;padding:5.5px 0;border-bottom:1px solid var(--line2);font-size:12.5px;color:var(--sec);line-height:1.45;animation:fadein .35s ease-out}
+@keyframes fadein{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.li:last-child{border-bottom:none}
+.li b{color:#fff}
+.li .bu{font-size:9px;margin-top:5px;flex-shrink:0;color:var(--acc2)}
+.sd-col.base .bu{color:var(--mut)}
+.none{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;padding:12px 13px;font-size:12px;color:var(--sec);line-height:1.55}
+.none b{color:#fff}
+.empty{color:var(--dim);font-size:12.5px;font-style:italic}
+
+/* finding card (dashboard issue style) */
+.find{margin-top:12px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:13px 14px}
+.sev{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;font-weight:700;padding:3px 8px;border-radius:5px;display:inline-block}
+.sev.crit{color:var(--crit);background:var(--critbg)}.sev.warn{color:var(--warn);background:var(--warnbg)}.sev.ok{color:var(--ok);background:var(--okbg)}
+.find h5{font-size:13px;font-weight:700;margin-top:8px;color:#fff}
+.find p{font-size:12px;color:var(--sec);line-height:1.55;margin-top:6px}
+.mitre{display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:9.5px;color:var(--mut);margin-top:8px;flex-wrap:wrap}
+.mitre span{padding:2px 7px;border-radius:5px;border:1px solid var(--line);background:var(--card);color:var(--sec)}
+.cmd{background:#070a1c;border:1px solid var(--line);border-radius:7px;padding:9px 11px;margin-top:9px;font-family:var(--mono);font-size:10.5px;color:var(--acc2);overflow-x:auto;white-space:nowrap}
+.exec{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.res{font-family:var(--mono);font-size:11px;color:var(--mut);display:none}
+.res.on{display:inline;animation:lin .3s}
+.res.ok{color:var(--ok)}
+.gate{margin-top:10px;display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border-radius:7px;background:rgba(255,113,48,.07);border:1px solid rgba(255,113,48,.28);font-size:11.5px;color:var(--sec);line-height:1.5}
+.gate svg{flex-shrink:0;width:15px;height:15px;color:var(--acc2);margin-top:1px}
+.gate b{color:var(--acc2)}
+
+/* ===== reach matrix ===== */
+.mx{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
+.mx th{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--mut);text-align:center;padding:0 8px 10px;vertical-align:bottom;line-height:1.4}
+.mx th.sd-who{color:#fff;font-size:10px}.mx th.sd-who small{display:block;color:var(--mut);font-weight:400;font-size:9px;letter-spacing:0;margin-top:3px}
+.mx th.spot{color:var(--acc2)}
+.mx td{padding:9px 8px;border-top:1px solid var(--line2);text-align:center}
+.mx td.lbl2{text-align:left;color:var(--sec);font-weight:500;padding-left:0;white-space:nowrap;font-size:12px}
+.mx td.lbl2 small{display:block;color:var(--dim);font-weight:400;font-size:9.5px;margin-top:2px;white-space:normal}
+.mx td.sc{transition:opacity .5s}
+.mx.pre td.sc{opacity:.35}
+.pips{display:inline-flex;gap:4px}
+.pip{width:11px;height:11px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid var(--line);transition:.45s}
+.pip.on{background:var(--acc2);border-color:var(--acc2)}
+.pip.half{background:linear-gradient(135deg,var(--acc2) 50%,rgba(255,255,255,.06) 50%);border-color:var(--acc2)}
+.pip.gy{background:#565b7e;border-color:#565b7e}
+.key{display:flex;gap:5px;align-items:center;flex-wrap:wrap;font-size:10.5px;color:var(--mut);margin-top:10px}
+.key i{width:9px;height:9px;border-radius:2px;background:var(--acc2);display:inline-block;margin-right:4px;vertical-align:-1px}
+.key i.half{background:linear-gradient(135deg,var(--acc2) 50%,rgba(255,255,255,.15) 50%)}
+.key em{font-style:normal;color:#4a5078;margin:0 3px}
+.mxnote{font-size:11px;color:var(--mut);margin-top:8px;line-height:1.5;max-width:100ch}
+
+/* ===== approval + CTA ===== */
+.big{margin-top:24px;background:linear-gradient(180deg,rgba(255,113,48,.09),rgba(255,113,48,.03));border:1px solid rgba(255,113,48,.38);border-radius:12px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start}
+.big svg{flex-shrink:0;width:32px;height:32px;color:var(--acc2);margin-top:2px}
+.big h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.big p{font-size:13px;color:var(--sec);line-height:1.6;max-width:76ch}
+.big p b{color:#fff}
+.sd-chips{display:flex;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--acc2);font-weight:600;line-height:1.9}
+.sd-chips span:not(:last-child)::after{content:"\00B7";color:rgba(255,113,48,.45);margin:0 10px;font-weight:400}
+.cta{margin-top:24px;background:linear-gradient(135deg,rgba(219,51,45,.14),rgba(207,64,102,.08));border:1px solid rgba(255,113,48,.45);border-radius:14px;padding:24px 26px}
+.cta h3{font-size:clamp(17px,1.8vw,22px);font-weight:800;margin-bottom:8px}
+.cta .sd-price{font-size:14px;color:var(--sec);line-height:1.65;max-width:72ch}
+.cta .sd-price b{color:#fff}
+.steps{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px}
+.sd-step{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 14px;font-size:12.5px;color:#fff;font-weight:500}
+.sd-step span{width:20px;height:20px;border-radius:50%;background:var(--grad);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.cb{display:inline-block;text-decoration:none;font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.03em;padding:12px 20px;border-radius:9px;background:var(--grad);color:#fff;border:1px solid transparent;transition:box-shadow .2s}
+.cb:hover{box-shadow:0 0 22px rgba(255,113,48,.4)}
+.cb.alt{background:transparent;color:var(--acc2);border-color:rgba(219,51,45,.6);font-weight:600}
+.note{font-size:11.5px;color:var(--mut);margin-top:12px;line-height:1.55;max-width:84ch}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.pair{grid-template-columns:1fr}.sd-stage{height:520px}.node{width:120px}.sd-legend,.sd-pill{position:static;margin:10px 14px 0}.sd-pill{justify-content:flex-start}}
+
+@media(max-width:700px){.sl .mx td.lbl2{white-space:normal}.sl .mx{display:block;overflow-x:auto}}
+@media (prefers-reduced-motion:reduce){.sl .sd-node,.sl .sd-node.pop,.sl .sd-node.agent .sd-ico svg,.sl .ln,.sl .li,.sl .next.on,.sl .res.on{animation:none!important;transition:none!important}.sl .pulse{animation:none}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+      <nav class="nav">
+        <a class="nav__logo" href="index.html" aria-label="Spotlight Security home"><img src="assets/img/logo-header.png" alt="Spotlight Security" /></a>
+        <ul class="nav__links">
+          <li><a href="platform.html">Platform</a></li>
+          <li><a href="demo.html">See it work</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="industries.html">Industries</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+        <div class="nav__cta">
+          <a class="btn btn--primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a>
+          <button class="nav__toggle" aria-label="Toggle menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+    <main>
+    <!-- HERO -->
+    <section class="hero section--tight">
+      <div class="glow glow--hero"></div>
+      <div class="container">
+        <div style="max-width:820px;">
+          <span class="eyebrow eyebrow--badge">See it work</span>
+          <h1 class="hero-title" style="font-size:clamp(40px,6vw,64px);">One scan. One install.<br />One fix you approve.</h1>
+          <p class="lead" style="color:var(--muted);">A thirty-second run of what Spotlight does on a plant network, using the same steps and the same guardrails as the product. Press deploy, then click any device.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEMO -->
+    <section class="section--tight" id="demo" style="padding-top:0;">
+      <div class="container">
+<div class="sl">
+
+  <div class="sd-k">Interactive &middot; deploy Spotlight</div>
+  <h1 class="h1">Three devices you manage. Two you don't know about.</h1>
+  <p class="sub">Most networks look like this before Spotlight: an inventory that was last right a month ago, and no way to act on what it shows. <b>Point us at one machine and we find the rest, with no VPN and no appliance.</b> Press deploy and watch what changes, then click any device to see what you can now see and fix on it.</p>
+  <div class="plat"><em>Agent runs on</em><span>Windows</span><span>macOS</span><span>Linux x86_64</span><span>Linux ARM</span><span>FreeBSD</span><span>QNX</span><span>one static binary, no runtime dependencies</span></div>
+
+  <div class="go">
+    <button class="sd-btn" id="go"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>DEPLOY SPOTLIGHT</button>
+    <button class="sd-btn ghost" id="reset">RESET</button>
+    <span class="hint" id="hint">About 30 seconds. Nothing to click until it finishes.</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="l">TOTAL DEVICES</div><div class="v" id="sDev">3</div></div>
+    <div class="stat acc"><div class="l">UNDER MANAGEMENT</div><div class="v" id="sAg">0</div></div>
+    <div class="stat warn"><div class="l">SHADOW DEVICES FOUND</div><div class="v" id="sSh">0</div></div>
+    <div class="stat crit"><div class="l">FINDINGS</div><div class="v" id="sIs">0</div></div>
+  </div>
+
+  <div class="sd-stage" id="stage">
+    <svg class="svg" id="svg"></svg>
+    <div class="sd-legend"><span><i style="background:var(--acc2)"></i>Agent installed</span><span><i style="background:#fff"></i>Known, no agent</span><span><i style="background:var(--warn)"></i>Shadow device</span></div>
+    <div class="sd-pill"><span id="pScan"><i></i>Scan off</span><span class="on"><i></i>Safe off</span></div>
+    <div class="hub">
+      <div class="l1"><span class="pulse"></span>SPOTLIGHT COMMAND CENTER</div>
+      <div class="l2" id="hubN">3 devices &middot; 0 installed</div>
+      <div class="l3" id="hubS">Inventory only. Nothing to act on.</div>
+    </div>
+  </div>
+
+  <div class="log">
+    <div class="logh"><span class="logt">ACTIVITY</span><span class="logc" id="logc">idle</span></div>
+    <div class="logl" id="logl"><div class="logempty">Waiting. Press DEPLOY SPOTLIGHT to map the environment. Every step is written here with who did it.</div></div>
+    <div class="next" id="next"></div>
+  </div>
+
+  <!-- ===== what changes on a device ===== -->
+  <div class="sect">
+    <div class="sd-k">What you can see and change</div>
+    <h2 id="cmpTitle">Select a device above.</h2>
+    <p class="sd-lead">Left is with the Spotlight agent on the device. Right is what you had. Every line on the left is something the agent actually reports or executes.</p>
+    <div class="pair">
+      <div class="sd-col spot"><h4>WITH SPOTLIGHT</h4><div class="sd-cap" id="capS"></div><div id="colS"><div class="empty">Deploy first, then select a device.</div></div></div>
+      <div class="sd-col base"><h4>WITH YOUR EXISTING TOOLS</h4><div class="sd-cap" id="capB"></div><div id="colB"><div class="empty">Select a device.</div></div></div>
+    </div>
+  </div>
+
+  <!-- ===== approval gate ===== -->
+  <div class="big">
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l11 4.5v8.2c0 6.6-4.4 12.2-11 13.8-6.6-1.6-11-7.2-11-13.8V7.5L16 3z"/><path d="M11 16l3.4 3.4L21 12.8"/></svg>
+    <div>
+      <h3>The AI proposes. You approve. Nothing runs on its own.</h3>
+      <p>The agent on the device carries out instructions. The AI model runs in the dashboard: it reads what the agent reported, explains it in plain English, and drafts the fix. <b>The model never runs on your equipment.</b> Every finding arrives with the exact command attached, so you read what it will do before it does it. Approve it now, leave it open until your maintenance window and approve it then, or acknowledge it with a reason. <b>Nothing executes on a device until an administrator says yes,</b> and every change is written to the activity log with who approved it and when.</p>
+      <div class="sd-chips"><span>Human approval required</span><span>Command shown before it runs</span><span>Full activity log</span><span>Active scanning and agent writes switched per network</span><span>Safe mode per operator</span></div>
+    </div>
+  </div>
+
+  <!-- ===== reach ===== -->
+  <div class="sect">
+    <div class="sd-k">Where your AI can actually go</div>
+    <h2>Everyone has AI now. Almost none of it can reach a device.</h2>
+    <p class="sd-lead">An AI model cannot fix a controller it has no way to talk to. The Spotlight agent is that path. Once it is on a device, the model that explains a finding can draft the fix and, with your approval, have the agent carry it out: on a Linux-based controller, an ARM camera, or a laptop. Use our hosted models, or point a role at a model you host yourself.</p>
+    <table class="mx pre" id="mx">
+      <thead><tr><th style="text-align:left"></th><th class="sd-who spot">WITH SPOTLIGHT<small id="mxSub">nothing installed yet</small></th><th class="sd-who">NETWORK &amp; PERIMETER<small>Palo Alto, Cloudflare</small></th><th class="sd-who">ENDPOINT AGENTS<small>CrowdStrike and similar</small></th></tr></thead>
+      <tbody id="mxBody"></tbody>
+    </table>
+    <div class="key"><span>Actions:</span><span><i></i>See it</span><em>&middot;</em><span><i></i>Read detail</span><em>&middot;</em><span><i></i>Patch it</span><em>&middot;</em><span><i></i>Change config</span><em>&middot;</em><span><i></i>Run AI on it</span><em>&middot;</em><span><i class="half"></i>Reviewed change, applied by you</span></div>
+    <div class="mxnote">Rows are what the agent does once installed. Devices with no host OS to install on (bare PLCs, RTUs, switches) are discovered from the network and kept in the same inventory. Firewalls: we read a config export, reconcile it against the logs, and hand you the exact rule change; we do not push to the firewall.</div>
+  </div>
+
+  <!-- ===== CTA ===== -->
+  <div class="cta">
+    <h3>Want this run on your network?</h3>
+    <p class="sd-price">Two weeks, <b>$7,500</b>, nothing installed until you approve it. You send a firewall config export and pick the machines. You get back a ranked list of what is exposed and exactly how to fix it, plus a walkthrough. No commitment afterwards, and you keep the report either way.</p>
+    <div class="steps"><div class="sd-step"><span>1</span>Send a firewall config export</div><div class="sd-step"><span>2</span>Pick 25 machines for a read-only agent</div><div class="sd-step"><span>3</span>Ranked findings and a walkthrough in two weeks</div></div>
+    <div class="row"><a class="cb" href="mailto:sales@spotlightsecurity.ai?subject=Network%20Exposure%20Assessment">REQUEST AN ASSESSMENT</a><a class="cb alt" href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">OR BOOK A DEMO &rarr;</a></div>
+    <p class="note">Discovery is passive by default and reads what your agents already know. Active scanning stays off until an administrator turns it on for a specific network, and anything that looks industrial is excluded from it automatically. When it runs, it is ten packets a second, one host at a time, no version probes. That is enforced in the product, not a setting we remember to switch on.</p>
+  </div>
+</div>
+      </div>
+    </section>
+  </main>
+
+<footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="col">
+          <img class="footer-logo" src="assets/img/logo-header.png" alt="Spotlight Security" />
+          <p class="about-blurb">Security posture management for IT, IoT and OT, powered by AI. Find it, explain it, fix it — with no mandatory deployment engagement.</p>
+          <p class="brand-line">IT-grade security, OT-grade manners.</p>
+        </div>
+        <div class="col"><h5>Product</h5><ul><li><a href="platform.html">Platform</a></li><li><a href="demo.html">See it work</a></li><li><a href="index.html#pricing">Pricing</a></li><li><a href="industries.html">Industries</a></li><li><a href="about.html">About</a></li></ul></div>
+        <div class="col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="about.html#mission">Our Mission</a></li><li><a href="mailto:sales@spotlightsecurity.ai">Contact Sales</a></li><li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfgc0ZEiZ9nkrDfpylJCwfrl7lfc9scwQ3iBBFHbF8rIvGD0w/viewform" target="_blank" rel="noopener">Book a Demo</a></li></ul></div>
+        <div class="col"><h5>Get in touch</h5><ul><li><a href="mailto:sales@spotlightsecurity.ai">sales@spotlightsecurity.ai</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><span>© <span data-year>2026</span> Spotlight Security. All rights reserved.</span><span>Protecting critical infrastructure.</span></div>
+    </div>
+  </footer>
+
+    <script src="assets/js/main.js"></script>
+  <script>
+(function(){
+/* ============================ DEVICES ============================ */
+var IC={
+ pc:'<svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="17" rx="2"/><path d="M13 22v4M19 22v4M9.5 26h13"/><path d="M8 10.5h10M8 14h6.5" opacity=".45"/></svg>',
+ srv:'<svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="24" height="9" rx="1.5"/><rect x="4" y="18" width="24" height="9" rx="1.5"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="9" cy="22.5" r="1.2" fill="currentColor" stroke="none"/><path d="M13 9.5h11M13 22.5h11" opacity=".4"/></svg>',
+ plc:'<svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="4" width="16" height="24" rx="1.5"/><path d="M8 9H4M8 14H4M8 19H4M24 9h4M24 14h4M24 19h4" opacity=".6"/><rect x="11" y="7.5" width="10" height="6" rx="1" opacity=".45"/><circle cx="13" cy="18.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="17.5" cy="18.5" r="1.1" fill="currentColor" stroke="none" opacity=".45"/><path d="M11 23h10" opacity=".35"/></svg>',
+ hmi:'<svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="27" height="19" rx="2"/><rect x="6" y="7.5" width="20" height="8.5" rx="1" opacity=".4"/><path d="M8 13.5l3-3.5 2.5 2.5 3-4 2.5 4 3-2.5" opacity=".9"/><circle cx="8" cy="19.5" r="1.3"/><circle cx="12.5" cy="19.5" r="1.3"/><path d="M17 19.5h8" opacity=".45"/><path d="M13 23v4M19 23v4M10 27h12"/></svg>',
+ cam:'<svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h11a3.5 3.5 0 0 1 3.5 3.5v3A3.5 3.5 0 0 1 15 21H4a1.5 1.5 0 0 1-1.5-1.5v-7A1.5 1.5 0 0 1 4 11z"/><circle cx="14.5" cy="16" r="2.4"/><path d="M19 13.5l7.5-3.5v12L19 18.5" opacity=".4"/><path d="M10 21v4.5M6.5 25.5h7"/></svg>',
+ unk:'<svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="11" stroke-dasharray="3 4" opacity=".8"/><path d="M12.8 12.6a3.3 3.3 0 1 1 3.9 3.5v2.1" opacity=".95"/><circle cx="16.7" cy="21.6" r="1.05" fill="currentColor" stroke="none"/></svg>'
+};
+var AI=["Ask it a question in plain English","the model proposes a read-only check, the agent runs it, the model explains the answer. Writes stay off unless an admin switches them on for the network."];
+
+/* Every "see" line maps to a universal command the agent runs. Every "do" line is an
+   executable fix (kill a process, install a pending OS update, a host firewall rule)
+   or an operator-approved command. Every finding is one the detectors emit today. */
+var DEVICES=[
+ {id:"win",known:true,ip:"10.0.20.14",icon:IC.pc,name:"Plant-floor PC",model:"Windows 10/11 workstation",type:"WINDOWS",
+  exSee:[["In the asset inventory","ENG-WKS-07, 10.0.20.14, tagged 'production'"],["Last inventory sync","41 days ago"],["Ports seen by a network scan","445, 3389, no process behind either"],["Local admins, firewall rules as configured","not available"]],
+  spSee:[["Open ports and the process behind each","445 (SMB), 3389 (RDP), with the owning process and PID"],["Running processes and accounts","local admins, stale accounts, the process that should not be there"],["Patch state","OS build and the security updates Windows Update is still waiting to install"],["Host firewall rules as configured","not as documented"],["Logging and password policy","audit logging on or off, minimum length, lockout"]],
+  spDo:[["Close a port or block a source","host firewall rule pushed on the device"],["Disable a stale local admin account","command shown first, you approve"],["Install a pending security update","then re-checked on the next run"],["Stop a process you did not put there","by PID"],AI],
+  base:"<b>Patching, if your RMM has an agent here.</b> No view of which process owns a port, no firewall rules as configured, no fix drafted for you, and nothing you can ask a question of.",
+  find:{sev:"warn",t:"Remote desktop reachable from the whole plant subnet",why:"RDP (3389, TermService) is listening and the host firewall allows it from any address on 10.0.20.0/24. A phished laptop on this subnet gets a login prompt on the machine that programs the line.",fix:"Block 3389 from the plant subnet on the host firewall; the IT management range keeps access.",tac:"TA0008 Lateral Movement",tech:"T1021.001 Remote Desktop Protocol",cmd:"netsh advfirewall firewall add rule name=\"spotlight-rdp-plant-block\" dir=in action=block protocol=TCP localport=3389 remoteip=10.0.20.0/24"}},
+
+ {id:"plc",known:false,ot:true,ip:"10.0.20.58",icon:IC.plc,name:"PLC / edge controller",model:"Linux-based controller, ARM",type:"LINUX",preName:"Shadow device",
+  exSee:[["Nothing. This device is not in your inventory.",""]],
+  spSee:[["Kernel, OS release and control runtime version","from the device itself, not a banner guess"],["Exposed protocol ports and who owns them","Modbus 502 answered by the runtime, open to the whole flat network"],["Configuration changes since the last check-in","what changed, when, shown as a diff"],["Accounts and remote-access services present","telnet still enabled, one shared login"]],
+  spDo:[["Restrict an exposed protocol port to the hosts that need it","host firewall rule, HMI still reaches it"],["Flag configuration drift for review","the finding carries the diff; you decide the correct state"],["Remove an unused remote-access service","telnet stopped, command shown first"],["Stop a process you did not put there","by PID, in your window, on your approval"],AI],
+  base:"<b>Nothing.</b> This device was not in your inventory. No agent in your current stack installs here, so there is no patching, no port change and no AI connectivity. Somebody drives to site.",
+  find:{sev:"warn",t:"Exposed protocol port: Modbus 502 open to the whole subnet",why:"The controller answers Modbus on 502 from any address on 10.0.20.0/24. Only the HMI (10.0.20.7) should be talking to it. The engineering workstation, a printer and a phone on the same subnet can all reach the control protocol.",fix:"Add a host firewall rule that drops Modbus from everything except the HMI. The control runtime is untouched and the HMI keeps its connection.",tac:"TA0040 Impact",tech:"T0855 Unauthorized Command Message",cmd:"iptables -I INPUT -p tcp --dport 502 ! -s 10.0.20.7 -j DROP"}},
+
+ {id:"lin",known:true,ip:"10.0.20.31",icon:IC.srv,name:"Linux host / server",model:"Ubuntu 22.04 server",type:"LINUX",
+  exSee:[["In the asset inventory","10.0.20.31, owner listed as a former employee"],["Last inventory sync","41 days ago"],["One port answering","22, banner not read"],["Packages, users, authorised keys","not available"]],
+  spSee:[["Listening sockets and owning process",""],["Users, sudoers, authorised keys",""],["Pending security updates from apt","package and version"],["Kernel and OS release",""],["Host firewall rules as configured","nft, iptables or ufw, whichever is in use"]],
+  spDo:[["Push a host firewall rule",""],["Disable an account or remove a key","command shown first, you approve"],["Install pending security updates","then re-checked on the next run"],["Disable a service nobody owns",""],AI],
+  base:"<b>Patching, if your RMM has an agent here.</b> One port answering on 22 and a banner nobody read. Owner listed as a former employee.",
+  find:{sev:"warn",t:"Forgotten telnet socket enabled on a server",why:"telnet.socket is enabled under systemd and nothing on the network uses it. It hands out a clear-text login prompt to anyone on the subnet.",fix:"Disable the socket now. SSH is unaffected.",tac:"TA0008 Lateral Movement",tech:"T1021 Remote Services",cmd:"systemctl disable --now telnet.socket"}},
+
+ {id:"cam",known:false,ip:"10.0.20.92",icon:IC.cam,name:"IP camera / IoT sensor",model:"IoT camera, ARM Linux",type:"LINUX",preName:"Shadow device",
+  exSee:[["Nothing. This device is not in your inventory.",""]],
+  spSee:[["Firmware and OS build","reported by the device"],["Exposed admin interface and open ports","80, 554, 8000 and the process behind each"],["Default admin account still present","and whether the password policy allows it"],["Whether your perimeter firewall forwards to it","from the firewall config export, reconciled against the logs"],["TLS certificate subject and issuer","from the handshake"]],
+  spDo:[["Flag the default admin account","you rotate it, we verify on the next check-in"],["Close the exposed admin interface","host firewall rule"],["Disable unused services","telnet, UPnP, legacy ONVIF endpoints"],["Install a vendor update when one is pending","staged on your approval, then re-checked"],AI],
+  base:"<b>Nothing.</b> This device was not in your inventory. Your EDR will not install on it, and your OT monitor can only watch it.",
+  find:{sev:"crit",t:"Insecure remote access: telnet listening on port 23",why:"The camera accepts telnet on port 23 (PID 412, telnetd) and still has its factory admin account. Telnet sends the login in clear text, so anyone on the flat plant network can read the credential off the wire and log in.",fix:"Stop the telnet daemon now. The camera's web and RTSP services do not need it. The finding closes on the next check-in once port 23 stops answering.",tac:"TA0008 Lateral Movement",tech:"T1021 Remote Services",cmd:"kill -9 412"}},
+
+ {id:"hmi",known:true,ip:"10.0.20.7",icon:IC.hmi,name:"HMI / SCADA node",model:"Windows-based HMI panel",type:"WINDOWS",
+  exSee:[["In the asset inventory","10.0.20.7, tagged 'do not touch'"],["Last inventory sync","added by hand in 2021, never re-checked"],["One port answering","502 (Modbus), open to the flat network"],["OS, patch state, local accounts","not available"]],
+  spSee:[["Underlying OS and patch state","Windows build, pending updates"],["Exposed protocol and management ports","and the process behind each"],["Local accounts and auto-login configuration",""],["Remote-access services present on the panel",""],["HMI runtime and project version",""]],
+  spDo:[["Close an exposed management port","host firewall rule"],["Disable auto-login and flag the shared account","command shown first, you approve"],["Remove an unused remote-access service",""],["Install a pending Windows update","when you approve it, in your window"],AI],
+  base:"<b>Tagged 'do not touch' in 2021 and never re-checked.</b> One port answering on 502. OS, patch state and local accounts unknown.",
+  find:{sev:"ok",t:"No open findings",why:"The panel reports a current Windows build, no pending security updates, auto-login off, and Modbus reachable only from the controller.",fix:"",tac:"",tech:"",cmd:""}}
+];
+
+var MX=[
+ {row:"Windows / macOS / Linux / FreeBSD",sub:"servers, workstations, laptops",pre:[1,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,1,1,1]},
+ {row:"PLC / edge controller",sub:"Linux or QNX based, x86 or ARM",pre:[0,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
+ {row:"HMI / SCADA node",sub:"Windows or Linux panel PC",pre:[1,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
+ {row:"IP camera / IoT sensor",sub:"ARM Linux with a shell",pre:[0,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
+ {row:"Bare PLC / RTU, no host OS",sub:"discovered from the network, never actively scanned",pre:[0,0,0,0,0],spot:[1,1,0,0,0],net:[1,1,0,0,0],edr:[1,0,0,0,0]},
+ {row:"Firewalls and network gear",sub:"config export reconciled against logs",pre:[1,0,0,0,0],spot:[1,1,0,2,0],net:[1,1,1,1,0],edr:[1,0,0,0,0]}
+];
+
+/* ============================ RUNTIME ============================ */
+var $=function(id){return document.getElementById(id);};
+var stage=$("stage"),svg=$("svg"),logl=$("logl");
+var nodes=[],active=null,running=false,done=false,tq=[],clock=0,executed={};
+var PACE=(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)?0.6:1.25;
+function step(fn,ms){tq.push(setTimeout(fn,ms*PACE));}
+function clearQ(){tq.forEach(clearTimeout);tq=[];}
+function ts(){clock+=Math.floor(Math.random()*2)+1;var m=Math.floor(clock/60),s=clock%60;return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;}
+function log(txt,cls){var e=logl.querySelector(".logempty");if(e)e.remove();var d=document.createElement("div");d.className="ln"+(cls?" "+cls:"");d.innerHTML=(cls==="sub"?"":'<span class="ts">'+ts()+'</span>')+txt;logl.appendChild(d);logl.scrollTop=logl.scrollHeight;}
+function byId(id){for(var i=0;i<nodes.length;i++)if(nodes[i].d.id===id)return nodes[i];}
+
+function counts(){
+  var a=nodes.filter(function(n){return n.agent;}).length;
+  var s=nodes.filter(function(n){return !n.d.known&&n.found;}).length;
+  var tot=nodes.filter(function(n){return n.d.known||n.seen;}).length;
+  var f=done?nodes.filter(function(n){return n.agent&&n.d.find.sev!=="ok"&&!executed[n.d.id];}).length:0;
+  $("sDev").textContent=tot;$("sAg").textContent=a;$("sSh").textContent=s;$("sIs").textContent=f;
+  $("hubN").innerHTML=tot+' device'+(tot===1?'':'s')+' &middot; '+a+' installed';
+  $("hubS").innerHTML=a===0?'Inventory only. Nothing to act on.':(a<tot?'Installing&hellip;':'IT, IoT and OT in one list. All actionable.');
+}
+function place(){
+  var w=stage.clientWidth,h=stage.clientHeight;
+  var POS=[[.12,.62],[.31,.30],[.50,.22],[.69,.30],[.88,.62]];
+  nodes.forEach(function(o,i){var pt=POS[i]||[.5,.4];o.x=Math.max(85,Math.min(w-85,pt[0]*w));o.y=pt[1]*h;o.el.style.left=o.x+"px";o.el.style.top=o.y+"px";});
+  draw();
+}
+function path(o){var w=stage.clientWidth,h=stage.clientHeight,cx=w/2,cy=h-58;var mx=(cx+o.x)/2,my=(cy+o.y)/2-38;return "M"+cx+","+cy+" Q"+mx+","+my+" "+o.x+","+o.y;}
+function draw(){
+  svg.innerHTML="";
+  nodes.forEach(function(o){if(!o.d.known&&!o.seen)return;var p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d",path(o));p.setAttribute("class","pipe "+(o.agent?"on":"base"));svg.appendChild(p);});
+  if(active&&(active.d.known||active.seen)){
+    var p2=document.createElementNS("http://www.w3.org/2000/svg","path");p2.setAttribute("d",path(active));p2.setAttribute("class","pipe sd-live");svg.appendChild(p2);
+    try{var L=p2.getTotalLength();p2.style.strokeDasharray=L;p2.style.strokeDashoffset=L;p2.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:480,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});}catch(e){}
+    if(active.agent)for(var k=0;k<3;k++){var c=document.createElementNS("http://www.w3.org/2000/svg","circle");c.setAttribute("r","2.6");c.setAttribute("class","dot");svg.appendChild(c);var am=document.createElementNS("http://www.w3.org/2000/svg","animateMotion");am.setAttribute("dur","1.5s");am.setAttribute("repeatCount","indefinite");am.setAttribute("begin",(k*0.5)+"s");am.setAttribute("path",path(active));c.appendChild(am);}
+  }
+}
+function ripple(){if(PACE<1)return;var w=stage.clientWidth,h=stage.clientHeight,cx=w/2,cy=h-58;for(var i=0;i<3;i++){var c=document.createElementNS("http://www.w3.org/2000/svg","circle");c.setAttribute("cx",cx);c.setAttribute("cy",cy);c.setAttribute("class","ring");svg.appendChild(c);(function(el,d){el.animate([{r:8,opacity:.55},{r:Math.min(w*0.42,320),opacity:0}],{duration:1500,delay:d,easing:"cubic-bezier(.2,.6,.3,1)",fill:"forwards"});})(c,i*380);}}
+function rows(list,ai){return list.map(function(r,i){var isAI=ai&&i===list.length-1;return '<div class="li"><span class="bu">'+(isAI?'&#9670;':'&#9679;')+'</span><span><b>'+r[0]+'</b>'+(r[1]?': '+r[1]:'')+'</span></div>';}).join("");}
+
+function render(o){
+  if(!o){$("cmpTitle").textContent="Select a device above.";$("colB").innerHTML='<div class="empty">Select a device.</div>';$("colS").innerHTML='<div class="empty">Deploy first, then select a device.</div>';$("capS").innerHTML="";$("capB").innerHTML="";return;}
+  var d=o.d;
+  $("cmpTitle").textContent=(d.known||o.found?d.name:"Unknown device")+" \u00b7 "+d.ip;
+  if(!d.known&&!o.found){$("capB").textContent="Not discovered";$("colB").innerHTML='<div class="none">This device is on the network right now and <b>nothing in your stack has reported it.</b> It appears once a Spotlight agent nearby reads its neighbor table.</div>';}
+  else{$("capB").textContent=d.known?"Inventory record and a network scan":"Not in inventory";$("colB").innerHTML=(d.known?rows(d.exSee,false):"")+'<div class="none" style="margin-top:8px">'+d.base+'</div>';}
+  if(o.agent){
+    $("capS").textContent="Spotlight agent installed on the device";
+    var f=d.find,ex=!!executed[d.id];
+    var card='<div class="find"><span class="sev '+(ex?"ok":f.sev)+'">'+(ex?"RESOLVED":f.sev==="crit"?"CRITICAL":f.sev==="warn"?"WARNING":"HEALTHY")+'</span><h5>'+f.t+'</h5><p>'+f.why+(f.fix?' <b>Recommended fix:</b> '+f.fix:'')+'</p>'+
+      (f.cmd?'<div class="mitre">MITRE ATT&amp;CK<span>'+f.tac+'</span><span>'+f.tech+'</span></div><div class="lbl">Shell command</div><div class="cmd">'+f.cmd.replace(/</g,"&lt;")+'</div><div class="exec"><button class="sd-btn sm" id="exec" '+(ex?"disabled":"")+'>'+(ex?"EXECUTED":"EXECUTE")+'</button><span class="res'+(ex?" on ok":"")+'" id="res">'+(ex?"Exit 0 - Success &middot; re-checked on the next check-in":"")+'</span></div>':'')+
+      '<div class="gate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg><span><b>You approve this before it runs.</b> The command is shown in full first. Approve it now, leave it open until your maintenance window, or acknowledge it with a reason. Every change is logged with who approved it and when.</span></div></div>';
+    $("colS").innerHTML='<div class="lbl" style="margin-top:0">See</div>'+rows(d.spSee,false)+'<div class="lbl">Change, with approval</div>'+rows(d.spDo,true)+'<div class="lbl">One finding from the first report</div>'+card;
+    var b=$("exec");if(b)b.onclick=function(){runExec(o);};
+  } else {$("capS").textContent=d.known?"Not installed yet":"";$("colS").innerHTML='<div class="empty">'+(done?"No agent on this device.":"Deploy first. Once the agent is on this device, what it can see and change appears here.")+'</div>';}
+}
+function runExec(o){var f=o.d.find;var b=$("exec"),r=$("res");b.disabled=true;b.textContent="RUNNING...";r.className="res on";r.textContent="Execution in progress";
+  log("Execute approved by admin on "+o.d.ip+": "+f.cmd,"hot");
+  setTimeout(function(){executed[o.d.id]=true;log("Exit 0 - Success on "+o.d.ip+". Finding closes on the next check-in when the condition is no longer observed.","ok");render(o);counts();},1400);
+}
+function select(o){active=o;nodes.forEach(function(n){n.el.classList.toggle("on",n===o);});draw();render(o);}
+function paint(o){var d=o.d,identified=d.known||o.found;
+  o.el.className="node"+(o.agent?" agent":"")+(!d.known?" shadow":"")+(d.ot?" ot":"")+((!d.known&&!o.seen)?" hidden":"")+(o===active?" on":"");
+  var badge=o.agent?"INSTALLED":(!d.known?(o.found?(d.ot?"OT SUSPECTED":"SHADOW"):"UNKNOWN"):"NOT INSTALLED");
+  o.el.innerHTML='<div class="chip"><span class="sd-badge">'+badge+'</span><span class="sd-ico">'+(identified?d.icon:IC.unk)+'</span><div class="sd-nm">'+(identified?d.name:d.preName)+'</div><div class="md">'+(o.agent?d.model:(o.seen&&!d.known?d.ip:(d.known?d.ip+" &middot; "+d.type:"not in inventory")))+'</div><div class="st"><i></i>'+(o.agent?"Online":d.known?"Monitored, no agent":"Not in inventory")+'</div></div>';
+}
+DEVICES.forEach(function(d){var el=document.createElement("div");stage.appendChild(el);var o={d:d,el:el,x:0,y:0,agent:false,seen:!!d.known,found:!!d.known};el.addEventListener("click",function(){if(!o.seen)return;select(o);});nodes.push(o);paint(o);});
+
+function pips(a,cls){return '<span class="pips">'+a.map(function(v){return '<i class="pip'+(v===1?" "+cls:v===2?" half":"")+'"></i>';}).join("")+'</span>';}
+function matrix(on){$("mxBody").innerHTML=MX.map(function(r){return '<tr><td class="lbl2">'+r.row+'<small>'+r.sub+'</small></td><td class="sc">'+pips(on?r.spot:r.pre,"on")+'</td><td>'+pips(r.net,"gy")+'</td><td>'+pips(r.edr,"gy")+'</td></tr>';}).join("");$("mx").classList.toggle("pre",!on);$("mxSub").textContent=on?"Spotlight agent installed":"nothing installed yet";}
+
+/* ============================ THE RUN ============================ */
+function run(){
+  if(running)return;running=true;done=false;clock=0;executed={};
+  $("go").disabled=true;$("go").innerHTML="INSTALLING&hellip;";$("logc").textContent="running";logl.innerHTML="";$("next").classList.remove("on");$("hint").textContent="Running. Watch the activity log.";
+  var W=byId("win"),L=byId("lin"),H=byId("hmi"),P=byId("plc"),C=byId("cam");var t=0;
+
+  step(function(){log("Installing on the 3 machines you already reach. One static binary, no runtime dependencies.");},t);
+  [[W,600],[L,1200],[H,1200]].forEach(function(pr){t+=pr[1];step(function(){var o=pr[0];o.agent=true;paint(o);draw();counts();log("Agent installed: "+o.d.ip+" ("+o.d.name+")","ok");},t);});
+
+  t+=1300;step(function(){log("Each agent reads its own neighbor cache and ARP table. No packets sent.");ripple();},t);
+  t+=1700;step(function(){log("2 addresses on 10.0.20.0/24 are not in your inventory.","hot");[P,C].forEach(function(o){o.seen=true;paint(o);o.el.classList.add("pop");});counts();draw();},t);
+  t+=1200;step(function(){log("Passive identification: MAC vendor, hostname, TTL. Still no packets.");},t);
+  t+=900;step(function(){P.found=true;paint(P);log("10.0.20.58: industrial vendor OUI, hostname plc-cell-3. Classified suspected OT: excluded from any active scan.","sub");},t);
+  t+=1300;step(function(){$("pScan").classList.add("on");$("pScan").innerHTML="<i></i>Scan on";log("Admin turns on active scanning for this network (off by default). 10 packets/s, one host at a time, no version probes. 10.0.20.58 skipped.","hot");},t);
+  t+=1500;step(function(){log("10.0.20.92: ports 80, 554, 8000 open; HTTP title matches a camera admin UI.");},t);
+  t+=800;step(function(){C.found=true;paint(C);log("Classified: IP camera. 2 shadow devices added to inventory.","ok");counts();},t);
+
+  t+=1400;step(function(){log("Operator confirms plc-cell-3 is a Linux controller they own. Eligibility: SSH reachable, linux-arm64 build available.","sub");},t);
+  t+=900;step(function(){log("Install host agent &rarr; 10.0.20.58, relayed over SSH through 10.0.20.7. Signed build, single-use credential, one-time enrollment token.");},t);
+  t+=1400;step(function(){P.agent=true;paint(P);draw();counts();log("Agent installed: 10.0.20.58 (PLC / edge controller). New agent answered a liveness probe, registered.","ok");},t);
+  t+=1000;step(function(){log("Install host agent &rarr; 10.0.20.92, relayed over SSH through 10.0.20.14.");},t);
+  t+=1300;step(function(){C.agent=true;paint(C);draw();counts();log("Agent installed: 10.0.20.92 (IP camera). Registered.","ok");},t);
+
+  t+=1300;step(function(){log("First report built: diagnostics collected on all 5, findings recorded with stable ids.");},t);
+  t+=900;step(function(){done=true;running=false;counts();matrix(true);$("logc").textContent="complete";
+    log("5 of 5 devices under management. 0 site visits. 1 critical, 3 warning findings, each with a fix attached. Everything above is in the activity log.","big");
+    $("next").innerHTML="&#9670; <b>Now click any device in the diagram</b> to see what you can read and change on it, and run one fix.";$("next").classList.add("on");
+    select(C);$("go").disabled=false;$("go").innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>RUN IT AGAIN';$("hint").innerHTML="Done. <b>Click a device</b> in the diagram.";
+    try{$("cmpTitle").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}
+  },t);
+}
+function reset(){clearQ();running=false;done=false;clock=0;executed={};
+  $("go").disabled=false;$("go").innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>DEPLOY SPOTLIGHT';$("logc").textContent="idle";
+  logl.innerHTML='<div class="logempty">Waiting. Press DEPLOY SPOTLIGHT to map the environment. Every step is written here with who did it.</div>';$("next").classList.remove("on");
+  $("pScan").classList.remove("on");$("pScan").innerHTML="<i></i>Scan off";$("hint").textContent="About 30 seconds. Nothing to click until it finishes.";
+  nodes.forEach(function(o){o.agent=false;o.seen=!!o.d.known;o.found=!!o.d.known;o.el.classList.remove("pop");paint(o);});
+  active=null;draw();counts();render(null);matrix(false);
+  setTimeout(function(){select(byId("win"));},60);
+}
+$("go").addEventListener("click",function(){if(running)return;reset();setTimeout(run,260);});
+$("reset").addEventListener("click",reset);
+place();reset();
+window.addEventListener("resize",place);
+})();
+</script>
+</body>
+</html>
