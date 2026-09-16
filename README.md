@@ -11,6 +11,7 @@ the WordPress export in plain HTML/CSS/JS — no build step, no framework, hosts
 | `platform.html`    | Platform — "How it Works" (7 steps)    |
 | `industries.html`  | Industries (5 tabbed sectors + local-gov deep dive) |
 | `about.html`       | About (mission, problem, credibility, principles) |
+| `contact.html`     | Book a Demo / contact — embedded Pipedrive lead form |
 
 ## Structure
 
@@ -53,7 +54,10 @@ Netlify (A/ALIAS on `@`, CNAME on `www`). HTTPS is auto-provisioned by Netlify.
 
 ## Notes
 
-- "Book a Demo" links point to the same Google Form the original uses.
-- "Talk to the Team" / contact links use `mailto:sales@spotlightsecurity.ai`.
+- All "Book a Demo" / "Contact Sales" / "Talk to the Team" / "Request an Assessment"
+  CTAs link to `contact.html`, which embeds the Pipedrive web form (lead form).
+  The visible `sales@spotlightsecurity.ai` address in the footer stays a `mailto:`.
+- Every page loads the Pipedrive LeadBooster chatbot from `<head>` (config +
+  async loader snippet, just before `</head>`).
 - All interactivity from the original is reproduced (terminal typing, counters,
   tabs, hover states, scroll-in animations).
