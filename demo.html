@@ -489,21 +489,21 @@ function run(){
   var W=byId("win"),L=byId("lin"),H=byId("hmi"),P=byId("plc"),C=byId("cam");var t=0;
 
   step(function(){log("Installing on the 3 machines you already reach. One static binary, no runtime dependencies.");},t);
-  [[W,600],[L,1200],[H,1200]].forEach(function(pr){t+=pr[1];step(function(){var o=pr[0];o.agent=true;paint(o);draw();counts();log("Agent installed: "+o.d.ip+" ("+o.d.name+")","ok");},t);});
+  [[W,600],[L,1200],[H,1200]].forEach(function(pr){t+=pr[1];step(function(){var o=pr[0];o.agent=true;paint(o);select(o);counts();log("Agent installed: "+o.d.ip+" ("+o.d.name+")","ok");},t);});
 
   t+=1300;step(function(){log("Each agent reads its own neighbor cache and ARP table. No packets sent.");ripple();},t);
-  t+=1700;step(function(){log("2 addresses on 10.0.20.0/24 are not in your inventory.","hot");[P,C].forEach(function(o){o.seen=true;paint(o);o.el.classList.add("pop");});counts();draw();},t);
+  t+=1700;step(function(){log("2 addresses on 10.0.20.0/24 are not in your inventory.","hot");[P,C].forEach(function(o){o.seen=true;paint(o);o.el.classList.add("pop");});counts();select(P);},t);
   t+=1200;step(function(){log("Passive identification: MAC vendor, hostname, TTL. Still no packets.");},t);
-  t+=900;step(function(){P.found=true;paint(P);log("10.0.20.58: industrial vendor OUI, hostname plc-cell-3. Classified suspected OT: excluded from any active scan.","sub");},t);
+  t+=900;step(function(){P.found=true;paint(P);select(P);log("10.0.20.58: industrial vendor OUI, hostname plc-cell-3. Classified suspected OT: excluded from any active scan.","sub");},t);
   t+=1300;step(function(){$("pScan").classList.add("on");$("pScan").innerHTML="<i></i>Scan on";log("Admin turns on active scanning for this network (off by default). 10 packets/s, one host at a time, no version probes. 10.0.20.58 skipped.","hot");},t);
-  t+=1500;step(function(){log("10.0.20.92: ports 80, 554, 8000 open; HTTP title matches a camera admin UI.");},t);
-  t+=800;step(function(){C.found=true;paint(C);log("Classified: IP camera. 2 shadow devices added to inventory.","ok");counts();},t);
+  t+=1500;step(function(){select(C);log("10.0.20.92: ports 80, 554, 8000 open; HTTP title matches a camera admin UI.");},t);
+  t+=800;step(function(){C.found=true;paint(C);select(C);log("Classified: IP camera. 2 shadow devices added to inventory.","ok");counts();},t);
 
   t+=1400;step(function(){log("Operator confirms plc-cell-3 is a Linux controller they own. Eligibility: SSH reachable, linux-arm64 build available.","sub");},t);
   t+=900;step(function(){log("Install host agent &rarr; 10.0.20.58, relayed over SSH through 10.0.20.7. Signed build, single-use credential, one-time enrollment token.");},t);
-  t+=1400;step(function(){P.agent=true;paint(P);draw();counts();log("Agent installed: 10.0.20.58 (PLC / edge controller). New agent answered a liveness probe, registered.","ok");},t);
+  t+=1400;step(function(){P.agent=true;paint(P);select(P);counts();log("Agent installed: 10.0.20.58 (PLC / edge controller). New agent answered a liveness probe, registered.","ok");},t);
   t+=1000;step(function(){log("Install host agent &rarr; 10.0.20.92, relayed over SSH through 10.0.20.14.");},t);
-  t+=1300;step(function(){C.agent=true;paint(C);draw();counts();log("Agent installed: 10.0.20.92 (IP camera). Registered.","ok");},t);
+  t+=1300;step(function(){C.agent=true;paint(C);select(C);counts();log("Agent installed: 10.0.20.92 (IP camera). Registered.","ok");},t);
 
   t+=1300;step(function(){log("First report built: diagnostics collected on all 5, findings recorded with stable ids.");},t);
   t+=900;step(function(){done=true;running=false;counts();matrix(true);$("logc").textContent="complete";
