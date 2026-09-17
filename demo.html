@@ -147,6 +147,14 @@
 .res{font-family:var(--mono);font-size:11px;color:var(--mut);display:none}
 .res.on{display:inline;animation:lin .3s}
 .res.ok{color:var(--ok)}
+#cmpTitle{scroll-margin-top:96px}
+.more{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+.more summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--mut);text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:8px}
+.more summary::-webkit-details-marker{display:none}
+.more summary::before{content:"+";display:inline-block;width:14px;color:var(--acc2);font-size:13px;font-weight:700}
+.more[open] summary::before{content:"\2013"}
+.more summary span{color:var(--sec);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1px 7px;font-size:9px}
+.more summary:hover{color:#fff}
 .gate{margin-top:10px;display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border-radius:7px;background:rgba(255,113,48,.07);border:1px solid rgba(255,113,48,.28);font-size:11.5px;color:var(--sec);line-height:1.5}
 .gate svg{flex-shrink:0;width:15px;height:15px;color:var(--acc2);margin-top:1px}
 .gate b{color:var(--acc2)}
@@ -241,8 +249,6 @@
 
   <div class="sd-k">Interactive &middot; deploy Spotlight</div>
   <h1 class="h1">Three devices you manage. Two you don't know about.</h1>
-  <p class="sub">Most networks look like this before Spotlight: an inventory that was last right a month ago, and no way to act on what it shows. <b>Point us at one machine and we find the rest, with no VPN and no appliance.</b> Press deploy and watch what changes, then click any device to see what you can now see and fix on it.</p>
-  <div class="plat"><em>Agent runs on</em><span>Windows</span><span>macOS</span><span>Linux x86_64</span><span>Linux ARM</span><span>FreeBSD</span><span>QNX</span><span>one static binary, no runtime dependencies</span></div>
 
   <div class="go">
     <button class="sd-btn" id="go"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>DEPLOY SPOTLIGHT</button>
@@ -290,7 +296,7 @@
     <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l11 4.5v8.2c0 6.6-4.4 12.2-11 13.8-6.6-1.6-11-7.2-11-13.8V7.5L16 3z"/><path d="M11 16l3.4 3.4L21 12.8"/></svg>
     <div>
       <h3>The AI proposes. You approve. Nothing runs on its own.</h3>
-      <p>The agent on the device carries out instructions. The AI model runs in the dashboard: it reads what the agent reported, explains it in plain English, and drafts the fix. <b>The model never runs on your equipment.</b> Every finding arrives with the exact command attached, so you read what it will do before it does it. Approve it now, leave it open until your maintenance window and approve it then, or acknowledge it with a reason. <b>Nothing executes on a device until an administrator says yes,</b> and every change is written to the activity log with who approved it and when.</p>
+      <p>The agent on the device carries out instructions; the AI model runs in the dashboard, explains what the agent reported in plain English, and drafts the fix. <b>The model never runs on your equipment, and nothing executes until an administrator approves the exact command shown,</b> with every change logged with who approved it and when.</p>
       <div class="sd-chips"><span>Human approval required</span><span>Command shown before it runs</span><span>Full activity log</span><span>Active scanning and agent writes switched per network</span><span>Safe mode per operator</span></div>
     </div>
   </div>
@@ -299,13 +305,13 @@
   <div class="sect">
     <div class="sd-k">Where your AI can actually go</div>
     <h2>Everyone has AI now. Almost none of it can reach a device.</h2>
-    <p class="sd-lead">An AI model cannot fix a controller it has no way to talk to. The Spotlight agent is that path. Once it is on a device, the model that explains a finding can draft the fix and, with your approval, have the agent carry it out: on a Linux-based controller, an ARM camera, or a laptop. Use our hosted models, or point a role at a model you host yourself.</p>
+    <p class="sd-lead">An AI model cannot fix a controller it has no way to talk to. The Spotlight agent is that path. Once it is on a device, the model that explains a finding can draft the fix and, with your approval, have the agent carry it out: on a Linux-based controller, an ARM camera, or a laptop.</p>
     <table class="mx pre" id="mx">
       <thead><tr><th style="text-align:left"></th><th class="sd-who spot">WITH SPOTLIGHT<small id="mxSub">nothing installed yet</small></th><th class="sd-who">NETWORK &amp; PERIMETER<small>Palo Alto, Cloudflare</small></th><th class="sd-who">ENDPOINT AGENTS<small>CrowdStrike and similar</small></th></tr></thead>
       <tbody id="mxBody"></tbody>
     </table>
     <div class="key"><span>Actions:</span><span><i></i>See it</span><em>&middot;</em><span><i></i>Read detail</span><em>&middot;</em><span><i></i>Patch it</span><em>&middot;</em><span><i></i>Change config</span><em>&middot;</em><span><i></i>Run AI on it</span><em>&middot;</em><span><i class="half"></i>Reviewed change, applied by you</span></div>
-    <div class="mxnote">Rows are what the agent does once installed. Devices with no host OS to install on (bare PLCs, RTUs, switches) are discovered from the network and kept in the same inventory. Firewalls: we read a config export, reconcile it against the logs, and hand you the exact rule change; we do not push to the firewall.</div>
+    <div class="plat"><em>Agent runs on</em><span>Windows</span><span>macOS</span><span>Linux x86_64</span><span>Linux ARM</span><span>FreeBSD</span><span>QNX</span><span>one static binary, no runtime dependencies</span></div>
   </div>
 
   <!-- ===== CTA ===== -->
@@ -314,7 +320,6 @@
     <p class="sd-price">Two weeks, <b>$7,500</b>, nothing installed until you approve it. You send a firewall config export and pick the machines. You get back a ranked list of what is exposed and exactly how to fix it, plus a walkthrough. No commitment afterwards, and you keep the report either way.</p>
     <div class="steps"><div class="sd-step"><span>1</span>Send a firewall config export</div><div class="sd-step"><span>2</span>Pick 25 machines for a read-only agent</div><div class="sd-step"><span>3</span>Ranked findings and a walkthrough in two weeks</div></div>
     <div class="row"><a class="cb" href="contact.html">REQUEST AN ASSESSMENT</a><a class="cb alt" href="contact.html">OR BOOK A DEMO &rarr;</a></div>
-    <p class="note">Discovery is passive by default and reads what your agents already know. Active scanning stays off until an administrator turns it on for a specific network, and anything that looks industrial is excluded from it automatically. When it runs, it is ten packets a second, one host at a time, no version probes. That is enforced in the product, not a setting we remember to switch on.</p>
   </div>
 </div>
       </div>
@@ -450,8 +455,10 @@ function render(o){
     var f=d.find,ex=!!executed[d.id];
     var card='<div class="find"><span class="sev '+(ex?"ok":f.sev)+'">'+(ex?"RESOLVED":f.sev==="crit"?"CRITICAL":f.sev==="warn"?"WARNING":"HEALTHY")+'</span><h5>'+f.t+'</h5><p>'+f.why+(f.fix?' <b>Recommended fix:</b> '+f.fix:'')+'</p>'+
       (f.cmd?'<div class="mitre">MITRE ATT&amp;CK<span>'+f.tac+'</span><span>'+f.tech+'</span></div><div class="lbl">Shell command</div><div class="cmd">'+f.cmd.replace(/</g,"&lt;")+'</div><div class="exec"><button class="sd-btn sm" id="exec" '+(ex?"disabled":"")+'>'+(ex?"EXECUTED":"EXECUTE")+'</button><span class="res'+(ex?" on ok":"")+'" id="res">'+(ex?"Exit 0 - Success &middot; re-checked on the next check-in":"")+'</span></div>':'')+
-      '<div class="gate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg><span><b>You approve this before it runs.</b> The command is shown in full first. Approve it now, leave it open until your maintenance window, or acknowledge it with a reason. Every change is logged with who approved it and when.</span></div></div>';
-    $("colS").innerHTML='<div class="lbl" style="margin-top:0">See</div>'+rows(d.spSee,false)+'<div class="lbl">Change, with approval</div>'+rows(d.spDo,true)+'<div class="lbl">One finding from the first report</div>'+card;
+      '</div>';
+    $("colS").innerHTML='<div class="lbl" style="margin-top:0">One finding from the first report</div>'+card+
+      '<details class="more"><summary>What the agent reports on this device <span>'+d.spSee.length+'</span></summary>'+rows(d.spSee,false)+'</details>'+
+      '<details class="more"><summary>What you can change, with approval <span>'+d.spDo.length+'</span></summary>'+rows(d.spDo,true)+'</details>';
     var b=$("exec");if(b)b.onclick=function(){runExec(o);};
   } else {$("capS").textContent=d.known?"Not installed yet":"";$("colS").innerHTML='<div class="empty">'+(done?"No agent on this device.":"Deploy first. Once the agent is on this device, what it can see and change appears here.")+'</div>';}
 }
@@ -465,7 +472,7 @@ function paint(o){var d=o.d,identified=d.known||o.found;
   var badge=o.agent?"INSTALLED":(!d.known?(o.found?(d.ot?"OT SUSPECTED":"SHADOW"):"UNKNOWN"):"NOT INSTALLED");
   o.el.innerHTML='<div class="chip"><span class="sd-badge">'+badge+'</span><span class="sd-ico">'+(identified?d.icon:IC.unk)+'</span><div class="sd-nm">'+(identified?d.name:d.preName)+'</div><div class="md">'+(o.agent?d.model:(o.seen&&!d.known?d.ip:(d.known?d.ip+" &middot; "+d.type:"not in inventory")))+'</div><div class="st"><i></i>'+(o.agent?"Online":d.known?"Monitored, no agent":"Not in inventory")+'</div></div>';
 }
-DEVICES.forEach(function(d){var el=document.createElement("div");stage.appendChild(el);var o={d:d,el:el,x:0,y:0,agent:false,seen:!!d.known,found:!!d.known};el.addEventListener("click",function(){if(!o.seen)return;select(o);});nodes.push(o);paint(o);});
+DEVICES.forEach(function(d){var el=document.createElement("div");stage.appendChild(el);var o={d:d,el:el,x:0,y:0,agent:false,seen:!!d.known,found:!!d.known};el.addEventListener("click",function(){if(!o.seen)return;select(o);if(done){try{$("cmpTitle").scrollIntoView({behavior:"smooth",block:"start"});}catch(e){}}});nodes.push(o);paint(o);});
 
 function pips(a,cls){return '<span class="pips">'+a.map(function(v){return '<i class="pip'+(v===1?" "+cls:v===2?" half":"")+'"></i>';}).join("")+'</span>';}
 function matrix(on){$("mxBody").innerHTML=MX.map(function(r){return '<tr><td class="lbl2">'+r.row+'<small>'+r.sub+'</small></td><td class="sc">'+pips(on?r.spot:r.pre,"on")+'</td><td>'+pips(r.net,"gy")+'</td><td>'+pips(r.edr,"gy")+'</td></tr>';}).join("");$("mx").classList.toggle("pre",!on);$("mxSub").textContent=on?"Spotlight agent installed":"nothing installed yet";}
@@ -498,7 +505,7 @@ function run(){
     log("5 of 5 devices under management. 0 site visits. 1 critical, 3 warning findings, each with a fix attached. Everything above is in the activity log.","big");
     $("next").innerHTML="&#9670; <b>Now click any device in the diagram</b> to see what you can read and change on it, and run one fix.";$("next").classList.add("on");
     select(C);$("go").disabled=false;$("go").innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>RUN IT AGAIN';$("hint").innerHTML="Done. <b>Click a device</b> in the diagram.";
-    try{$("cmpTitle").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}
+    try{$("next").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}
   },t);
 }
 function reset(){clearQ();running=false;done=false;clock=0;executed={};
