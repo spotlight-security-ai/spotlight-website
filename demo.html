@@ -44,6 +44,7 @@
 .sd-btn.ghost{background:transparent;border-color:var(--line);color:var(--sec);font-weight:600;letter-spacing:.04em}
 .sd-btn.ghost:hover{border-color:var(--acc2);color:#fff;box-shadow:none}
 .sd-btn.sm{padding:8px 13px;font-size:11px}
+.go--mx{margin-top:16px}
 .hint{font-size:12px;color:var(--mut)}
 .hint b{color:#fff}
 
@@ -306,6 +307,10 @@
     <div class="sd-k">Where your AI can actually go</div>
     <h2>Everyone has AI now. Almost none of it can reach a device.</h2>
     <p class="sd-lead">An AI model cannot fix a controller it has no way to talk to. The Spotlight agent is that path. Once it is on a device, the model that explains a finding can draft the fix and, with your approval, have the agent carry it out: on a Linux-based controller, an ARM camera, or a laptop.</p>
+    <div class="go go--mx" id="mxGo">
+      <button class="sd-btn" id="go2"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>DEPLOY SPOTLIGHT</button>
+      <span class="hint">Runs the demo above and fills in the Spotlight column.</span>
+    </div>
     <table class="mx pre" id="mx">
       <thead><tr><th style="text-align:left"></th><th class="sd-who spot">WITH SPOTLIGHT<small id="mxSub">nothing installed yet</small></th><th class="sd-who">NETWORK &amp; PERIMETER<small>Palo Alto, Cloudflare</small></th><th class="sd-who">ENDPOINT AGENTS<small>CrowdStrike and similar</small></th></tr></thead>
       <tbody id="mxBody"></tbody>
@@ -475,12 +480,12 @@ function paint(o){var d=o.d,identified=d.known||o.found;
 DEVICES.forEach(function(d){var el=document.createElement("div");stage.appendChild(el);var o={d:d,el:el,x:0,y:0,agent:false,seen:!!d.known,found:!!d.known};el.addEventListener("click",function(){if(!o.seen)return;select(o);if(done){try{$("cmpTitle").scrollIntoView({behavior:"smooth",block:"start"});}catch(e){}}});nodes.push(o);paint(o);});
 
 function pips(a,cls){return '<span class="pips">'+a.map(function(v){return '<i class="pip'+(v===1?" "+cls:v===2?" half":"")+'"></i>';}).join("")+'</span>';}
-function matrix(on){$("mxBody").innerHTML=MX.map(function(r){return '<tr><td class="lbl2">'+r.row+'<small>'+r.sub+'</small></td><td class="sc">'+pips(on?r.spot:r.pre,"on")+'</td><td>'+pips(r.net,"gy")+'</td><td>'+pips(r.edr,"gy")+'</td></tr>';}).join("");$("mx").classList.toggle("pre",!on);$("mxSub").textContent=on?"Spotlight agent installed":"nothing installed yet";}
+function matrix(on){$("mxBody").innerHTML=MX.map(function(r){return '<tr><td class="lbl2">'+r.row+'<small>'+r.sub+'</small></td><td class="sc">'+pips(on?r.spot:r.pre,"on")+'</td><td>'+pips(r.net,"gy")+'</td><td>'+pips(r.edr,"gy")+'</td></tr>';}).join("");$("mx").classList.toggle("pre",!on);$("mxSub").textContent=on?"Spotlight agent installed":"nothing installed yet";$("mxGo").style.display=on?"none":"";}
 
 /* ============================ THE RUN ============================ */
 function run(){
   if(running)return;running=true;done=false;clock=0;executed={};
-  $("go").disabled=true;$("go").innerHTML="INSTALLING&hellip;";$("logc").textContent="running";logl.innerHTML="";$("next").classList.remove("on");$("hint").textContent="Running. Watch the activity log.";
+  $("go").disabled=true;$("go2").disabled=true;$("go").innerHTML="INSTALLING&hellip;";$("logc").textContent="running";logl.innerHTML="";$("next").classList.remove("on");$("hint").textContent="Running. Watch the activity log.";
   var W=byId("win"),L=byId("lin"),H=byId("hmi"),P=byId("plc"),C=byId("cam");var t=0;
 
   step(function(){log("Installing on the 3 machines you already reach. One static binary, no runtime dependencies.");},t);
@@ -509,7 +514,7 @@ function run(){
   },t);
 }
 function reset(){clearQ();running=false;done=false;clock=0;executed={};
-  $("go").disabled=false;$("go").innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>DEPLOY SPOTLIGHT';$("logc").textContent="idle";
+  $("go").disabled=false;$("go2").disabled=false;$("go").innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>DEPLOY SPOTLIGHT';$("logc").textContent="idle";
   logl.innerHTML='<div class="logempty">Waiting. Press DEPLOY SPOTLIGHT to map the environment. Every step is written here with who did it.</div>';$("next").classList.remove("on");
   $("pScan").classList.remove("on");$("pScan").innerHTML="<i></i>Scan off";$("hint").textContent="About 30 seconds. Nothing to click until it finishes.";
   nodes.forEach(function(o){o.agent=false;o.seen=!!o.d.known;o.found=!!o.d.known;o.el.classList.remove("pop");paint(o);});
@@ -518,6 +523,7 @@ function reset(){clearQ();running=false;done=false;clock=0;executed={};
 }
 $("go").addEventListener("click",function(){if(running)return;reset();setTimeout(run,260);});
 $("reset").addEventListener("click",reset);
+$("go2").addEventListener("click",function(){if(running)return;try{$("stage").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}reset();setTimeout(run,260);});
 place();reset();
 window.addEventListener("resize",place);
 })();
