@@ -69,8 +69,8 @@
 .node.hidden{opacity:0;pointer-events:none}
 .node.pop{animation:pop .6s cubic-bezier(.34,1.6,.5,1)}
 @keyframes pop{0%{transform:translate(-50%,-50%) scale(.6);opacity:.2}60%{transform:translate(-50%,-50%) scale(1.12)}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
-.chip{background:var(--card);border:1px dashed rgba(255,255,255,.22);border-radius:12px;padding:11px 8px 9px;position:relative;transition:border-color .3s,box-shadow .3s,background .3s}
-.node.agent .chip{border-style:solid;border-color:rgba(255,113,48,.55);background:rgba(255,113,48,.06)}
+.chip{background:linear-gradient(var(--card),var(--card)),var(--bg2);border:1px dashed rgba(255,255,255,.22);border-radius:12px;padding:11px 8px 9px;position:relative;transition:border-color .3s,box-shadow .3s,background .3s}
+.node.agent .chip{border-style:solid;border-color:rgba(255,113,48,.55);background:linear-gradient(rgba(255,113,48,.06),rgba(255,113,48,.06)),var(--bg2)}
 .node.on .chip{border-color:var(--acc2);box-shadow:0 0 0 1px var(--acc2),0 8px 30px rgba(255,113,48,.22)}
 .node.shadow:not(.agent) .chip{border-color:rgba(254,188,46,.5)}
 .sd-ico{display:flex;justify-content:center;align-items:center;height:34px;margin-bottom:6px;color:var(--mut);transition:color .35s}
@@ -203,7 +203,7 @@
 .note{font-size:11.5px;color:var(--mut);margin-top:12px;line-height:1.55;max-width:84ch}
 @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.pair{grid-template-columns:1fr}.sd-stage{height:520px}.node{width:120px}.sd-legend,.sd-pill{position:static;margin:10px 14px 0}.sd-pill{justify-content:flex-start}}
 
-@media(max-width:700px){.sl .mx td.lbl2{white-space:normal}.sl .mx{display:block;overflow-x:auto}}
+@media(max-width:700px){.sl .mx{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.sl .mx td.lbl2{white-space:normal;min-width:150px}.sl .mx th{white-space:nowrap}.sl .sd-stage.grid .hub{width:auto;left:12px;right:12px;transform:none}.sl .sd-stage.grid .node{width:124px}}
 @media (prefers-reduced-motion:reduce){.sl .sd-node,.sl .sd-node.pop,.sl .sd-node.agent .sd-ico svg,.sl .ln,.sl .li,.sl .next.on,.sl .res.on{animation:none!important;transition:none!important}.sl .pulse{animation:none}}
   </style>
   <!-- Pipedrive LeadBooster chatbot -->
@@ -431,9 +431,25 @@ function counts(){
   $("hubS").innerHTML=a===0?'Inventory only. Nothing to act on.':(a<tot?'Installing&hellip;':'IT, IoT and OT in one list. All actionable.');
 }
 function place(){
-  var w=stage.clientWidth,h=stage.clientHeight;
-  var POS=[[.12,.62],[.31,.30],[.50,.22],[.69,.30],[.88,.62]];
-  nodes.forEach(function(o,i){var pt=POS[i]||[.5,.4];o.x=Math.max(85,Math.min(w-85,pt[0]*w));o.y=pt[1]*h;o.el.style.left=o.x+"px";o.el.style.top=o.y+"px";});
+  var w=stage.clientWidth,h,narrow=w<700;
+  stage.classList.toggle("grid",narrow);
+  if(narrow){
+    /* rows: known PC + Linux on top, HMI in the middle, the two shadow devices just above the hub */
+    var GRID=[[.27,0],[.27,2],[.73,0],[.73,2],[.5,1]];
+    var pill=stage.querySelector(".sd-pill"),hub=stage.querySelector(".hub");
+    var top=pill.offsetTop+pill.offsetHeight+16,nh=0;
+    nodes.forEach(function(o){nh=Math.max(nh,o.el.offsetHeight);});nh=nh||130;
+    var rowH=nh+14,nw=0;
+    nodes.forEach(function(o){nw=Math.max(nw,o.el.offsetWidth);});
+    if(w<nw*2+16){GRID=[[.5,0],[.5,3],[.5,1],[.5,4],[.5,2]];} /* too narrow for two columns: one box per row */
+    var rowsN=0;GRID.forEach(function(g){rowsN=Math.max(rowsN,g[1]+1);});
+    h=top+rowH*rowsN+hub.offsetHeight+30;stage.style.height=h+"px";
+    nodes.forEach(function(o,i){var g=GRID[i]||[.5,1];o.x=g[0]*w;o.y=top+rowH*g[1]+nh/2;o.el.style.left=o.x+"px";o.el.style.top=o.y+"px";});
+  } else {
+    stage.style.height="";h=stage.clientHeight;
+    var POS=[[.12,.62],[.31,.30],[.50,.22],[.69,.30],[.88,.62]];
+    nodes.forEach(function(o,i){var pt=POS[i]||[.5,.4];o.x=Math.max(85,Math.min(w-85,pt[0]*w));o.y=pt[1]*h;o.el.style.left=o.x+"px";o.el.style.top=o.y+"px";});
+  }
   draw();
 }
 function path(o){var w=stage.clientWidth,h=stage.clientHeight,cx=w/2,cy=h-58;var mx=(cx+o.x)/2,my=(cy+o.y)/2-38;return "M"+cx+","+cy+" Q"+mx+","+my+" "+o.x+","+o.y;}
@@ -525,7 +541,7 @@ $("go").addEventListener("click",function(){if(running)return;reset();setTimeout
 $("reset").addEventListener("click",reset);
 $("go2").addEventListener("click",function(){if(running)return;try{$("stage").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}reset();setTimeout(run,260);});
 place();reset();
-window.addEventListener("resize",place);
+window.addEventListener("resize",place);window.addEventListener("load",place);
 })();
 </script>
 </body>
