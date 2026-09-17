@@ -208,6 +208,7 @@
   </style>
   <!-- Pipedrive LeadBooster chatbot -->
   <script>window.pipedriveLeadboosterConfig = {base: 'leadbooster-chat.pipedrive.com',companyId: 13783775,playbookUuid: '7341291b-7e93-4826-a4ca-1aaea9a59023',version: 2};(function () {var w = window;if (w.LeadBooster) {console.warn('LeadBooster already exists');} else {w.LeadBooster = {q: [],on: function (n, h) {this.q.push({ t: 'o', n: n, h: h });},trigger: function (n) {this.q.push({ t: 't', n: n });},};}})();</script><script src="https://leadbooster-chat.pipedrive.com/assets/loader.js" async></script>
+  <script src="assets/js/chat-close.js" defer></script>
 </head>
 <body>
 
@@ -406,8 +407,8 @@ var MX=[
  {row:"PLC / edge controller",sub:"Linux or QNX based, x86 or ARM",pre:[0,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
  {row:"HMI / SCADA node",sub:"Windows or Linux panel PC",pre:[1,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
  {row:"IP camera / IoT sensor",sub:"ARM Linux with a shell",pre:[0,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
- {row:"Bare PLC / RTU, no host OS",sub:"discovered from the network, never actively scanned",pre:[0,0,0,0,0],spot:[1,1,0,0,0],net:[1,1,0,0,0],edr:[1,0,0,0,0]},
- {row:"Firewalls and network gear",sub:"config export reconciled against logs",pre:[1,0,0,0,0],spot:[1,1,0,2,0],net:[1,1,1,1,0],edr:[1,0,0,0,0]}
+ {row:"Bare PLC / RTU, no host OS",sub:"discovered from the network, never actively scanned",pre:[0,0,0,0,0],spot:[1,1,0,0,1],net:[1,1,0,0,0],edr:[1,0,0,0,0]},
+ {row:"Firewalls and network gear",sub:"config export reconciled against logs",pre:[1,0,0,0,0],spot:[1,1,0,2,1],net:[1,1,1,1,0],edr:[1,0,0,0,0]}
 ];
 
 /* ============================ RUNTIME ============================ */
