@@ -451,12 +451,12 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
   /* normalize all brand marks to a cohesive white on the dark theme */
   filter: brightness(0) invert(1);
 }
-/* typeset wordmark used until the official logo file is dropped into assets/img/partners */
-.partner__logo--text {
-  filter: none; font-family: var(--sans); font-weight: 800; font-size: 19px; line-height: 27px;
-  letter-spacing: 0.02em; color: #fff; text-transform: uppercase;
+/* symbol-only marks get their name set beside them so the strip reads consistently */
+.partner__lockup { display: inline-flex; align-items: center; gap: 9px; }
+.partner__lockup .partner__logo { height: 30px; }
+.partner__wordmark {
+  font-family: var(--sans); font-weight: 700; font-size: 16px; line-height: 1; letter-spacing: 0.01em; color: #fff;
 }
-.partner__logo--text b { font-weight: 400; margin-left: 0.35em; }
 .partner__tag {
   font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em;
   text-transform: uppercase; color: var(--muted-2);
