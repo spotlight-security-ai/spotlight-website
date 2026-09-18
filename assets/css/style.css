@@ -451,6 +451,12 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
   /* normalize all brand marks to a cohesive white on the dark theme */
   filter: brightness(0) invert(1);
 }
+/* typeset wordmark used until the official logo file is dropped into assets/img/partners */
+.partner__logo--text {
+  filter: none; font-family: var(--sans); font-weight: 800; font-size: 19px; line-height: 27px;
+  letter-spacing: 0.02em; color: #fff; text-transform: uppercase;
+}
+.partner__logo--text b { font-weight: 400; margin-left: 0.35em; }
 .partner__tag {
   font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em;
   text-transform: uppercase; color: var(--muted-2);
