@@ -303,7 +303,14 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
 .price-card ul { list-style: none; margin: 0 0 26px; padding: 0; flex: 1; }
 .price-card li { display: flex; gap: 11px; align-items: flex-start; color: var(--muted); font-size: 14.5px; margin-bottom: 13px; line-height: 1.4; }
 .price-card li svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 4px; fill: var(--orange); }
-.price-card .btn { width: 100%; justify-content: center; }
+.price-card .btn { width: 100%; justify-content: center; margin-top: auto; }
+.price-includes { margin-top: 22px; border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 32px; background: var(--card); }
+.price-includes h4 { font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; font-weight: 600; color: var(--orange); margin-bottom: 20px; }
+.price-includes ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 32px; }
+.price-includes li { display: flex; gap: 11px; align-items: flex-start; color: var(--muted); font-size: 14.5px; margin-bottom: 13px; line-height: 1.4; }
+.price-includes li svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 4px; fill: var(--orange); }
+.price-terms { margin: 10px 0 0; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14px; }
+.price-terms b { color: #fff; font-weight: 700; }
 
 /* ---- CTA band ----------------------------------------------------------- */
 .cta-band { text-align: center; }
@@ -656,6 +663,8 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
 .assess__buy .price { font-size: 40px; font-weight: 900; line-height: 1; margin-bottom: 16px; }
 .assess__buy .price span { font-size: 15px; font-weight: 600; color: var(--muted); margin-left: 8px; }
 .assess__buy .btn { white-space: nowrap; }
+.assess--quiet { margin-top: 22px; border-color: var(--line); background: var(--card); }
+.assess__buy .price--sm { font-size: 24px; color: var(--muted); }
 
 /* ---- Customer results (reserved markup, see index.html) ----------------- */
 .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 48px; }
@@ -675,6 +684,7 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
   .assess { grid-template-columns: 1fr; gap: 24px; }
   .assess__buy { text-align: left; }
   .results-grid { grid-template-columns: 1fr; }
+  .price-includes ul { grid-template-columns: 1fr; }
 }
 
 /* CTA band: centre the lead and button row (they inherit text-align only) */
