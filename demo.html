@@ -168,8 +168,8 @@
 .mx td{padding:9px 8px;border-top:1px solid var(--line2);text-align:center}
 .mx td.lbl2{text-align:left;color:var(--sec);font-weight:500;padding-left:0;white-space:nowrap;font-size:12px}
 .mx td.lbl2 small{display:block;color:var(--dim);font-weight:400;font-size:9.5px;margin-top:2px;white-space:normal}
-.mx td.sc{transition:opacity .5s}
-.mx.pre td.sc{opacity:.35}
+.mx.pre td.sc .pip.on,.mx.pre td.sc .pip.half{opacity:.45;box-shadow:none}
+.mx:not(.pre) td.sc .pip.on{box-shadow:0 0 6px rgba(255,113,48,.45)}
 .pips{display:inline-flex;gap:4px}
 .pip{width:11px;height:11px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid var(--line);transition:.45s}
 .pip.on{background:var(--acc2);border-color:var(--acc2)}
@@ -310,10 +310,10 @@
     <p class="sd-lead">An AI model cannot fix a controller it has no way to talk to. The Spotlight agent is that path. Once it is on a device, the model that explains a finding can draft the fix and, with your approval, have the agent carry it out: on a Linux-based controller, an ARM camera, or a laptop.</p>
     <div class="go go--mx" id="mxGo">
       <button class="sd-btn" id="go2"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>DEPLOY SPOTLIGHT</button>
-      <span class="hint">Runs the demo above and fills in the Spotlight column.</span>
+      <span class="hint">Runs the demo above and lights up the Spotlight column.</span>
     </div>
     <table class="mx pre" id="mx">
-      <thead><tr><th style="text-align:left"></th><th class="sd-who spot">WITH SPOTLIGHT<small id="mxSub">nothing installed yet</small></th><th class="sd-who">NETWORK &amp; PERIMETER<small>Palo Alto, Cloudflare</small></th><th class="sd-who">ENDPOINT AGENTS<small>CrowdStrike and similar</small></th></tr></thead>
+      <thead><tr><th style="text-align:left"></th><th class="sd-who spot">WITH SPOTLIGHT<small id="mxSub">faded until you deploy</small></th><th class="sd-who">NETWORK &amp; PERIMETER<small>Palo Alto, Cloudflare</small></th><th class="sd-who">ENDPOINT AGENTS<small>CrowdStrike and similar</small></th></tr></thead>
       <tbody id="mxBody"></tbody>
     </table>
     <div class="key"><span>Actions:</span><span><i></i>See it</span><em>&middot;</em><span><i></i>Read detail</span><em>&middot;</em><span><i></i>Patch it</span><em>&middot;</em><span><i></i>Change config</span><em>&middot;</em><span><i></i>Run AI on it</span><em>&middot;</em><span><i class="half"></i>Reviewed change, applied by you</span></div>
@@ -337,14 +337,14 @@
       <div class="footer-grid">
         <div class="col">
           <img class="footer-logo" src="assets/img/logo-header.png" alt="Spotlight Security" />
-          <p class="about-blurb">Security posture management for IT, IoT and OT, powered by AI. Find it, explain it, fix it — with no mandatory deployment engagement.</p>
+          <p class="about-blurb">Security posture management for IT, IoT, and OT, powered by AI. Find it, explain it, fix it — with no mandatory deployment engagement.</p>
           <p class="brand-line">IT-grade security, OT-grade manners.</p>
         </div>
         <div class="col"><h5>Product</h5><ul><li><a href="platform.html">Platform</a></li><li><a href="demo.html">See it work</a></li><li><a href="index.html#pricing">Pricing</a></li><li><a href="industries.html">Industries</a></li><li><a href="about.html">About</a></li></ul></div>
         <div class="col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="about.html#team">Our Team</a></li><li><a href="about.html#mission">Our Mission</a></li><li><a href="contact.html">Contact Sales</a></li><li><a href="contact.html">Book a Demo</a></li></ul></div>
         <div class="col"><h5>Get in touch</h5><ul><li><a href="mailto:sales@spotlightsecurity.ai">sales@spotlightsecurity.ai</a></li></ul></div>
       </div>
-      <div class="footer-bottom"><span>© <span data-year>2026</span> Spotlight Security. All rights reserved.</span><span>Protecting critical infrastructure.</span></div>
+      <div class="footer-bottom"><span>© <span data-year>2026</span> Spotlight Security. All rights reserved. Patent pending.</span><span>Protecting critical infrastructure.</span></div>
     </div>
   </footer>
 
@@ -375,21 +375,21 @@ var DEVICES=[
 
  {id:"plc",known:false,ot:true,ip:"10.0.20.58",icon:IC.plc,name:"PLC / edge controller",model:"Linux-based controller, ARM",type:"LINUX",preName:"Shadow device",
   exSee:[["Nothing. This device is not in your inventory.",""]],
-  spSee:[["Kernel, OS release and control runtime version","from the device itself, not a banner guess"],["Exposed protocol ports and who owns them","Modbus 502 answered by the runtime, open to the whole flat network"],["Configuration changes since the last check-in","what changed, when, shown as a diff"],["Accounts and remote-access services present","telnet still enabled, one shared login"]],
+  spSee:[["Kernel, OS release, and control runtime version","from the device itself, not a banner guess"],["Exposed protocol ports and who owns them","Modbus 502 answered by the runtime, open to the whole flat network"],["Configuration changes since the last check-in","what changed, when, shown as a diff"],["Accounts and remote-access services present","telnet still enabled, one shared login"]],
   spDo:[["Restrict an exposed protocol port to the hosts that need it","host firewall rule, HMI still reaches it"],["Flag configuration drift for review","the finding carries the diff; you decide the correct state"],["Remove an unused remote-access service","telnet stopped, command shown first"],["Stop a process you did not put there","by PID, in your window, on your approval"],AI],
-  base:"<b>Nothing.</b> This device was not in your inventory. No agent in your current stack installs here, so there is no patching, no port change and no AI connectivity. Somebody drives to site.",
-  find:{sev:"warn",t:"Exposed protocol port: Modbus 502 open to the whole subnet",why:"The controller answers Modbus on 502 from any address on 10.0.20.0/24. Only the HMI (10.0.20.7) should be talking to it. The engineering workstation, a printer and a phone on the same subnet can all reach the control protocol.",fix:"Add a host firewall rule that drops Modbus from everything except the HMI. The control runtime is untouched and the HMI keeps its connection.",tac:"TA0040 Impact",tech:"T0855 Unauthorized Command Message",cmd:"iptables -I INPUT -p tcp --dport 502 ! -s 10.0.20.7 -j DROP"}},
+  base:"<b>Nothing.</b> This device was not in your inventory. No agent in your current stack installs here, so there is no patching, no port change, and no AI connectivity. Somebody drives to site.",
+  find:{sev:"warn",t:"Exposed protocol port: Modbus 502 open to the whole subnet",why:"The controller answers Modbus on 502 from any address on 10.0.20.0/24. Only the HMI (10.0.20.7) should be talking to it. The engineering workstation, a printer, and a phone on the same subnet can all reach the control protocol.",fix:"Add a host firewall rule that drops Modbus from everything except the HMI. The control runtime is untouched and the HMI keeps its connection.",tac:"TA0040 Impact",tech:"T0855 Unauthorized Command Message",cmd:"iptables -I INPUT -p tcp --dport 502 ! -s 10.0.20.7 -j DROP"}},
 
  {id:"lin",known:true,ip:"10.0.20.31",icon:IC.srv,name:"Linux host / server",model:"Ubuntu 22.04 server",type:"LINUX",
   exSee:[["In the asset inventory","10.0.20.31, owner listed as a former employee"],["Last inventory sync","41 days ago"],["One port answering","22, banner not read"],["Packages, users, authorised keys","not available"]],
-  spSee:[["Listening sockets and owning process",""],["Users, sudoers, authorised keys",""],["Pending security updates from apt","package and version"],["Kernel and OS release",""],["Host firewall rules as configured","nft, iptables or ufw, whichever is in use"]],
+  spSee:[["Listening sockets and owning process",""],["Users, sudoers, authorised keys",""],["Pending security updates from apt","package and version"],["Kernel and OS release",""],["Host firewall rules as configured","nft, iptables, or ufw, whichever is in use"]],
   spDo:[["Push a host firewall rule",""],["Disable an account or remove a key","command shown first, you approve"],["Install pending security updates","then re-checked on the next run"],["Disable a service nobody owns",""],AI],
   base:"<b>Patching, if your RMM has an agent here.</b> One port answering on 22 and a banner nobody read. Owner listed as a former employee.",
   find:{sev:"warn",t:"Forgotten telnet socket enabled on a server",why:"telnet.socket is enabled under systemd and nothing on the network uses it. It hands out a clear-text login prompt to anyone on the subnet.",fix:"Disable the socket now. SSH is unaffected.",tac:"TA0008 Lateral Movement",tech:"T1021 Remote Services",cmd:"systemctl disable --now telnet.socket"}},
 
  {id:"cam",known:false,ip:"10.0.20.92",icon:IC.cam,name:"IP camera / IoT sensor",model:"IoT camera, ARM Linux",type:"LINUX",preName:"Shadow device",
   exSee:[["Nothing. This device is not in your inventory.",""]],
-  spSee:[["Firmware and OS build","reported by the device"],["Exposed admin interface and open ports","80, 554, 8000 and the process behind each"],["Default admin account still present","and whether the password policy allows it"],["Whether your perimeter firewall forwards to it","from the firewall config export, reconciled against the logs"],["TLS certificate subject and issuer","from the handshake"]],
+  spSee:[["Firmware and OS build","reported by the device"],["Exposed admin interface and open ports","80, 554, 8000, and the process behind each"],["Default admin account still present","and whether the password policy allows it"],["Whether your perimeter firewall forwards to it","from the firewall config export, reconciled against the logs"],["TLS certificate subject and issuer","from the handshake"]],
   spDo:[["Flag the default admin account","you rotate it, we verify on the next check-in"],["Close the exposed admin interface","host firewall rule"],["Disable unused services","telnet, UPnP, legacy ONVIF endpoints"],["Install a vendor update when one is pending","staged on your approval, then re-checked"],AI],
   base:"<b>Nothing.</b> This device was not in your inventory. Your EDR will not install on it, and your OT monitor can only watch it.",
   find:{sev:"crit",t:"Insecure remote access: telnet listening on port 23",why:"The camera accepts telnet on port 23 (PID 412, telnetd) and still has its factory admin account. Telnet sends the login in clear text, so anyone on the flat plant network can read the credential off the wire and log in.",fix:"Stop the telnet daemon now. The camera's web and RTSP services do not need it. The finding closes on the next check-in once port 23 stops answering.",tac:"TA0008 Lateral Movement",tech:"T1021 Remote Services",cmd:"kill -9 412"}},
@@ -398,17 +398,17 @@ var DEVICES=[
   exSee:[["In the asset inventory","10.0.20.7, tagged 'do not touch'"],["Last inventory sync","added by hand in 2021, never re-checked"],["One port answering","502 (Modbus), open to the flat network"],["OS, patch state, local accounts","not available"]],
   spSee:[["Underlying OS and patch state","Windows build, pending updates"],["Exposed protocol and management ports","and the process behind each"],["Local accounts and auto-login configuration",""],["Remote-access services present on the panel",""],["HMI runtime and project version",""]],
   spDo:[["Close an exposed management port","host firewall rule"],["Disable auto-login and flag the shared account","command shown first, you approve"],["Remove an unused remote-access service",""],["Install a pending Windows update","when you approve it, in your window"],AI],
-  base:"<b>Tagged 'do not touch' in 2021 and never re-checked.</b> One port answering on 502. OS, patch state and local accounts unknown.",
+  base:"<b>Tagged 'do not touch' in 2021 and never re-checked.</b> One port answering on 502. OS, patch state, and local accounts unknown.",
   find:{sev:"ok",t:"No open findings",why:"The panel reports a current Windows build, no pending security updates, auto-login off, and Modbus reachable only from the controller.",fix:"",tac:"",tech:"",cmd:""}}
 ];
 
 var MX=[
- {row:"Windows / macOS / Linux / FreeBSD",sub:"servers, workstations, laptops",pre:[1,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,1,1,1]},
- {row:"PLC / edge controller",sub:"Linux or QNX based, x86 or ARM",pre:[0,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
- {row:"HMI / SCADA node",sub:"Windows or Linux panel PC",pre:[1,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
- {row:"IP camera / IoT sensor",sub:"ARM Linux with a shell",pre:[0,0,0,0,0],spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
- {row:"Bare PLC / RTU, no host OS",sub:"discovered from the network, never actively scanned",pre:[0,0,0,0,0],spot:[1,1,0,0,1],net:[1,1,0,0,0],edr:[1,0,0,0,0]},
- {row:"Firewalls and network gear",sub:"config export reconciled against logs",pre:[1,0,0,0,0],spot:[1,1,0,2,1],net:[1,1,1,1,0],edr:[1,0,0,0,0]}
+ {row:"Windows / macOS / Linux / FreeBSD",sub:"servers, workstations, laptops",spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,1,1,1]},
+ {row:"PLC / edge controller",sub:"Linux or QNX based, x86 or ARM",spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
+ {row:"HMI / SCADA node",sub:"Windows or Linux panel PC",spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
+ {row:"IP camera / IoT sensor",sub:"ARM Linux with a shell",spot:[1,1,1,1,1],net:[1,1,0,0,0],edr:[1,1,0,0,0]},
+ {row:"Bare PLC / RTU, no host OS",sub:"discovered from the network, never actively scanned",spot:[1,1,0,0,1],net:[1,1,0,0,0],edr:[1,0,0,0,0]},
+ {row:"Firewalls and network gear",sub:"config export reconciled against logs",spot:[1,1,0,2,1],net:[1,1,1,1,0],edr:[1,0,0,0,0]}
 ];
 
 /* ============================ RUNTIME ============================ */
@@ -429,7 +429,7 @@ function counts(){
   var f=done?nodes.filter(function(n){return n.agent&&n.d.find.sev!=="ok"&&!executed[n.d.id];}).length:0;
   $("sDev").textContent=tot;$("sAg").textContent=a;$("sSh").textContent=s;$("sIs").textContent=f;
   $("hubN").innerHTML=tot+' device'+(tot===1?'':'s')+' &middot; '+a+' installed';
-  $("hubS").innerHTML=a===0?'Inventory only. Nothing to act on.':(a<tot?'Installing&hellip;':'IT, IoT and OT in one list. All actionable.');
+  $("hubS").innerHTML=a===0?'Inventory only. Nothing to act on.':(a<tot?'Installing&hellip;':'IT, IoT, and OT in one list. All actionable.');
 }
 function place(){
   var w=stage.clientWidth,h,narrow=w<700;
@@ -496,8 +496,8 @@ function paint(o){var d=o.d,identified=d.known||o.found;
 }
 DEVICES.forEach(function(d){var el=document.createElement("div");stage.appendChild(el);var o={d:d,el:el,x:0,y:0,agent:false,seen:!!d.known,found:!!d.known};el.addEventListener("click",function(){if(!o.seen)return;select(o);if(done){try{$("cmpTitle").scrollIntoView({behavior:"smooth",block:"start"});}catch(e){}}});nodes.push(o);paint(o);});
 
-function pips(a,cls){return '<span class="pips">'+a.map(function(v){return '<i class="pip'+(v===1?" "+cls:v===2?" half":"")+'"></i>';}).join("")+'</span>';}
-function matrix(on){$("mxBody").innerHTML=MX.map(function(r){return '<tr><td class="lbl2">'+r.row+'<small>'+r.sub+'</small></td><td class="sc">'+pips(on?r.spot:r.pre,"on")+'</td><td>'+pips(r.net,"gy")+'</td><td>'+pips(r.edr,"gy")+'</td></tr>';}).join("");$("mx").classList.toggle("pre",!on);$("mxSub").textContent=on?"Spotlight agent installed":"nothing installed yet";$("mxGo").style.display=on?"none":"";}
+function pips(a,cls,row){return '<span class="pips">'+a.map(function(v,j){return '<i class="pip'+(v===1?" "+cls:v===2?" half":"")+'"'+(row==null?"":' style="transition-delay:'+(row*110+j*45)+'ms"')+'></i>';}).join("")+'</span>';}
+function matrix(on){var b=$("mxBody");if(!b.children.length)b.innerHTML=MX.map(function(r,i){return '<tr><td class="lbl2">'+r.row+'<small>'+r.sub+'</small></td><td class="sc">'+pips(r.spot,"on",i)+'</td><td>'+pips(r.net,"gy")+'</td><td>'+pips(r.edr,"gy")+'</td></tr>';}).join("");$("mx").classList.toggle("pre",!on);$("mxSub").textContent=on?"Spotlight agent installed":"faded until you deploy";$("mxGo").style.display=on?"none":"";}
 
 /* ============================ THE RUN ============================ */
 function run(){
