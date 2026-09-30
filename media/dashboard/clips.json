@@ -1,0 +1,26 @@
+{
+  "title": "See Spotlight in action",
+  "clips": [
+    {
+      "id": "discover",
+      "title": "Find every device",
+      "caption": "One scan maps the network, including the devices nobody knew were there.",
+      "src": "discover.mp4",
+      "poster": "discover.jpg"
+    },
+    {
+      "id": "deploy",
+      "title": "Put an agent on it",
+      "caption": "Deploy through a machine you already manage, with no VPN and no appliance, and it joins your inventory.",
+      "src": "deploy.mp4",
+      "poster": "deploy.jpg"
+    },
+    {
+      "id": "fix",
+      "title": "Approve the fix",
+      "caption": "Every finding comes with the exact command. Nothing runs until you click Execute.",
+      "src": "fix.mp4",
+      "poster": "fix.jpg"
+    }
+  ]
+}

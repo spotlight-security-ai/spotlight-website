@@ -58,3 +58,12 @@
     # styles/scripts and the Pipedrive web form + LeadBooster chatbot are
     # allow-listed below), then uncomment to enable:
     # Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://webforms.pipedrive.com https://leadbooster-chat.pipedrive.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.pipedrive.com; connect-src 'self' https://*.pipedrive.com wss://*.pipedrive.com; frame-src https://webforms.pipedrive.com https://leadbooster-chat.pipedrive.com; base-uri 'self'; frame-ancestors 'self'"
+
+# --- Dashboard sign-in clips -------------------------------------------------
+# dashboard.spotlightsecurity.ai/signin fetches media/dashboard/clips.json from
+# this site, so the list needs a CORS header. The clips are public marketing
+# footage, so any origin may read them (this also covers the dev dashboard).
+[[headers]]
+  for = "/media/dashboard/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
