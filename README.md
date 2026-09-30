@@ -52,6 +52,26 @@ redirect, and security headers. A branded `404.html` is served on not-found.
 Production domain: `spotlightsecurity.ai` (apex), DNS at Namecheap pointing at
 Netlify (A/ALIAS on `@`, CNAME on `www`). HTTPS is auto-provisioned by Netlify.
 
+## Dashboard sign-in clips (`media/dashboard/`)
+
+The dashboard's sign-in page (`dashboard.spotlightsecurity.ai/signin`, in `ui-repo`)
+plays the clips listed in `media/dashboard/clips.json`. Each entry has a `title`,
+`caption`, `src` (MP4) and `poster` (still shown while loading); paths are relative
+to `clips.json`. To replace or add a clip, change the files and the list here and
+merge: the dashboard picks it up without its own deploy. Keep clips short, muted,
+recorded on a demo account (no customer hostnames or IPs), and encoded like this:
+
+```bash
+ffmpeg -ss START -t LENGTH -i recording.mp4 -an \
+  -vf "setpts=PTS/SPEEDUP,fps=24,scale=1440:-2:flags=lanczos,setsar=1" \
+  -c:v libx264 -preset slow -crf 27 -profile:v main -pix_fmt yuv420p \
+  -movflags +faststart clip.mp4
+ffmpeg -ss FRAME_TIME -i recording.mp4 -frames:v 1 -vf "scale=1440:-2,setsar=1" -q:v 4 clip.jpg
+```
+
+`netlify.toml` sends `Access-Control-Allow-Origin: *` for `/media/dashboard/*` so the
+dashboard (a different subdomain) can read `clips.json`.
+
 ## Notes
 
 - All "Book a Demo" / "Contact Sales" / "Talk to the Team" / "Request an Assessment"
