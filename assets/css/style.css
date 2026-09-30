@@ -147,6 +147,9 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
 }
 .nav__links a:hover { color: #fff; }
 .nav__cta { display: flex; align-items: center; gap: 16px; }
+.nav__login { font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.82); padding: 10px 6px; transition: color 0.15s ease; }
+.nav__login:hover { color: #fff; }
+.nav__links-login { display: none; }
 .nav__toggle { display: none; background: none; border: 0; color: #fff; cursor: pointer; padding: 6px; }
 .nav__toggle svg { width: 26px; height: 26px; }
 
@@ -621,7 +624,8 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
   .device-grid { grid-template-columns: repeat(3, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .hero { padding: 140px 0 70px; }
-  .nav__links, .nav__cta .btn { display: none; }
+  .nav__links, .nav__cta .btn, .nav__login { display: none; }
+  .nav.open .nav__links .nav__links-login { display: list-item; }
   .nav__toggle { display: block; }
   .nav.open .nav__links {
     display: flex; position: absolute; top: 66px; left: 0; right: 0; flex-direction: column;
