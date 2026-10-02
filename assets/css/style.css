@@ -504,6 +504,8 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
 .partner__wordmark {
   font-family: var(--sans); font-weight: 700; font-size: 16px; line-height: 1; letter-spacing: 0.01em; color: #fff;
 }
+/* name-only entries (no logo file yet) sit at the same height as the logos */
+.partner__wordmark--solo { font-size: 23px; font-weight: 800; letter-spacing: -0.01em; line-height: 27px; height: 27px; }
 .partner__tag {
   font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em;
   text-transform: uppercase; color: var(--muted-2);

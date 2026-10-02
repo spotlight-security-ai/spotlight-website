@@ -12,6 +12,7 @@ transparent PNG @2x — roughly 200×80px or larger):
 | `masschallenge.svg`       | MassChallenge 2025 Security & Resiliency Accelerator| Participant |
 | `black-hat.png`           | Black Hat SecTor 2026 Startup Spotlight Competition | Finalist    |
 | `oasis-collective.png`    | Oasis Collective Women in AI Pitch Competition      | Winner      |
+| _(name only, no file yet)_ | DataTribe Challenge 2026                         | Finalist    |
 
 Notes
 - **Monochrome / white versions are ideal** for the dark theme. If you only have
@@ -22,3 +23,7 @@ Notes
   `index.html` for these real logos and push to `main` (which deploys to Pages).
 - The Oasis Collective mark is a symbol with no wordmark, so `index.html` sets the
   name beside it (`.partner__lockup`). Use the same pattern for any other symbol-only logo.
+- DataTribe is shown as a text wordmark (`.partner__wordmark--solo`) until an official
+  logo file is available. To switch, save it here as `datatribe.svg` (or `.png`) and
+  replace the two `partner__wordmark--solo` spans in `index.html` with
+  `<img class="partner__logo" src="assets/img/partners/datatribe.svg" ...>`.
