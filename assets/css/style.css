@@ -501,11 +501,11 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
 /* symbol-only marks get their name set beside them so the strip reads consistently */
 .partner__lockup { display: inline-flex; align-items: center; gap: 9px; }
 .partner__lockup .partner__logo { height: 30px; }
+/* wide logos with small wordmarks (e.g. DataTribe) get a little more height to stay legible */
+.partner__logo--wide { height: 34px; max-width: 200px; }
 .partner__wordmark {
   font-family: var(--sans); font-weight: 700; font-size: 16px; line-height: 1; letter-spacing: 0.01em; color: #fff;
 }
-/* name-only entries (no logo file yet) sit at the same height as the logos */
-.partner__wordmark--solo { font-size: 23px; font-weight: 800; letter-spacing: -0.01em; line-height: 27px; height: 27px; }
 .partner__tag {
   font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em;
   text-transform: uppercase; color: var(--muted-2);
