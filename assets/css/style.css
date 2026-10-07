@@ -138,6 +138,32 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
   box-shadow: 0 1px 0 var(--line);
   padding: 12px 0;
 }
+
+/* ---- Home-page announcement bar (sits in the fixed header, hides once you scroll) ---- */
+.announce { display: none; }
+.has-announce .announce {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  height: 34px; margin-bottom: 18px; padding: 0 16px;
+  font-size: 13.5px; color: rgba(255, 255, 255, 0.86); white-space: nowrap; overflow: hidden;
+  background: linear-gradient(90deg, rgba(219, 51, 45, 0.22), rgba(255, 113, 48, 0.16), rgba(207, 64, 102, 0.22));
+  border-bottom: 1px solid rgba(255, 113, 48, 0.28);
+  transition: color 0.2s ease;
+}
+.announce b { color: #fff; font-weight: 700; }
+.announce__arrow { color: var(--orange); transition: transform 0.2s ease; }
+.announce:hover { color: #fff; }
+.announce:hover .announce__arrow { transform: translateX(3px); }
+.announce:focus-visible { outline: 2px solid var(--orange); outline-offset: -3px; }
+.announce__short { display: none; }
+.site-header.has-announce:not(.scrolled) { padding-top: 0; }
+.site-header.scrolled .announce { display: none; }
+@media (max-width: 620px) {
+  .announce__full { display: none; }
+  .announce__short { display: inline; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .announce, .announce__arrow { transition: none; }
+}
 .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .nav__logo img { height: 34px; width: auto; }
 .nav__links { display: flex; gap: 38px; list-style: none; margin: 0; padding: 0; }
@@ -476,6 +502,7 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
 
 /* ---- Partners / recognition marquee ------------------------------------- */
 .partners { padding: 54px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-2); }
+#recognition { scroll-margin-top: 80px; } /* clear the fixed header when the announcement bar links here */
 .partners__eyebrow {
   font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.2em;
   text-transform: uppercase; color: var(--muted-2); text-align: center; margin: 0;
@@ -633,6 +660,8 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
     display: flex; position: absolute; top: 66px; left: 0; right: 0; flex-direction: column;
     background: rgba(9,11,34,0.98); padding: 20px 24px; gap: 18px; border-bottom: 1px solid var(--line);
   }
+  /* the announcement bar (34px tall) pushes the nav down until the page is scrolled */
+  .site-header.has-announce:not(.scrolled) .nav.open .nav__links { top: 100px; }
 }
 @media (max-width: 620px) {
   body { font-size: 17px; }
