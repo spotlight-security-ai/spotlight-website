@@ -10,7 +10,7 @@ the WordPress export in plain HTML/CSS/JS — no build step, no framework, hosts
 | `index.html`       | Home (hero, threat stats, why-Spotlight, 4 stages, industries preview, pricing, CTA) |
 | `platform.html`    | Platform — "How it Works" (7 steps)    |
 | `industries.html`  | Industries (5 tabbed sectors + local-gov deep dive) |
-| `about.html`       | About (mission, problem, credibility, team & advisors, principles) |
+| `about.html`       | About (in the news, problem, credibility, team & advisors) |
 | `contact.html`     | Book a Demo / contact — embedded Pipedrive lead form |
 
 ## Structure
