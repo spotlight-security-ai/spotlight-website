@@ -1,13 +1,21 @@
 # Public assessment preview contract
 
 This is the public, deterministic API consumed by `assessment-preview.html`. The
-UI defaults to the site origin. `assets/js/preview-config.js` can select a separate
-HTTPS origin; the API must then allow the site origin with CORS. The configured
-base is an origin, without a path or credential. Nothing in this contract grants
-device access or starts a scan.
+UI is disabled by default with `window.SPOTLIGHT_PREVIEW_ENABLED = false`. Only
+after that switch is explicitly enabled does an empty API base mean the site
+origin. `assets/js/preview-config.js` can instead select a separate HTTPS origin;
+the API must then allow the site origin with CORS. The configured base is an
+origin, without a path or credential. Nothing in this contract grants device
+access or starts a scan.
 The static Netlify deployment has no `/api/public/*` proxy. Set the actual API
-origin or add an explicit proxy before enabling this page in production; leaving
-the default empty sends requests to Netlify's site origin.
+origin or add an explicit proxy before enabling this page in production. The
+default-off website switch prevents requests from being sent to Netlify while
+that connection is unfinished.
+
+The assessment pages use a scoped Content Security Policy with `connect-src
+'self'`. When a separate API origin is selected, add that exact HTTPS origin to
+the two assessment-page policies in `netlify.toml` in the same reviewed change.
+Do not replace it with `https:` or a wildcard.
 
 ## Device lookup
 
@@ -103,7 +111,8 @@ rechecks the selected file for common secrets before upload. The frontend pairs
 file statuses with the original selected files by upload order because the API
 normalizes display filenames.
 
-The static site also keeps this panel hidden unless
+The static site also keeps this panel hidden unless the core preview switch is
+enabled and
 `window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED` is explicitly set to `true` in
 `assets/js/preview-config.js`. Enable that website switch only when the backend
 collection gate and staff-review process are ready.

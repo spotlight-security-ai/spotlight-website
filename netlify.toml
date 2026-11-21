@@ -70,9 +70,18 @@
 
 # Verification tokens are consumed in the browser and report content is loaded
 # only after API verification. Do not index or cache the report page.
+# [[headers]] entries cannot interpolate preview-config.js. If a separate API
+# origin is selected, add that exact HTTPS origin to connect-src in both scoped
+# policies below as part of the same reviewed deployment change.
+[[headers]]
+  for = "/assessment-preview.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+
 [[headers]]
   for = "/assessment-report.html"
   [headers.values]
     Cache-Control = "no-store"
     X-Robots-Tag = "noindex, nofollow, noarchive"
     Referrer-Policy = "no-referrer"
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"

@@ -11,8 +11,10 @@ const node = (tag, className = '', content = '') => {
 };
 const add = (parent, tag, className, content) => parent.appendChild(node(tag, className, content));
 const apiBase = window.SPOTLIGHT_PREVIEW_API_BASE || '';
+const previewEnabled = window.SPOTLIGHT_PREVIEW_ENABLED === true;
 const sampleSharingEnabled = window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED === true;
 const headingTag = level => `h${Math.min(6, Math.max(2, Number(level) || 4))}`;
+const PREVIEW_UNAVAILABLE = 'The preview service is not enabled yet. You can still request a tailored assessment.';
 
 function statusBadge(value) {
   const badge = node('span', 'preview-status', text(value).replaceAll('_', ' ') || 'Not verified');
@@ -203,7 +205,16 @@ export async function fetchJson(url, options = {}, purpose = 'preview') {
 
 const lookupForm = byId('lookup-form');
 if (lookupForm) {
-for (const button of document.querySelectorAll('[data-preview-submit]')) button.disabled = false;
+if (previewEnabled) {
+  for (const button of document.querySelectorAll('[data-preview-submit]')) button.disabled = false;
+} else {
+  for (const form of document.querySelectorAll('.preview-panel form')) {
+    form.setAttribute('aria-disabled', 'true');
+    for (const control of form.querySelectorAll('input, select, textarea, button')) control.disabled = true;
+  }
+  message('lookup-message', PREVIEW_UNAVAILABLE);
+  message('preview-message', PREVIEW_UNAVAILABLE);
+}
 let reportHandle = null;
 let reportContext = null;
 let shareableFiles = [];
@@ -238,6 +249,10 @@ function showSampleOptions(files, reportedFiles) {
 }
 lookupForm.addEventListener('submit', async event => {
   event.preventDefault();
+  if (!previewEnabled) {
+    message('lookup-message', PREVIEW_UNAVAILABLE);
+    return;
+  }
   const button = lookupForm.querySelector('button[type=submit]');
   resetFormA11y(lookupForm);
   setFormBusy(lookupForm, true);
@@ -286,6 +301,10 @@ fileInput.addEventListener('change', () => {
 const previewForm = byId('preview-form');
 previewForm.addEventListener('submit', async event => {
   event.preventDefault();
+  if (!previewEnabled) {
+    message('preview-message', PREVIEW_UNAVAILABLE);
+    return;
+  }
   const button = previewForm.querySelector('button[type=submit]');
   resetFormA11y(previewForm);
   setFormBusy(previewForm, true);
@@ -344,6 +363,10 @@ previewForm.addEventListener('submit', async event => {
 
 sampleForm.addEventListener('submit', async event => {
   event.preventDefault();
+  if (!previewEnabled) {
+    message('sample-message', PREVIEW_UNAVAILABLE);
+    return;
+  }
   const button = sampleForm.querySelector('button[type=submit]');
   resetFormA11y(sampleForm);
   setFormBusy(sampleForm, true);
@@ -384,6 +407,10 @@ sampleForm.addEventListener('submit', async event => {
 const emailForm = byId('report-email-form');
 emailForm.addEventListener('submit', async event => {
   event.preventDefault();
+  if (!previewEnabled) {
+    message('report-email-message', PREVIEW_UNAVAILABLE);
+    return;
+  }
   const button = emailForm.querySelector('button[type=submit]');
   resetFormA11y(emailForm);
   setFormBusy(emailForm, true);

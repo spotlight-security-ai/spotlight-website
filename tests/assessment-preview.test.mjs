@@ -13,8 +13,9 @@ test('static preview configuration contains only a public origin and boolean fea
   const sandbox = { window: {} };
   runInNewContext(readFileSync(new URL('../assets/js/preview-config.js', import.meta.url), 'utf8'), sandbox);
   assert.deepEqual(Object.keys(sandbox.window).sort(), [
-    'SPOTLIGHT_PREVIEW_API_BASE', 'SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED',
+    'SPOTLIGHT_PREVIEW_API_BASE', 'SPOTLIGHT_PREVIEW_ENABLED', 'SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED',
   ]);
+  assert.equal(sandbox.window.SPOTLIGHT_PREVIEW_ENABLED, false);
   assert.equal(typeof sandbox.window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED, 'boolean');
   assert.doesNotThrow(() => apiUrl(
     '/api/public/device-lookup', sandbox.window.SPOTLIGHT_PREVIEW_API_BASE, 'https://spotlightsecurity.ai',
@@ -56,10 +57,19 @@ test('collection time is optional but cannot be invalid or in the future', () =>
 
 test('common credentials and binary content stop local upload checks', () => {
   assert.deepEqual(secretWarnings('hostname edge-01\ninterface eth0'), []);
-  assert.deepEqual(secretWarnings('password: <redacted>\napi_key=REDACTED'), []);
+  assert.deepEqual(secretWarnings('password: <redacted>\napi_key=REDACTED\n"refresh_token":"masked"'), []);
   assert.ok(secretWarnings('username admin password secretvalue').includes('configuration secret'));
   assert.ok(secretWarnings('Authorization: Bearer abcdefgh').includes('bearer token'));
   assert.ok(secretWarnings('-----BEGIN RSA PRIVATE KEY-----').includes('private key'));
+  for (const value of [
+    '"refresh_token":"sensitive-value"',
+    'access-token=sensitive-value',
+    'client_secret: sensitive-value',
+    'private_key=sensitive-value',
+    'passphrase sensitive-value',
+    'pre-shared-key=sensitive-value',
+    'psk: sensitive-value',
+  ]) assert.ok(secretWarnings(value).includes('credential assignment'), value);
   assert.equal(looksBinary('interface eth0\naddress 192.0.2.1'), false);
   assert.equal(looksBinary('abc\0def'), true);
 });
@@ -141,4 +151,31 @@ test('preview and report pages expose concise accessibility state instead of liv
   assert.match(interactions, /setAttribute\("aria-expanded", String\(open\)\)/);
   assert.match(renderer, /Configuration preview ready\./);
   assert.match(renderer, /focusRenderedResult/);
+});
+
+test('static preview activation, CI, and scoped CSP fail closed', () => {
+  const config = readFileSync(new URL('../assets/js/preview-config.js', import.meta.url), 'utf8');
+  const previewScript = readFileSync(new URL('../assets/js/assessment-preview.mjs', import.meta.url), 'utf8');
+  const reportScript = readFileSync(new URL('../assets/js/assessment-report.mjs', import.meta.url), 'utf8');
+  const netlify = readFileSync(new URL('../netlify.toml', import.meta.url), 'utf8');
+  const workflow = readFileSync(new URL('../.github/workflows/assessment-preview.yml', import.meta.url), 'utf8');
+
+  assert.match(config, /SPOTLIGHT_PREVIEW_ENABLED = false/);
+  assert.match(previewScript, /window\.SPOTLIGHT_PREVIEW_ENABLED === true/);
+  assert.match(previewScript, /if \(!previewEnabled\)/);
+  assert.match(reportScript, /SPOTLIGHT_PREVIEW_ENABLED !== true/);
+  const policies = [...netlify.matchAll(/^\s*Content-Security-Policy = "([^"]+)"/gm)].map(match => match[1]);
+  assert.equal(policies.length, 2);
+  for (const policy of policies) {
+    assert.match(policy, /default-src 'none'/);
+    assert.match(policy, /connect-src 'self'/);
+    assert.match(policy, /object-src 'none'/);
+    assert.match(policy, /base-uri 'none'/);
+    assert.match(policy, /form-action 'none'/);
+    assert.match(policy, /frame-ancestors 'none'/);
+    assert.doesNotMatch(policy, /unsafe-inline|\*/);
+  }
+  assert.match(workflow, /npm test/);
+  assert.match(workflow, /node --check assets\/js\/assessment-preview\.mjs/);
+  assert.match(workflow, /git diff --check/);
 });

@@ -100,15 +100,21 @@ The panel also remains hidden until
 `window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED` is explicitly set to `true` in
 `assets/js/preview-config.js`.
 
-The default API base is this site's origin. To use a separate HTTPS API origin,
-set `window.SPOTLIGHT_PREVIEW_API_BASE` in `assets/js/preview-config.js` and allow
-this site origin in the API's CORS policy. Never put a credential in that file.
+The core controls remain disabled until `window.SPOTLIGHT_PREVIEW_ENABLED` is
+explicitly set to `true`. An empty API base means this site's origin only after
+that switch is enabled. To use a separate HTTPS API origin, set
+`window.SPOTLIGHT_PREVIEW_API_BASE` in `assets/js/preview-config.js`, allow this
+site origin in the API's CORS policy, and add that exact API origin to the
+assessment-page `connect-src` policies in `netlify.toml`. Never put a credential
+in either file.
 The backend's `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED` gate is off by default.
 Netlify only serves this repository's static files; `netlify.toml` has no
-`/api/public/*` proxy. With the empty default, requests go to the Netlify site
-origin and will not reach a separate backend. Before releasing this feature,
+`/api/public/*` proxy. If someone enabled the core switch with the empty default,
+requests would go to the Netlify site origin and would not reach a separate
+backend. Before releasing this feature,
 configure the actual HTTPS API origin or add a proxy to a known backend, then
-verify CORS and the backend gate. No production API origin is assumed here.
+verify CSP, CORS, and the backend gate before enabling the static switch. No
+production API origin is assumed here.
 
 Run the built-in frontend checks with `npm test` (Node 22; no install required).
 The static site can still be served with `python -m http.server 8891`.

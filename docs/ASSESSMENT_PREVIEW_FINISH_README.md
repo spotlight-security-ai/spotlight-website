@@ -13,7 +13,7 @@ The first working version is built and ready for review.
 - Website: [spotlight-website PR #33](https://github.com/spotlight-security-ai/spotlight-website/pull/33)
 - Assessment/intelligence dependency: [Sentinel PR #492](https://github.com/spotlight-security-ai/sentinel/pull/492)
 - Assessment API: [Sentinel PR #491](https://github.com/spotlight-security-ai/sentinel/pull/491)
-- Website validation: 15 tests passed, plus desktop/mobile review and accessibility hardening
+- Website validation: 16 tests passed, plus desktop/mobile review and accessibility hardening
 - Backend validation: 58 focused tests passed locally; the new focused and PostgreSQL 17 GitHub jobs also passed
 - Nothing has been merged or launched
 - All public features are off by default
@@ -29,10 +29,10 @@ These are unfinished release tasks, not optional improvements:
 
 1. **Backend landing path:** PR #491 is based on a temporary assessment handoff branch rather than the production release line.
 2. **Final release CI:** the new draft/stacked-PR workflow passed its focused and PostgreSQL jobs on PR #491. Full repository QA still must pass after the stack is moved to the final release branch.
-3. **Website-to-API connection:** the Netlify site has no API proxy and its configured API base is currently empty.
+3. **Website-to-API connection:** the Netlify site has no API proxy, its configured API base is currently empty, and its explicit core switch is off.
 4. **Public data notice:** the site explains sanitization beside the upload, but it does not currently provide a general privacy-policy or terms page/link covering the report, CRM, Slack, and optional sample flows. The founders must approve and publish the appropriate notice before collecting contact details or samples.
 
-Engineering has fixed case-insensitive vendor-name normalization and added regression coverage. The optional sample panel is also hidden by default at both the website and backend gates, so the core preview can launch without presenting a dead sample-retention flow.
+Engineering has fixed case-insensitive vendor-name normalization and added regression coverage. The website now also stays inert until its separate core switch is enabled. The optional sample panel remains hidden by default at both the website and backend gates, so the core preview can launch without presenting a dead sample-retention flow.
 
 ## Start here: the seven finish steps
 
@@ -133,11 +133,13 @@ The current Sentinel application uses permissive CORS globally. For a public lau
 
 ### Stage 3: Connect and test the website in staging
 
-The website currently uses an empty API base, which means same-origin. Netlify does not currently proxy `/api/public/*`.
+The website currently has its core switch off. Its empty API base means same-origin only after that switch is enabled. Netlify does not currently proxy `/api/public/*`.
 
 - [ ] Set `assets/js/preview-config.js` to the approved HTTPS API origin with no path, key, or credential; or install a trusted same-origin proxy.
+- [ ] If using a separate API origin, add that exact origin to `connect-src` for both assessment pages in `netlify.toml`.
 - [ ] Allow the staging website origin at the API edge.
 - [ ] Enable only `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED` in staging.
+- [ ] Set `window.SPOTLIGHT_PREVIEW_ENABLED = true` and deploy the static site to staging only after the API and CSP are ready.
 - [ ] Test make/model lookup.
 - [ ] Test supported, partial, unsupported, stale, multi-file, and rejected-secret uploads.
 - [ ] Confirm configuration bytes do not appear in logs, Pipedrive, or Slack.
@@ -167,6 +169,7 @@ Delivery is designed for at-least-once behavior. A rare duplicate email, CRM req
 - [ ] Deploy the backend before exposing the website entry point.
 - [ ] Run the production smoke test in the next section with team-owned data only.
 - [ ] Enable `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED` in production.
+- [ ] Set `window.SPOTLIGHT_PREVIEW_ENABLED = true` in the reviewed production website configuration.
 - [ ] Merge and deploy website PR #33.
 - [ ] Confirm the production homepage link and assessment page work.
 - [ ] Enable `SPOTLIGHT_PREVIEW_LEADS_ENABLED` only after its production smoke test passes.
@@ -197,6 +200,18 @@ SPOTLIGHT_PREVIEW_REPORT_SIGNING_KEY=<random secret, at least 32 characters>
 SENTINEL_SECRETS_KEY=<production encryption key>
 SPOTLIGHT_ADVISORY_BUNDLE=<absolute server path to the current advisory bundle>
 ```
+
+The corresponding public website settings contain no credential:
+
+```js
+window.SPOTLIGHT_PREVIEW_ENABLED = false;
+window.SPOTLIGHT_PREVIEW_API_BASE = '';
+window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED = false;
+```
+
+Change the first value only when the selected API path, exact-origin CSP, and
+backend gate are ready. The third value stays off until the separate sample
+retention process is approved.
 
 ### Verified email reports and leads
 
@@ -267,6 +282,7 @@ Launch only when every applicable item is checked.
 - [ ] Vendor lookup returns consistent results regardless of letter case.
 - [ ] HTTPS, trusted proxy behavior, request-size limits, and public rate limits are active.
 - [ ] Browser access is limited to the intended website origin or same-origin proxy.
+- [ ] The assessment-page CSP allows only the selected API origin.
 - [ ] No secret or key is present in the browser or static website files.
 - [ ] Migrations completed and the scheduler is healthy.
 - [ ] A real email report completed from upload through verification.
@@ -277,7 +293,7 @@ Launch only when every applicable item is checked.
 - [ ] A named reviewer and procedure exist before sample collection is enabled.
 - [ ] The customer-facing claims match the evidence the product can currently provide.
 
-Do not launch if the API address is unset, email is still in a provider sandbox, production ingress limits are missing, secrets are visible to the browser, full backend CI has not run, or the team cannot verify expiry and cleanup behavior.
+Do not launch if the API address or proxy is unset, the website core switch is off, the exact API origin is absent from CSP, email is still in a provider sandbox, production ingress limits are missing, secrets are visible to the browser, full backend CI has not run, or the team cannot verify expiry and cleanup behavior.
 
 ## Claims we can make
 

@@ -8,6 +8,14 @@ const token = tokenFromHash(window.location.hash);
 if (window.location.hash) window.history.replaceState(null, '', window.location.pathname);
 
 async function loadReport() {
+  if (window.SPOTLIGHT_PREVIEW_ENABLED !== true) {
+    target.setAttribute('aria-busy', 'false');
+    status.dataset.tone = 'error';
+    status.textContent = 'The preview report service is not enabled yet.';
+    status.setAttribute('tabindex', '-1');
+    status.focus();
+    return;
+  }
   if (!token) {
     target.setAttribute('aria-busy', 'false');
     status.dataset.tone = 'error';
