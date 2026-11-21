@@ -14,7 +14,7 @@ The first working version is built and ready for review.
 - Assessment/intelligence dependency: [Sentinel PR #492](https://github.com/spotlight-security-ai/sentinel/pull/492)
 - Assessment API: [Sentinel PR #491](https://github.com/spotlight-security-ai/sentinel/pull/491)
 - Website validation: 16 tests passed, plus desktop/mobile review and accessibility hardening
-- Backend validation: 66 public-preview and migration tests passed locally with three PostgreSQL-only tests skipped; dependency packaging and frozen interop passed on Ubuntu and Windows
+- Backend validation: 66 public-preview and migration tests passed locally with three PostgreSQL-only tests skipped; current focused/PostgreSQL GitHub jobs passed, and dependency packaging/frozen interop passed on Ubuntu and Windows
 - Nothing has been merged or launched
 - All public features are off by default
 - No AI is used today
