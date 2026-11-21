@@ -1,6 +1,7 @@
 export const MAX_FILES = 5;
 export const MAX_FILE_BYTES = 5 * 1024 * 1024;
 export const MAX_TOTAL_BYTES = 20 * 1024 * 1024;
+export const MAX_REPORT_HANDLE_CHARS = 60_000;
 export const ALLOWED_EXTENSIONS = new Set(['txt', 'cfg', 'conf', 'json', 'xml', 'csv', 'tsv', 'rsc', 'exp', 'nessus', 'log']);
 
 export function apiUrl(path, configuredBase = '', pageOrigin = globalThis.location?.origin) {
@@ -93,7 +94,7 @@ export function buildLeadPayload({ reportHandle, name, email, company, path, cli
   const trimmedEmail = String(email || '').trim();
   const trimmedCompany = String(company || '').trim();
   const trimmedClient = String(clientLabel || '').trim();
-  if (typeof reportHandle !== 'string' || !reportHandle || reportHandle.length > 4096) {
+  if (typeof reportHandle !== 'string' || !reportHandle || reportHandle.length > MAX_REPORT_HANDLE_CHARS) {
     throw new Error('Run a new configuration preview before requesting an email report.');
   }
   if (!trimmedName || trimmedName.length > 100 || !trimmedCompany || trimmedCompany.length > 120 ||

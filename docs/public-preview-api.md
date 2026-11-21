@@ -5,6 +5,9 @@ UI defaults to the site origin. `assets/js/preview-config.js` can select a separ
 HTTPS origin; the API must then allow the site origin with CORS. The configured
 base is an origin, without a path or credential. Nothing in this contract grants
 device access or starts a scan.
+The static Netlify deployment has no `/api/public/*` proxy. Set the actual API
+origin or add an explicit proxy before enabling this page in production; leaving
+the default empty sends requests to Netlify's site origin.
 
 ## Device lookup
 
@@ -85,7 +88,8 @@ The JSON response has this shape (content below is illustrative):
 Top-level `status` is `complete`, `partial`, or `unsupported`; file status is
 `recognized`, `partial`, `unsupported`, or `rejected`. `report_handle` is a
 short-lived signed handoff only when the server has report signing configured.
-The site shows email delivery only when this handle is present.
+The handle can be up to 60,000 characters. The site shows the verification link
+form only when this handle is present.
 Findings include `evidence_status` (`current`, `stale`, or `undated`) and
 `source_status` (`observed`, `undated`, or `imported_assertion`) so an old export
 or imported scanner claim is not presented as a fresh observation.

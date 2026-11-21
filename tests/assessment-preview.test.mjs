@@ -8,8 +8,8 @@ import {
 const file = (name, size) => ({ name, size });
 
 test('lookup URL preserves exact make/model text and targets the configured API origin', () => {
-  const url = buildLookupUrl(' Cisco ', ' Catalyst 9300 / 48P ', 'https://preview-api.spotlightsecurity.ai', 'https://spotlightsecurity.ai');
-  assert.equal(url.origin, 'https://preview-api.spotlightsecurity.ai');
+  const url = buildLookupUrl(' Cisco ', ' Catalyst 9300 / 48P ', 'https://api.example.test', 'https://spotlightsecurity.ai');
+  assert.equal(url.origin, 'https://api.example.test');
   assert.equal(url.pathname, '/api/public/device-lookup');
   assert.equal(url.searchParams.get('make'), 'Cisco');
   assert.equal(url.searchParams.get('model'), 'Catalyst 9300 / 48P');
@@ -70,6 +70,13 @@ test('lead requires a valid contact and explicit consent', () => {
   assert.throws(() => buildLeadPayload({ ...values, reportHandle: '' }), /new configuration preview/);
   assert.throws(() => buildLeadPayload({ ...values, email: 'invalid' }), /valid work email/);
   assert.throws(() => buildLeadPayload({ ...values, consent: false }), /Consent is required/);
+});
+
+test('lead accepts a signed report handle larger than 4096 characters up to the API limit', () => {
+  const values = { name: 'Ava', email: 'ava@example.com', company: 'Utility', path: 'direct', consent: true };
+  assert.equal(buildLeadPayload({ ...values, reportHandle: 'x'.repeat(5000) }).report_handle.length, 5000);
+  assert.equal(buildLeadPayload({ ...values, reportHandle: 'x'.repeat(60000) }).report_handle.length, 60000);
+  assert.throws(() => buildLeadPayload({ ...values, reportHandle: 'x'.repeat(60001) }), /new configuration preview/);
 });
 
 test('report token is read only from the URL fragment', () => {

@@ -97,6 +97,11 @@ The default API base is this site's origin. To use a separate HTTPS API origin,
 set `window.SPOTLIGHT_PREVIEW_API_BASE` in `assets/js/preview-config.js` and allow
 this site origin in the API's CORS policy. Never put a credential in that file.
 The backend's `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED` gate is off by default.
+Netlify only serves this repository's static files; `netlify.toml` has no
+`/api/public/*` proxy. With the empty default, requests go to the Netlify site
+origin and will not reach a separate backend. Before releasing this feature,
+configure the actual HTTPS API origin or add a proxy to a known backend, then
+verify CORS and the backend gate. No production API origin is assumed here.
 
 Run the built-in frontend checks with `npm test` (Node 22; no install required).
 The static site can still be served with `python -m http.server 8891`.
