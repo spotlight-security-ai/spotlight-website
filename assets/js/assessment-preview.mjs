@@ -11,6 +11,7 @@ const node = (tag, className = '', content = '') => {
 };
 const add = (parent, tag, className, content) => parent.appendChild(node(tag, className, content));
 const apiBase = window.SPOTLIGHT_PREVIEW_API_BASE || '';
+const sampleSharingEnabled = window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED === true;
 
 function statusBadge(value) {
   const badge = node('span', 'preview-status', text(value).replaceAll('_', ' ') || 'Not verified');
@@ -186,6 +187,7 @@ function resetSample() {
 }
 
 function showSampleOptions(files, reportedFiles) {
+  if (!sampleSharingEnabled) return;
   const candidates = sampleCandidates(files, reportedFiles);
   if (!candidates.length) return;
   samplePanel.hidden = false;

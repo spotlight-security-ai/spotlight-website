@@ -103,6 +103,11 @@ rechecks the selected file for common secrets before upload. The frontend pairs
 file statuses with the original selected files by upload order because the API
 normalizes display filenames.
 
+The static site also keeps this panel hidden unless
+`window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED` is explicitly set to `true` in
+`assets/js/preview-config.js`. Enable that website switch only when the backend
+collection gate and staff-review process are ready.
+
 `POST /api/public/preview-sample` accepts multipart form data with exactly one
 `file` part (UTF-8 text, 1 MiB maximum) and `consent=true`. It does not send a
 lead, report handle, or contact details. Any filename extension is accepted if

@@ -96,6 +96,9 @@ When a file is only partially recognized or unsupported, visitors may separately
 opt in to share one sanitized text sample for manual format review. The sample
 request has its own consent checkbox, endpoint, and default-off backend gate; it
 does not affect the preview or report.
+The panel also remains hidden until
+`window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED` is explicitly set to `true` in
+`assets/js/preview-config.js`.
 
 The default API base is this site's origin. To use a separate HTTPS API origin,
 set `window.SPOTLIGHT_PREVIEW_API_BASE` in `assets/js/preview-config.js` and allow
