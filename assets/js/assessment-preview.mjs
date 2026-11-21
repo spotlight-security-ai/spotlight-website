@@ -1,4 +1,4 @@
-import { apiUrl, buildLeadPayload, buildLookupUrl, looksBinary, observedAtIso, secretWarnings, validateFiles, validateResponse } from './assessment-preview-core.mjs';
+import { apiUrl, buildLeadPayload, buildLookupUrl, looksBinary, MAX_SAMPLE_BYTES, observedAtIso, sampleCandidates, secretWarnings, validateFiles, validateResponse, validateSampleFile } from './assessment-preview-core.mjs';
 
 const byId = id => document.getElementById(id);
 const text = value => typeof value === 'string' || typeof value === 'number' ? String(value) : '';
@@ -150,6 +150,10 @@ export async function fetchJson(url, options = {}, purpose = 'preview') {
       if (purpose === 'lead' && response.status === 409) throw new Error('This preview has already been used to request an email report. Start a new preview to request another.');
       if (purpose === 'lead' && response.status === 422) throw new Error('This preview is no longer eligible for an email report. Start a new preview.');
       if (purpose === 'lead' && response.status === 503) throw new Error('Email delivery is unavailable right now. Your on-page results remain available.');
+      if (purpose === 'sample' && [404, 503].includes(response.status)) throw new Error('Sample sharing is unavailable right now. Your preview remains available.');
+      if (purpose === 'sample' && response.status === 413) throw new Error('The sample exceeds the 1 MiB limit.');
+      if (purpose === 'sample' && [415, 422].includes(response.status)) throw new Error('The sample was not accepted. Use a sanitized UTF-8 text file.');
+      if (purpose === 'sample' && response.status === 429) throw new Error('Too many sample requests. Please try again later.');
       if (response.status === 404 || response.status === 503) throw new Error('The preview service is not available yet. You can still request a reviewed assessment.');
       if (response.status === 413) throw new Error('The uploaded files exceed the service limit.');
       if (response.status === 422 || response.status === 400) throw new Error('The service could not analyze these files. Check the formats and remove any remaining secrets.');
@@ -169,6 +173,35 @@ const lookupForm = byId('lookup-form');
 if (lookupForm) {
 let reportHandle = null;
 let reportContext = null;
+let shareableFiles = [];
+const samplePanel = byId('sample-contribution');
+const sampleForm = byId('sample-contribution-form');
+function resetSample() {
+  shareableFiles = [];
+  samplePanel.hidden = true;
+  sampleForm.hidden = false;
+  byId('sample-file').replaceChildren();
+  byId('sample-consent').checked = false;
+  message('sample-message', '');
+}
+
+function showSampleOptions(files, reportedFiles) {
+  const candidates = sampleCandidates(files, reportedFiles);
+  if (!candidates.length) return;
+  samplePanel.hidden = false;
+  shareableFiles = candidates.filter(({ file }) => file.size <= MAX_SAMPLE_BYTES);
+  if (!shareableFiles.length) {
+    sampleForm.hidden = true;
+    message('sample-message', 'Sample sharing accepts one text file up to 1 MiB. Create a smaller sanitized export and run a new preview.');
+    return;
+  }
+  const select = byId('sample-file');
+  for (const [index, candidate] of shareableFiles.entries()) {
+    const option = node('option', '', `${candidate.file.name} · ${candidate.status}`);
+    option.value = String(index);
+    select.appendChild(option);
+  }
+}
 lookupForm.addEventListener('submit', async event => {
   event.preventDefault();
   const button = lookupForm.querySelector('button[type=submit]');
@@ -193,6 +226,11 @@ for (const choice of document.querySelectorAll('input[name=path]')) {
 
 const fileInput = byId('config-files');
 fileInput.addEventListener('change', () => {
+  resetSample();
+  byId('preview-results').hidden = true;
+  byId('report-delivery').hidden = true;
+  reportHandle = null;
+  reportContext = null;
   const listElement = byId('file-list');
   listElement.replaceChildren();
   for (const file of Array.from(fileInput.files || [])) {
@@ -210,8 +248,10 @@ previewForm.addEventListener('submit', async event => {
   event.preventDefault();
   const button = previewForm.querySelector('button[type=submit]');
   button.disabled = true;
+  fileInput.disabled = true;
   byId('preview-results').hidden = true;
   byId('report-delivery').hidden = true;
+  resetSample();
   reportHandle = null;
   reportContext = null;
   message('preview-message', 'Checking files before upload…');
@@ -235,6 +275,7 @@ previewForm.addEventListener('submit', async event => {
     const payload = validateResponse(await fetchJson(apiUrl('/api/public/config-preview', apiBase, window.location.origin), { method: 'POST', body }), 'preview');
     message('preview-message', '');
     renderPreview(payload);
+    showSampleOptions(files, payload.files);
     reportHandle = typeof payload.report_handle === 'string' && payload.report_handle ? payload.report_handle : null;
     if (reportHandle) {
       reportContext = { path: payload.path, clientLabel: payload.client_label };
@@ -247,6 +288,42 @@ previewForm.addEventListener('submit', async event => {
     message('preview-message', error instanceof Error ? error.message : 'Configuration preview failed.', 'error');
   } finally {
     button.disabled = false;
+    fileInput.disabled = false;
+  }
+});
+
+sampleForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = sampleForm.querySelector('button[type=submit]');
+  button.disabled = true;
+  const previewButton = previewForm.querySelector('button[type=submit]');
+  previewButton.disabled = true;
+  fileInput.disabled = true;
+  message('sample-message', 'Checking the selected sample…');
+  try {
+    const choice = Number(byId('sample-file').value);
+    const candidate = Number.isInteger(choice) ? shareableFiles[choice] : null;
+    const file = validateSampleFile(candidate?.file, byId('sample-consent').checked);
+    let content;
+    try { content = new TextDecoder('utf-8', { fatal: true }).decode(await file.arrayBuffer()); }
+    catch { throw new Error('The selected sample must be UTF-8 text.'); }
+    if (looksBinary(content)) throw new Error('The selected sample appears to be binary. Use a text export.');
+    const warnings = secretWarnings(content);
+    if (warnings.length) throw new Error(`The selected sample may contain ${warnings.join(' or ')}. Remove it from a copy and try again.`);
+    const body = new FormData();
+    body.append('file', file, file.name);
+    body.append('consent', 'true');
+    message('sample-message', 'Sharing your sanitized sample for manual review…');
+    const response = await fetchJson(apiUrl('/api/public/preview-sample', apiBase, window.location.origin), { method: 'POST', body }, 'sample');
+    if (response?.status !== 'accepted') throw new Error('Sample sharing could not be confirmed. Please try again later.');
+    sampleForm.hidden = true;
+    message('sample-message', 'Sample received for manual review. It will not change this preview or create an automatic report or follow-up.');
+  } catch (error) {
+    message('sample-message', error instanceof Error ? error.message : 'Sample sharing failed.', 'error');
+  } finally {
+    button.disabled = false;
+    previewButton.disabled = false;
+    fileInput.disabled = false;
   }
 });
 

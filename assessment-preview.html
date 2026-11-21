@@ -109,6 +109,17 @@
             <p class="preview-privacy">Before upload, your browser checks for common secret patterns and stops if it finds one. This check cannot prove a file is free of secrets.</p>
             <div id="preview-message" class="preview-message" role="status" aria-live="polite" hidden></div>
             <div id="preview-results" class="preview-results" aria-live="polite" hidden></div>
+            <div id="sample-contribution" class="preview-share" hidden>
+              <span class="preview-kicker">OPTIONAL FORMAT SAMPLE</span>
+              <h4>Help us recognize this export</h4>
+              <p>One or more files could not be fully recognized. You can separately share one sanitized text file, up to 1 MiB, to help improve format support. Spotlight stores it encrypted for up to 30 days for manual staff review. Sharing will not change your preview or trigger an automatic report or follow-up.</p>
+              <form id="sample-contribution-form" novalidate>
+                <div class="preview-field"><label for="sample-file">File to share</label><select id="sample-file" name="sample_file"></select></div>
+                <label class="preview-confirm"><input id="sample-consent" type="checkbox" required /><span>I have removed secrets from this selected file and agree to encrypted storage for up to 30 days and manual review to improve format support.</span></label>
+                <button class="btn btn--ghost" type="submit">Share sanitized sample</button>
+              </form>
+              <div id="sample-message" class="preview-message" role="status" aria-live="polite" hidden></div>
+            </div>
             <div id="report-delivery" class="preview-delivery" hidden>
               <span class="preview-kicker">KEEP THE DETAIL</span>
               <h4>View the full preview report</h4>
@@ -131,8 +142,8 @@
 
     <section class="preview-next section--tight" aria-labelledby="next-title">
       <div class="container preview-next__grid">
-        <div><span class="eyebrow">When you need the full picture</span><h2 id="next-title" class="display">Move from a file preview to a reviewed assessment.</h2><p>A scoped assessment adds collection locations, asset identity, evidence coverage, prioritized findings, and a report your team can keep.</p></div>
-        <div class="preview-next__action"><span class="preview-kicker">NETWORK EXPOSURE ASSESSMENT</span><strong>$5,000 <small>· two weeks</small></strong><p>Includes a reviewed report and walkthrough. Scope and methods are agreed before collection.</p><a class="btn btn--primary" href="contact.html">Request an Assessment</a></div>
+        <div><span class="eyebrow">When you need the full picture</span><h2 id="next-title" class="display">Move from a file preview to a reviewed assessment.</h2><p>A tailored assessment adds collection locations, asset identity, evidence coverage, prioritized findings, and a report your team can keep.</p></div>
+        <div class="preview-next__action"><span class="preview-kicker">TAILORED NETWORK ASSESSMENT</span><h3>Built around your environment.</h3><p>We agree on scope, collection methods, and deliverables before work begins.</p><a class="btn btn--primary" href="contact.html">Request a tailored assessment</a></div>
       </div>
     </section>
   </main>

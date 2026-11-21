@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  apiUrl, buildLeadPayload, buildLookupUrl, looksBinary, observedAtIso, secretWarnings, tokenFromHash,
-  validateFiles, validateResponse,
+  apiUrl, buildLeadPayload, buildLookupUrl, looksBinary, observedAtIso, sampleCandidates, secretWarnings, tokenFromHash,
+  validateFiles, validateResponse, validateSampleFile,
 } from '../assets/js/assessment-preview-core.mjs';
 
 const file = (name, size) => ({ name, size });
@@ -47,6 +47,24 @@ test('common credentials and binary content stop local upload checks', () => {
   assert.ok(secretWarnings('-----BEGIN RSA PRIVATE KEY-----').includes('private key'));
   assert.equal(looksBinary('interface eth0\naddress 192.0.2.1'), false);
   assert.equal(looksBinary('abc\0def'), true);
+});
+
+test('only matching partial or unsupported preview files can be offered for separate sharing', () => {
+  const selected = [file('recognized.cfg', 100), file('unknown.txt', 200), file('partial.xml', 300), file('rejected.log', 400)];
+  const reported = [
+    { name: 'recognized.cfg', status: 'recognized' },
+    { name: 'unknown.txt', status: 'unsupported' },
+    { name: 'partial.xml', status: 'partial' },
+    { name: 'rejected.log', status: 'rejected' },
+  ];
+  assert.deepEqual(sampleCandidates(selected, reported).map(({ file: candidate }) => candidate.name), ['unknown.txt', 'partial.xml']);
+  assert.deepEqual(sampleCandidates(selected, [{ name: 'another.txt', status: 'unsupported' }]), []);
+});
+
+test('separate sample sharing needs consent and a text-sized file', () => {
+  assert.equal(validateSampleFile(file('unknown.txt', 1024 * 1024), true).size, 1024 * 1024);
+  assert.throws(() => validateSampleFile(file('unknown.txt', 200), false), /Agree to share/);
+  assert.throws(() => validateSampleFile(file('unknown.txt', 1024 * 1024 + 1), true), /1 MiB/);
 });
 
 test('response validation fails closed on missing core fields', () => {

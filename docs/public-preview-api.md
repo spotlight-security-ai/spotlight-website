@@ -94,6 +94,29 @@ Findings include `evidence_status` (`current`, `stale`, or `undated`) and
 `source_status` (`observed`, `undated`, or `imported_assertion`) so an old export
 or imported scanner claim is not presented as a fresh observation.
 
+## Optional format sample
+
+Only after a preview returns a `partial` or `unsupported` file may a visitor opt
+in to share one of those files. This is a separate request; preview and report
+results do not depend on it. The form requires a second explicit checkbox and
+rechecks the selected file for common secrets before upload.
+
+`POST /api/public/preview-sample` accepts multipart form data with exactly one
+`file` part (UTF-8 text, 1 MiB maximum) and `consent=true`. It does not send a
+lead, report handle, or contact details. Any filename extension is accepted if
+the content passes server validation. HTTP 202 returns:
+
+```json
+{"status":"accepted","sample_id":"0123456789abcdef0123456789abcdef","retained_until":"2026-12-21T00:00:00Z","review":"manual"}
+```
+
+The backend stores the sample encrypted for up to 30 days for manual staff
+review; there is no automatic analysis result or follow-up. The separate
+`SPOTLIGHT_PREVIEW_SAMPLE_COLLECTION_ENABLED` gate is off by default and also
+requires `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED`. A disabled route returns 404;
+invalid or unsanitized text returns 422, oversized content 413, unsupported
+media type 415, and rate limiting 429.
+
 ## Verified email report
 
 When a report handle exists, the optional form sends

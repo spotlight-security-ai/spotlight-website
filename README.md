@@ -92,6 +92,10 @@ does not contact a device, and has no browser-side API key. It sends only the
 visitor-selected text exports to the configured API after a basic local secret
 check; that check cannot certify that a file is sanitized. The backend must repeat
 file, secret, and size validation. No result is fabricated when the API is off.
+When a file is only partially recognized or unsupported, visitors may separately
+opt in to share one sanitized text sample for manual format review. The sample
+request has its own consent checkbox, endpoint, and default-off backend gate; it
+does not affect the preview or report.
 
 The default API base is this site's origin. To use a separate HTTPS API origin,
 set `window.SPOTLIGHT_PREVIEW_API_BASE` in `assets/js/preview-config.js` and allow

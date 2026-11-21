@@ -2,6 +2,7 @@ export const MAX_FILES = 5;
 export const MAX_FILE_BYTES = 5 * 1024 * 1024;
 export const MAX_TOTAL_BYTES = 20 * 1024 * 1024;
 export const MAX_REPORT_HANDLE_CHARS = 60_000;
+export const MAX_SAMPLE_BYTES = 1024 * 1024;
 export const ALLOWED_EXTENSIONS = new Set(['txt', 'cfg', 'conf', 'json', 'xml', 'csv', 'tsv', 'rsc', 'exp', 'nessus', 'log']);
 
 export function apiUrl(path, configuredBase = '', pageOrigin = globalThis.location?.origin) {
@@ -44,6 +45,25 @@ export function validateFiles(input) {
   }
   if (total > MAX_TOTAL_BYTES) throw new Error('The files exceed the combined 20 MiB limit.');
   return files;
+}
+
+export function sampleCandidates(selectedFiles, reportedFiles) {
+  if (!Array.isArray(reportedFiles)) return [];
+  const files = Array.from(selectedFiles || []);
+  return reportedFiles.flatMap((entry, index) => {
+    const file = files[index];
+    return file && file.name === entry?.name && ['partial', 'unsupported'].includes(entry.status)
+      ? [{ file, status: entry.status }]
+      : [];
+  });
+}
+
+export function validateSampleFile(file, consent) {
+  if (!consent) throw new Error('Agree to share the sanitized sample before uploading it.');
+  if (!file || !Number.isSafeInteger(file.size) || file.size < 1 || file.size > MAX_SAMPLE_BYTES) {
+    throw new Error('The sample must be a nonempty text file no larger than 1 MiB.');
+  }
+  return file;
 }
 
 export function observedAtIso(localValue, nowMs = Date.now()) {
