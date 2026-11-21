@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   apiUrl, buildLeadPayload, buildLookupUrl, looksBinary, observedAtIso, sampleCandidates, secretWarnings, tokenFromHash,
-  validateFiles, validateResponse, validateSampleFile,
+  validateFiles, validateResponse, validateSampleFile, verificationMessage,
 } from '../assets/js/assessment-preview-core.mjs';
 
 const file = (name, size) => ({ name, size });
@@ -96,6 +96,12 @@ test('lead accepts a signed report handle larger than 4096 characters up to the 
   assert.equal(buildLeadPayload({ ...values, reportHandle: 'x'.repeat(5000) }).report_handle.length, 5000);
   assert.equal(buildLeadPayload({ ...values, reportHandle: 'x'.repeat(60000) }).report_handle.length, 60000);
   assert.throws(() => buildLeadPayload({ ...values, reportHandle: 'x'.repeat(60001) }), /new configuration preview/);
+});
+
+test('confirmed and queued verification emails each show an accurate next step', () => {
+  assert.match(verificationMessage('verification_sent'), /Check your inbox/);
+  assert.match(verificationMessage('verification_pending'), /sending your verification link; check your inbox shortly/);
+  assert.throws(() => verificationMessage('unexpected'), /status could not be confirmed/);
 });
 
 test('report token is read only from the URL fragment', () => {

@@ -112,8 +112,11 @@ the content passes server validation. HTTP 202 returns:
 {"status":"accepted","sample_id":"0123456789abcdef0123456789abcdef","retained_until":"2026-12-21T00:00:00Z","review":"manual"}
 ```
 
-The backend stores the sample encrypted for up to 30 days for manual staff
-review; there is no automatic analysis result or follow-up. The separate
+The backend stores the sample encrypted for manual staff review. Staff access
+expires after 30 days; hourly cleanup deletes ciphertext after expiry, though
+an outage can delay deletion. The
+original filename is discarded. There is no automatic analysis result or
+follow-up. The separate
 `SPOTLIGHT_PREVIEW_SAMPLE_COLLECTION_ENABLED` gate is off by default and also
 requires `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED`. A disabled route returns 404;
 invalid or unsanitized text returns 422, oversized content 413, unsupported
@@ -129,7 +132,10 @@ When a report handle exists, the optional form sends
 ```
 
 `audience` is `company` or `msp`. MSP requests may include `client_label`.
-HTTP 202 returns `{"status":"verification_sent","expires_at":"..."}`.
+HTTP 202 returns `{"status":"verification_sent","expires_at":"..."}` when
+delivery is confirmed or `{"status":"verification_pending","expires_at":"..."}`
+when the link is queued for retry. A pending link remains valid; visitors should
+check their inbox shortly.
 HTTP 409 means the handle was already used; 422 means it is invalid; 503 means
 delivery is unavailable. The on-page result remains available in all cases.
 

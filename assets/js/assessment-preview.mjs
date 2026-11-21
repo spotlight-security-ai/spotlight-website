@@ -1,4 +1,4 @@
-import { apiUrl, buildLeadPayload, buildLookupUrl, looksBinary, MAX_SAMPLE_BYTES, observedAtIso, sampleCandidates, secretWarnings, validateFiles, validateResponse, validateSampleFile } from './assessment-preview-core.mjs';
+import { apiUrl, buildLeadPayload, buildLookupUrl, looksBinary, MAX_SAMPLE_BYTES, observedAtIso, sampleCandidates, secretWarnings, validateFiles, validateResponse, validateSampleFile, verificationMessage } from './assessment-preview-core.mjs';
 
 const byId = id => document.getElementById(id);
 const text = value => typeof value === 'string' || typeof value === 'number' ? String(value) : '';
@@ -343,10 +343,10 @@ emailForm.addEventListener('submit', async event => {
     const response = await fetchJson(apiUrl('/api/public/preview-lead', apiBase, window.location.origin), {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     }, 'lead');
-    if (response?.status !== 'verification_sent') throw new Error('Email delivery could not be confirmed. Please try again later.');
+    const confirmation = verificationMessage(response?.status);
     reportHandle = null;
     emailForm.hidden = true;
-    message('report-email-message', 'Check your inbox. Open the link to verify your email and view the full report.');
+    message('report-email-message', confirmation);
   } catch (error) {
     message('report-email-message', error instanceof Error ? error.message : 'Email request failed.', 'error');
   } finally {

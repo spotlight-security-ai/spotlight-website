@@ -132,6 +132,16 @@ export function buildLeadPayload({ reportHandle, name, email, company, path, cli
   };
 }
 
+export function verificationMessage(status) {
+  if (status === 'verification_sent') {
+    return 'Check your inbox. Open the link to verify your email and view the full report.';
+  }
+  if (status === 'verification_pending') {
+    return 'We are sending your verification link; check your inbox shortly. Open it to verify your email and view the full report.';
+  }
+  throw new Error('The email request status could not be confirmed. Check your inbox before starting a new preview.');
+}
+
 export function tokenFromHash(hash) {
   const token = new URLSearchParams(String(hash || '').replace(/^#/, '')).get('token') || '';
   return token.length <= 4096 ? token : '';
