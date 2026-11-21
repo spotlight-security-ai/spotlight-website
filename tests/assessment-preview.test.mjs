@@ -69,6 +69,10 @@ test('common credentials and binary content stop local upload checks', () => {
     'passphrase sensitive-value',
     'pre-shared-key=sensitive-value',
     'psk: sensitive-value',
+    'secret=sensitive-value',
+    'community=sensitive-value',
+    'token=sensitive-value',
+    'authorization: Basic ZGVtbzpwYXNzd29yZA==',
   ]) assert.ok(secretWarnings(value).includes('credential assignment'), value);
   assert.equal(looksBinary('interface eth0\naddress 192.0.2.1'), false);
   assert.equal(looksBinary('abc\0def'), true);
@@ -180,5 +184,6 @@ test('static preview activation, CI, and scoped CSP fail closed', () => {
   }
   assert.match(workflow, /npm test/);
   assert.match(workflow, /node --check assets\/js\/assessment-preview\.mjs/);
+  assert.match(workflow, /assets\/js\/assessment-report\.mjs/);
   assert.match(workflow, /git diff --check/);
 });

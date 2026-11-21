@@ -84,7 +84,10 @@ export function secretWarnings(content) {
   const warnings = new Set();
   if (/-----BEGIN (?:[A-Z ]+ )?PRIVATE KEY-----/i.test(content)) warnings.add('private key');
   if (/\bAuthorization\s*:\s*Bearer\s+\S+/i.test(content)) warnings.add('bearer token');
-  const assignments = /\b(password|passwd|passphrase|api[_-]?key|access[_-]?token|refresh[_-]?token|client[_-]?secret|private[_-]?key|pre[_-]?shared[_-]?key|shared[_-]?secret|psk)\b["']?\s*(?:=|:|\s)\s*["']?([^\s,;"']+)/gi;
+  // Keep this conservative browser-side screen aligned with the server's
+  // credential vocabulary. The server remains authoritative and rescans every
+  // upload before parsing it.
+  const assignments = /\b(password|passwd|passphrase|secret|community|authorization|api[_-]?key|access[_-]?token|refresh[_-]?token|client[_-]?secret|private[_-]?key|pre[_-]?shared[_-]?key|shared[_-]?secret|psk|token)\b["']?\s*(?:=|:|\s)\s*["']?([^\s,;"']+)/gi;
   for (const match of content.matchAll(assignments)) if (!redacted(match[2])) warnings.add('credential assignment');
   const commands = /(?:^|\n)\s*(?:enable\s+secret|username\s+\S+\s+(?:password|secret)|snmp-server\s+community)\s+(\S+)/gi;
   for (const match of content.matchAll(commands)) if (!redacted(match[1])) warnings.add('configuration secret');

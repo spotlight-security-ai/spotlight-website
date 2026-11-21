@@ -8,6 +8,7 @@ on:
       - 'assessment-report.html'
       - 'assets/css/assessment-preview.css'
       - 'assets/js/assessment-preview*.mjs'
+      - 'assets/js/assessment-report.mjs'
       - 'assets/js/main.js'
       - 'assets/js/preview-config.js'
       - 'docs/ASSESSMENT_PREVIEW_FINISH_README.md'
