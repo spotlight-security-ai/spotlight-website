@@ -764,6 +764,9 @@ h3.display { font-size: clamp(26px, 3.6vw, 40px); }
 .assess__buy .price { font-size: 40px; font-weight: 900; line-height: 1; margin-bottom: 16px; }
 .assess__buy .price span { font-size: 15px; font-weight: 600; color: var(--muted); margin-left: 8px; }
 .assess__buy .btn { white-space: nowrap; }
+.assess__preview { display: block; width: fit-content; margin: 14px 0 0 auto; color: var(--orange); font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+.assess__preview:hover { color: #fff; }
+.assess__preview:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
 .assess--quiet { margin-top: 22px; border-color: var(--line); background: var(--card); }
 .assess__buy .price--sm { font-size: 24px; color: var(--muted); }
 

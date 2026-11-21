@@ -12,6 +12,8 @@ the WordPress export in plain HTML/CSS/JS — no build step, no framework, hosts
 | `industries.html`  | Industries (5 tabbed sectors + local-gov deep dive) |
 | `about.html`       | About (in the news, problem, credibility, team & advisors) |
 | `contact.html`     | Book a Demo / contact — embedded Pipedrive lead form |
+| `assessment-preview.html` | Public device lookup and sanitized multi-file configuration preview |
+| `assessment-report.html` | Verified preview report (`noindex`, `no-store`) |
 
 ## Structure
 
@@ -81,3 +83,20 @@ dashboard (a different subdomain) can read `clips.json`.
   async loader snippet, just before `</head>`).
 - All interactivity from the original is reproduced (terminal typing, counters,
   tabs, hover states, scroll-in animations).
+
+## Public assessment preview (feature branch)
+
+`assessment-preview.html` is a deterministic front end for the public API described in
+[`docs/public-preview-api.md`](docs/public-preview-api.md). It makes no AI request,
+does not contact a device, and has no browser-side API key. It sends only the
+visitor-selected text exports to the configured API after a basic local secret
+check; that check cannot certify that a file is sanitized. The backend must repeat
+file, secret, and size validation. No result is fabricated when the API is off.
+
+The default API base is this site's origin. To use a separate HTTPS API origin,
+set `window.SPOTLIGHT_PREVIEW_API_BASE` in `assets/js/preview-config.js` and allow
+this site origin in the API's CORS policy. Never put a credential in that file.
+The backend's `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED` gate is off by default.
+
+Run the built-in frontend checks with `npm test` (Node 22; no install required).
+The static site can still be served with `python -m http.server 8891`.

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device &amp; Configuration Preview | Spotlight Security</title>
+  <meta name="description" content="Look up a device model and review sanitized configuration exports. See evidence-backed findings, coverage gaps, and practical next steps." />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/assessment-preview.css" />
+  <script src="assets/js/preview-config.js"></script>
+  <script src="assets/js/main.js" defer></script>
+  <script type="module" src="assets/js/assessment-preview.mjs"></script>
+</head>
+<body class="preview-page">
+  <a class="preview-skip" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="nav__logo" href="index.html" aria-label="Spotlight Security home"><img src="assets/img/logo-header.png" alt="Spotlight Security" /></a>
+        <ul class="nav__links">
+          <li><a href="platform.html">Platform</a></li>
+          <li><a href="demo.html">See it work</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="industries.html">Industries</a></li>
+          <li><a href="about.html">About</a></li>
+          <li class="nav__links-login"><a href="https://dashboard.spotlightsecurity.ai/signin">Log in</a></li>
+        </ul>
+        <div class="nav__cta">
+          <a class="nav__login" href="https://dashboard.spotlightsecurity.ai/signin">Log in</a>
+          <a class="btn btn--primary" href="contact.html">Book a Demo</a>
+          <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="preview-hero">
+      <div class="container preview-hero__grid">
+        <div>
+          <a class="preview-back" href="index.html#assessment">Spotlight assessments</a>
+          <span class="eyebrow">A first look from your evidence</span>
+          <h1 class="hero-title">Know the device.<br /><span class="grad-text">See the next step.</span></h1>
+          <p class="lead">Search a make and model, then preview what sanitized configuration exports can reveal. Every result shows its evidence and its limits.</p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="#device-search">Check a device</a>
+            <a class="btn btn--ghost" href="#config-preview">Preview configurations</a>
+          </div>
+          <p class="preview-hero__note">No device contact or configuration changes happen here. This preview is separate from a reviewed network assessment.</p>
+        </div>
+        <aside class="preview-intro" aria-label="What this preview provides">
+          <div class="preview-intro__top"><span class="preview-kicker">PREVIEW SCOPE</span><span class="preview-intro__live">EVIDENCE FIRST</span></div>
+          <div class="preview-intro__item"><span class="preview-intro__icon">01</span><div><strong>Find a model</strong><p>See the exact collection and qualification evidence Spotlight has recorded.</p></div></div>
+          <div class="preview-intro__item"><span class="preview-intro__icon">02</span><div><strong>Review exports</strong><p>Surface supported checks from redacted files, with the source of each finding.</p></div></div>
+          <div class="preview-intro__item"><span class="preview-intro__icon">03</span><div><strong>Plan the next move</strong><p>Get practical follow-up steps and see what still needs verification.</p></div></div>
+          <div class="preview-intro__foot">A readable export does not establish continuous monitoring or device control.</div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="preview-workspace section--tight" aria-labelledby="workspace-title">
+      <div class="container">
+        <div class="preview-section-head"><div><span class="eyebrow">Start here</span><h2 id="workspace-title" class="display">Choose how you are evaluating Spotlight</h2></div><p>This helps make the follow-up relevant. It does not change the technical result.</p></div>
+        <fieldset class="preview-path" id="preview-path">
+          <legend class="sr-only">Evaluation path</legend>
+          <label class="preview-path__choice"><input type="radio" name="path" value="direct" checked /><span><strong>For my organization</strong><small>Explore a device or network you manage.</small></span></label>
+          <label class="preview-path__choice"><input type="radio" name="path" value="partner" /><span><strong>For a client</strong><small>For MSPs and partners reviewing a customer environment.</small></span></label>
+        </fieldset>
+        <div id="client-label-wrap" class="preview-client" hidden>
+          <label for="client-label">Client label <span class="preview-optional">optional</span></label>
+          <input id="client-label" name="client_label" type="text" maxlength="100" autocomplete="off" placeholder="e.g. East plant" />
+          <p>Use a short label, not credentials or private details.</p>
+        </div>
+
+        <div class="preview-grid">
+          <section id="device-search" class="preview-panel" aria-labelledby="device-title">
+            <div class="preview-panel__eyebrow"><span>DEVICE LOOKUP</span><span>01 / 02</span></div>
+            <h3 id="device-title">What do you have?</h3>
+            <p>Search an exact make and model. Results distinguish a readable export, tested software, and device qualification.</p>
+            <form id="lookup-form" novalidate>
+              <div class="preview-fields preview-fields--two">
+                <div class="preview-field"><label for="device-make">Make</label><input id="device-make" name="make" type="text" maxlength="80" required autocomplete="off" placeholder="e.g. Cisco" /></div>
+                <div class="preview-field"><label for="device-model">Model</label><input id="device-model" name="model" type="text" maxlength="120" required autocomplete="off" placeholder="e.g. Catalyst 9300" /></div>
+              </div>
+              <button class="btn btn--primary" type="submit">Check this model</button>
+            </form>
+            <div id="lookup-message" class="preview-message" role="status" aria-live="polite" hidden></div>
+            <div id="lookup-results" class="preview-results" aria-live="polite" hidden></div>
+          </section>
+
+          <section id="config-preview" class="preview-panel" aria-labelledby="config-title">
+            <div class="preview-panel__eyebrow"><span>CONFIGURATION PREVIEW</span><span>02 / 02</span></div>
+            <h3 id="config-title">Bring redacted exports</h3>
+            <p>Add up to five sanitized files. Spotlight will report supported observations, findings, and gaps for those files only.</p>
+            <form id="preview-form" novalidate>
+              <div class="preview-field"><label for="config-files">Configuration files</label>
+                <input id="config-files" name="files" type="file" multiple accept=".txt,.cfg,.conf,.json,.xml,.csv,.tsv,.rsc,.exp,.nessus,.log" required />
+                <label class="preview-drop" for="config-files"><span class="preview-drop__mark" aria-hidden="true">+</span><strong>Choose files to review</strong><span>Text exports · up to 5 files, 5 MiB each</span></label>
+                <ul id="file-list" class="preview-file-list" aria-live="polite"></ul>
+              </div>
+              <div class="preview-field"><label for="observed-at">When were these files exported? <span class="preview-optional">optional</span></label><input id="observed-at" name="observed_at" type="datetime-local" /><p>Use the collection time, not the upload time. Leave blank if unknown; that limits what the preview can verify.</p></div>
+              <label class="preview-confirm"><input id="sanitized-confirm" type="checkbox" required /><span>I have removed passwords, tokens, private keys, and other secrets from these copies.</span></label>
+              <button class="btn btn--primary" type="submit">Review sanitized files</button>
+            </form>
+            <p class="preview-privacy">Before upload, your browser checks for common secret patterns and stops if it finds one. This check cannot prove a file is free of secrets.</p>
+            <div id="preview-message" class="preview-message" role="status" aria-live="polite" hidden></div>
+            <div id="preview-results" class="preview-results" aria-live="polite" hidden></div>
+            <div id="report-delivery" class="preview-delivery" hidden>
+              <span class="preview-kicker">KEEP THE DETAIL</span>
+              <h4>Email this preview</h4>
+              <p>Enter a work email to receive a verification link. The report is sent only after that link is opened.</p>
+              <form id="report-email-form" novalidate>
+                <div class="preview-fields preview-fields--two">
+                  <div class="preview-field"><label for="lead-name">Your name</label><input id="lead-name" name="name" type="text" autocomplete="name" maxlength="100" required /></div>
+                  <div class="preview-field"><label for="lead-email">Work email</label><input id="lead-email" name="email" type="email" autocomplete="email" maxlength="254" required /></div>
+                </div>
+                <div class="preview-field"><label for="lead-company">Organization</label><input id="lead-company" name="company" type="text" autocomplete="organization" maxlength="120" required /></div>
+                <label class="preview-confirm"><input id="lead-consent" type="checkbox" required /><span>Email my report and allow Spotlight to follow up about this preview.</span></label>
+                <button class="btn btn--primary" type="submit">Send verification link</button>
+              </form>
+              <div id="report-email-message" class="preview-message" role="status" aria-live="polite" hidden></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-next section--tight" aria-labelledby="next-title">
+      <div class="container preview-next__grid">
+        <div><span class="eyebrow">When you need the full picture</span><h2 id="next-title" class="display">Move from a file preview to a reviewed assessment.</h2><p>A scoped assessment adds collection locations, asset identity, evidence coverage, prioritized findings, and a report your team can keep.</p></div>
+        <div class="preview-next__action"><span class="preview-kicker">NETWORK EXPOSURE ASSESSMENT</span><strong>$5,000 <small>· two weeks</small></strong><p>Includes a reviewed report and walkthrough. Scope and methods are agreed before collection.</p><a class="btn btn--primary" href="contact.html">Request an Assessment</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="col"><img class="footer-logo" src="assets/img/logo-header.png" alt="Spotlight Security" /><p class="about-blurb">Security posture management for IT, IoT, and OT. See the evidence, understand the limits, and decide what to do next.</p><p class="brand-line">IT-grade security, OT-grade manners.</p></div>
+        <div class="col"><h5>Product</h5><ul><li><a href="platform.html">Platform</a></li><li><a href="demo.html">See it work</a></li><li><a href="assessment-preview.html">Assessment preview</a></li><li><a href="index.html#pricing">Pricing</a></li></ul></div>
+        <div class="col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="about.html#team">Our Team</a></li><li><a href="contact.html">Contact Sales</a></li><li><a href="https://dashboard.spotlightsecurity.ai/signin">Customer Log in</a></li></ul></div>
+        <div class="col"><h5>Get in touch</h5><ul><li><a href="mailto:sales@spotlightsecurity.ai">sales@spotlightsecurity.ai</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><span>© <span data-year>2026</span> Spotlight Security. All rights reserved.</span><span>Protecting critical infrastructure.</span></div>
+    </div>
+  </footer>
+</body>
+</html>
