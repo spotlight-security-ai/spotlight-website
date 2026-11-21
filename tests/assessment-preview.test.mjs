@@ -164,6 +164,9 @@ test('static preview activation, CI, and scoped CSP fail closed', () => {
   assert.match(previewScript, /window\.SPOTLIGHT_PREVIEW_ENABLED === true/);
   assert.match(previewScript, /if \(!previewEnabled\)/);
   assert.match(reportScript, /SPOTLIGHT_PREVIEW_ENABLED !== true/);
+  assert.match(netlify, /for = "\/assessment-preview\*"/);
+  assert.match(netlify, /for = "\/assessment-report\*"/);
+  assert.doesNotMatch(netlify, /for = "\/assessment-(?:preview|report)\.html"/);
   const policies = [...netlify.matchAll(/^\s*Content-Security-Policy = "([^"]+)"/gm)].map(match => match[1]);
   assert.equal(policies.length, 2);
   for (const policy of policies) {
