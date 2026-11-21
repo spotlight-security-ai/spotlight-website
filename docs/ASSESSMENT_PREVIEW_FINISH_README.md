@@ -19,7 +19,7 @@ The first working version is built and ready for review.
 - All public features are off by default
 - No AI is used today
 
-The website's [Netlify deploy preview](https://deploy-preview-33--spotlight-security-website.netlify.app/assessment-preview.html) is available for visual review. The live assessment actions will not work there until it is connected to a deployed API.
+The website's [Netlify deploy preview](https://deploy-preview-33--spotlight-security-website.netlify.app/assessment-preview.html) is available for visual review by reviewers with Netlify team access. The live assessment actions will not work there until it is connected to a deployed API.
 
 Before launch, the team must choose the final backend release branch, deploy the API, connect the website to it, configure email/Pipedrive/Slack, and complete one end-to-end staging test.
 
@@ -69,7 +69,7 @@ Fill these in before asking engineering to launch.
 | Public API address, such as `https://api.example.com` or a same-origin proxy | ____________________ | ____________________ |
 | Email service: AWS SES or TLS SMTP | ____________________ | ____________________ |
 | Verified sender address | ____________________ | ____________________ |
-| Pipedrive account and pipeline | ____________________ | ____________________ |
+| Pipedrive account and Leads Inbox/ownership process | ____________________ | ____________________ |
 | Slack channel for verified leads | ____________________ | ____________________ |
 | Launch both direct-company and MSP paths? | Yes / No | ____________________ |
 | Collect unsupported samples at launch? Recommended: No | Yes / No | ____________________ |
@@ -94,7 +94,7 @@ PR #491 is the public-preview layer on top of PR #492. PR #492 contains the pars
 
 The engineering owner must do one of these before release:
 
-1. Finish and merge the required assessment foundation into the intended Sentinel release line, then rebase or cherry-pick preview commit `4dfef0ab` onto that line; or
+1. Finish and merge the required assessment foundation into the intended Sentinel release line, then rebase or retarget the complete PR #491 change set onto that line; or
 2. Review and promote the complete assessment handoff as the agreed release base, then retarget PR #491 to the real release branch.
 
 Do not merge PR #491 into the temporary handoff branch and assume it has reached production.
@@ -157,8 +157,8 @@ The website currently has its core switch off. Its empty API base means same-ori
 - [ ] Enable `SPOTLIGHT_PREVIEW_LEADS_ENABLED` in staging.
 - [ ] Request a report with a real team-controlled email address.
 - [ ] Open the private link and confirm the report loads.
-- [ ] Confirm exactly the expected Person and Lead appear in Pipedrive.
-- [ ] Confirm Slack receives only the short signup summary.
+- [ ] Allow up to one two-minute scheduler tick, then confirm exactly the expected Person and Lead appear in Pipedrive.
+- [ ] After that scheduler tick, confirm Slack receives only the short signup summary.
 - [ ] Confirm uploaded file content and finding evidence are absent from Pipedrive and Slack.
 - [ ] Exercise one controlled delivery failure and confirm the retry recovers.
 - [ ] Confirm report access and local contact data expire after 24 hours.
@@ -173,7 +173,7 @@ Delivery is designed for at-least-once behavior. A rare duplicate email, CRM req
 - [ ] Set `window.SPOTLIGHT_PREVIEW_ENABLED = true` in the reviewed production website configuration.
 - [ ] Merge and deploy website PR #33.
 - [ ] Confirm the production homepage link and assessment page work.
-- [ ] Enable `SPOTLIGHT_PREVIEW_LEADS_ENABLED` only after its production smoke test passes.
+- [ ] Enable `SPOTLIGHT_PREVIEW_LEADS_ENABLED` only after the manual staging lead-flow test in Stage 4 passes.
 - [ ] Monitor errors, rate limits, retries, email delivery, and lead creation during the launch window.
 
 ### Stage 6: Decide whether to enable sample collection
@@ -345,6 +345,7 @@ The team can stop new public requests without rolling back code:
 1. Turn off `SPOTLIGHT_PREVIEW_SAMPLE_COLLECTION_ENABLED`.
 2. Turn off `SPOTLIGHT_PREVIEW_LEADS_ENABLED`.
 3. Turn off `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED`.
+4. Set `window.SPOTLIGHT_PREVIEW_ENABLED = false` and redeploy the website, or hide the public link while the incident is active.
 
 Disabling a feature does not instantly delete records already accepted. Existing records remain subject to their expiry and purge process. Do not rotate or discard `SENTINEL_SECRETS_KEY` while retained reports or samples still need to be decrypted.
 
@@ -362,7 +363,24 @@ uv sync
 $env:JWT_SIGNING_SECRET='local-test-secret-at-least-32-characters'
 uv run pytest pkgs/sentinel/tests/public_preview pkgs/sentinel/tests/storage/test_db.py::test_upgrade_database pkgs/sentinel/tests/storage/test_api_keys_schema.py::test_exactly_one_alembic_head -q
 
-uv run ruff check pkgs/sentinel/src/sentinel/public_preview pkgs/sentinel/src/sentinel/web/routes/public_preview.py pkgs/sentinel/src/sentinel/web/routes/public_preview_leads.py pkgs/sentinel/src/sentinel/web/routes/public_preview_samples.py pkgs/sentinel/tests/public_preview
+$previewPaths = @(
+  'pkgs/sentinel/src/sentinel/public_preview'
+  'pkgs/sentinel/src/sentinel/web/routes/public_preview.py'
+  'pkgs/sentinel/src/sentinel/web/routes/public_preview_leads.py'
+  'pkgs/sentinel/src/sentinel/web/routes/public_preview_samples.py'
+  'pkgs/sentinel/src/sentinel/database/public_preview_models.py'
+  'pkgs/sentinel/src/sentinel/database/public_preview_sample_models.py'
+  'pkgs/sentinel/src/sentinel/database/alembic/env.py'
+  'pkgs/sentinel/src/sentinel/database/alembic/versions/20261121_0065_public_preview_leads.py'
+  'pkgs/sentinel/src/sentinel/database/alembic/versions/20261121_0066_public_preview_samples.py'
+  'pkgs/sentinel/src/sentinel/web/api.py'
+  'pkgs/sentinel/src/sentinel/web/api_scheduler.py'
+  'pkgs/sentinel/tests/public_preview'
+  'tools/public-preview-smoke.py'
+)
+uv run ruff format --check @previewPaths
+uv run ruff check @previewPaths
+git diff --check
 ```
 
 Apply the production migration through the normal deployment process. If the deployment uses the Sentinel CLI directly, the command is:
@@ -375,6 +393,11 @@ Run the website tests from the final website checkout:
 
 ```powershell
 npm test
+node --check assets/js/main.js
+node --check assets/js/assessment-preview-core.mjs
+node --check assets/js/assessment-preview.mjs
+node --check assets/js/assessment-report.mjs
+git diff --check
 ```
 
 ## Definition of done
