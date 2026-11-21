@@ -50,9 +50,10 @@ export function validateFiles(input) {
 export function sampleCandidates(selectedFiles, reportedFiles) {
   if (!Array.isArray(reportedFiles)) return [];
   const files = Array.from(selectedFiles || []);
+  if (files.length !== reportedFiles.length) return [];
   return reportedFiles.flatMap((entry, index) => {
     const file = files[index];
-    return file && file.name === entry?.name && ['partial', 'unsupported'].includes(entry.status)
+    return file && ['partial', 'unsupported'].includes(entry?.status)
       ? [{ file, status: entry.status }]
       : [];
   });

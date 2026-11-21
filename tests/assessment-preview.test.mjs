@@ -49,7 +49,7 @@ test('common credentials and binary content stop local upload checks', () => {
   assert.equal(looksBinary('abc\0def'), true);
 });
 
-test('only matching partial or unsupported preview files can be offered for separate sharing', () => {
+test('only partial or unsupported preview files can be offered for separate sharing', () => {
   const selected = [file('recognized.cfg', 100), file('unknown.txt', 200), file('partial.xml', 300), file('rejected.log', 400)];
   const reported = [
     { name: 'recognized.cfg', status: 'recognized' },
@@ -58,7 +58,8 @@ test('only matching partial or unsupported preview files can be offered for sepa
     { name: 'rejected.log', status: 'rejected' },
   ];
   assert.deepEqual(sampleCandidates(selected, reported).map(({ file: candidate }) => candidate.name), ['unknown.txt', 'partial.xml']);
-  assert.deepEqual(sampleCandidates(selected, [{ name: 'another.txt', status: 'unsupported' }]), []);
+  assert.deepEqual(sampleCandidates(selected, reported.slice(0, 3)), []);
+  assert.deepEqual(sampleCandidates([file('config (final).txt', 200)], [{ name: 'config__final_.txt', status: 'unsupported' }]).map(({ file: candidate }) => candidate.name), ['config (final).txt']);
 });
 
 test('separate sample sharing needs consent and a text-sized file', () => {

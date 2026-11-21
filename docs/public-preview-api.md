@@ -99,7 +99,9 @@ or imported scanner claim is not presented as a fresh observation.
 Only after a preview returns a `partial` or `unsupported` file may a visitor opt
 in to share one of those files. This is a separate request; preview and report
 results do not depend on it. The form requires a second explicit checkbox and
-rechecks the selected file for common secrets before upload.
+rechecks the selected file for common secrets before upload. The frontend pairs
+file statuses with the original selected files by upload order because the API
+normalizes display filenames.
 
 `POST /api/public/preview-sample` accepts multipart form data with exactly one
 `file` part (UTF-8 text, 1 MiB maximum) and `consent=true`. It does not send a
