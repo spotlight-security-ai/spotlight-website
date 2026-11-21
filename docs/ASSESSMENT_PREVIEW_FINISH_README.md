@@ -8,29 +8,31 @@ This is the shared checklist for finishing and launching Spotlight's public devi
 
 ## The two-minute version
 
-The first working version is built and ready for review.
+The first working version is built. The website code is on `main`, and the complete backend stack is on Sentinel's `dev` branch. Both are deployed in a deliberately disabled state; this is a dark deployment, not a public launch.
 
-- Website: [spotlight-website PR #33](https://github.com/spotlight-security-ai/spotlight-website/pull/33)
-- Assessment/intelligence dependency: [Sentinel PR #492](https://github.com/spotlight-security-ai/sentinel/pull/492)
-- Assessment API: [Sentinel PR #491](https://github.com/spotlight-security-ai/sentinel/pull/491)
+- Website: [spotlight-website PR #33](https://github.com/spotlight-security-ai/spotlight-website/pull/33) merged into `main` on November 21, 2026
+- Assessment foundation: [Sentinel PR #392](https://github.com/spotlight-security-ai/sentinel/pull/392), merged into `dev`
+- Assessment/intelligence dependency: [Sentinel PR #492](https://github.com/spotlight-security-ai/sentinel/pull/492), merged into `dev`
+- Assessment API: [Sentinel PR #491](https://github.com/spotlight-security-ai/sentinel/pull/491), merged into `dev`
 - Website validation: 16 tests passed, plus desktop/mobile review and accessibility hardening
-- Backend validation: 67 public-preview and migration tests passed locally with three PostgreSQL-only tests skipped; current focused/PostgreSQL GitHub jobs passed, and dependency packaging/frozen interop passed on Ubuntu and Windows
-- Nothing has been merged or launched
+- Backend validation: every PR passed its integrated full-QA gate before merge. The final stack passed the complete Sentinel suite, the public-preview focused and PostgreSQL jobs, cross-engine PostgreSQL checks, container builds, and the Ubuntu/Windows assessment package matrix.
+- Backend deployment: each merge passed the staging ECS canary before deploying the same image to dev. The API, liveness worker, process-metrics worker, and process-anomaly worker are green.
+- The production assessment pages and the staging/dev backend are deployed, but the assessment feature has not launched
 - All public features are off by default
 - No AI is used today
 
-The website's [Netlify deploy preview](https://deploy-preview-33--spotlight-security-website.netlify.app/assessment-preview.html) is available for visual review by reviewers with Netlify team access. The live assessment actions will not work there until it is connected to a deployed API.
+The production [assessment page](https://spotlightsecurity.ai/assessment-preview.html) is available for visual review. It is fail-closed: the website switch is `false`, the API base is empty, and optional sample sharing is `false`. The backend is now dark-deployed, but live assessment actions still will not work until the site is deliberately connected and both sides are enabled.
 
-Before launch, the team must choose the final backend release branch, deploy the API, connect the website to it, configure email/Pipedrive/Slack, and complete one end-to-end staging test.
+Before launch, the team must choose the public API address or proxy, finish the environment and provider configuration, connect the website, approve the public data notice, and complete one end-to-end staging test. No feature gate should be enabled before those steps pass.
 
 ## Known release blockers
 
 These are unfinished release tasks, not optional improvements:
 
-1. **Backend landing path:** PR #491 is based on a temporary assessment handoff branch rather than the production release line.
-2. **Final release CI:** the new draft/stacked-PR workflow passed its focused and PostgreSQL jobs on PR #491. Full repository QA still must pass after the stack is moved to the final release branch.
-3. **Website-to-API connection:** the Netlify site has no API proxy, its configured API base is currently empty, and its explicit core switch is off.
-4. **Public data notice:** the site explains sanitization beside the upload, but it does not currently provide a general privacy-policy or terms page/link covering the report, CRM, Slack, and optional sample flows. The founders must approve and publish the appropriate notice before collecting contact details or samples.
+1. **Website-to-API connection:** the Netlify site has no API proxy, its configured API base is currently empty, and its explicit core switch is off.
+2. **Environment and provider configuration:** the team still needs approved origins, ingress limits, production signing/encryption secrets, an advisory bundle, email delivery, Pipedrive, and Slack settings. Keep credentials server-side; the website configuration must never contain a key.
+3. **Public data notice:** the site explains sanitization beside the upload, but it does not currently provide a general privacy-policy or terms page/link covering the report, CRM, Slack, and optional sample flows. The founders must approve and publish the appropriate notice before collecting contact details or samples.
+4. **End-to-end acceptance:** make/model search, configuration analysis, private reports, expiry/cleanup, and any enabled lead delivery still need a controlled staging pass using team-owned data.
 
 Engineering has fixed case-insensitive vendor-name normalization and added regression coverage. Uploads now remain inside route-bounded memory, parser failures cannot log uploaded values, browser origins must match an exact allowlist, and report verification no longer waits for CRM or Slack. The website also stays inert until its separate core switch is enabled. The optional sample panel remains hidden by default at both the website and backend gates, so the core preview can launch without presenting a dead sample-retention flow.
 
@@ -38,10 +40,10 @@ Engineering has fixed case-insensitive vendor-name normalization and added regre
 
 If you do not need the technical detail yet, use this list and assign one owner to each item.
 
-- [ ] Choose the backend release branch and landing order.
-- [ ] Run full backend CI after the verified vendor-search fix and preview stack reach the release branch.
+- [x] Merge PRs #392, #492, and #491 into Sentinel `dev` in dependency order.
+- [x] Pass full backend CI on each integrated head and dark-deploy staging/dev.
 - [ ] Approve the customer claims, consent text, and privacy/terms notice.
-- [ ] Dark-deploy the backend, migrations, scheduler, limits, and secrets.
+- [ ] Finish the dark-deployment configuration: origins, ingress limits, advisory data, secrets, and providers.
 - [ ] Connect the Netlify website to the HTTPS API and pass staging tests.
 - [ ] Pass the verified email, Pipedrive, and Slack test.
 - [ ] Launch the core preview, monitor it, and leave sample collection off until it has a named owner.
@@ -65,7 +67,7 @@ Fill these in before asking engineering to launch.
 
 | Decision | Choice | Owner |
 | --- | --- | --- |
-| Final Sentinel release branch and merge path | ____________________ | ____________________ |
+| Final Sentinel release branch and merge path | `dev`: PR #392, then #492, then #491 | Engineering |
 | Public API address, such as `https://api.example.com` or a same-origin proxy | ____________________ | ____________________ |
 | Email service: AWS SES or TLS SMTP | ____________________ | ____________________ |
 | Verified sender address | ____________________ | ____________________ |
@@ -78,26 +80,21 @@ Fill these in before asking engineering to launch.
 | Person responsible for launch monitoring and shutoff | ____________________ | ____________________ |
 | Launch date and time | ____________________ | ____________________ |
 
-## One branch decision must be resolved first
+## Backend landing order
 
-The website PR is based directly on the website's `main` branch. The backend PR has a dependency chain:
+The website PR was merged directly into the website's `main` branch. The backend dependency chain is also merged:
 
 ```text
-Sentinel PR #392: agentless assessments
+Sentinel PR #392: agentless assessments (merged into dev)
              ↓
-Sentinel PR #492: assessment and intelligence handoff
+Sentinel PR #492: assessment and intelligence handoff (merged into dev)
              ↓
-Sentinel PR #491: public preview API
+Sentinel PR #491: public preview API (merged into dev)
 ```
 
-PR #491 is the public-preview layer on top of PR #492. PR #492 contains the parser, device-intelligence, and advisory work the preview uses and is stacked on PR #392. These review links now exist, but they are not themselves a production release line.
+PR #491 is the public-preview layer on top of PR #492. PR #492 contains the parser, device-intelligence, and advisory work the preview uses. PR #392 provides the assessment foundation. All three now share the `dev` release line.
 
-The engineering owner must do one of these before release:
-
-1. Finish and merge the required assessment foundation into the intended Sentinel release line, then rebase or retarget the complete PR #491 change set onto that line; or
-2. Review and promote the complete assessment handoff as the agreed release base, then retarget PR #491 to the real release branch.
-
-Do not merge PR #491 into the temporary handoff branch and assume it has reached production.
+Engineering retargeted each PR to the current `dev`, ran the complete required CI set, merged it in dependency order, and verified staging and dev after every merge. These PR branches are historical now; do not re-stack or cherry-pick them for launch.
 
 ## Recommended finish and launch order
 
@@ -105,23 +102,25 @@ Do not merge PR #491 into the temporary handoff branch and assume it has reached
 
 - [ ] Assign the owners in the decision table.
 - [ ] Review the customer wording and the claims in this README.
-- [ ] Resolve the Sentinel branch dependency above.
+- [x] Merge PR #392 into Sentinel `dev` with the required checks passing.
+- [x] Validate and merge PR #492 into `dev`.
+- [x] Retarget, validate, and merge PR #491 into `dev`.
 - [x] Fix case-insensitive vendor-name normalization and add regression tests.
 - [x] Add a dedicated public-preview GitHub CI workflow for draft and stacked PRs.
 - [x] Confirm the new focused and PostgreSQL workflow jobs pass.
-- [ ] Run full Sentinel GitHub CI on the final integration branch.
+- [x] Run full Sentinel GitHub CI on the final integration branch.
 - [ ] Approve and publish the applicable privacy/terms notice.
-- [ ] Review and approve website PR #33.
-- [ ] Review and approve the final backend PR.
-- [ ] Keep every public feature switch off.
+- [x] Review, merge, and deploy website PR #33 with all public switches off.
+- [x] Review and approve the final backend PR.
+- [x] Keep every public feature switch off.
 
 ### Stage 2: Dark-deploy the backend
 
-A dark deployment installs the code without exposing the feature.
+A dark deployment installs the code without exposing the feature. Staging and dev are deployed and green; the remaining items below are the production-readiness configuration and verification work.
 
-- [ ] Deploy the backend and scheduler to staging with all public switches set to `false`.
+- [x] Deploy the backend and scheduler to staging and dev with all public switches set to `false`.
 - [ ] Back up the target database using the normal deployment procedure.
-- [ ] Apply migrations through revision `20261121_0066`.
+- [x] Apply migrations through revision `20261121_0066` in staging and dev through the normal deployment path.
 - [ ] Configure a current advisory bundle.
 - [ ] Put the API behind HTTPS.
 - [ ] Set edge request-size and rate limits.
@@ -171,7 +170,7 @@ Delivery is designed for at-least-once behavior. A rare duplicate email, CRM req
 - [ ] Run the production smoke test in the next section with team-owned data only.
 - [ ] Enable `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED` in production.
 - [ ] Set `window.SPOTLIGHT_PREVIEW_ENABLED = true` in the reviewed production website configuration.
-- [ ] Merge and deploy website PR #33.
+- [x] Merge and deploy website PR #33 with its core switch off.
 - [ ] Confirm the production homepage link and assessment page work.
 - [ ] Enable `SPOTLIGHT_PREVIEW_LEADS_ENABLED` only after the manual staging lead-flow test in Stage 4 passes.
 - [ ] Monitor errors, rate limits, retries, email delivery, and lead creation during the launch window.
@@ -416,7 +415,8 @@ The initial launch is finished when:
 
 - [Website PR #33](https://github.com/spotlight-security-ai/spotlight-website/pull/33)
 - [Backend PR #491](https://github.com/spotlight-security-ai/sentinel/pull/491)
+- [Assessment/intelligence PR #492](https://github.com/spotlight-security-ai/sentinel/pull/492)
 - [Assessment prerequisite PR #392](https://github.com/spotlight-security-ai/sentinel/pull/392)
-- [Backend preview deployment notes](https://github.com/spotlight-security-ai/sentinel/blob/feat/public-config-preview/docs/PUBLIC_PREVIEW.md)
-- [Optional sample handling notes](https://github.com/spotlight-security-ai/sentinel/blob/feat/public-config-preview/docs/PUBLIC_PREVIEW_SAMPLES.md)
-- [Website/API contract](https://github.com/spotlight-security-ai/spotlight-website/blob/feat/device-lookup-config-preview/docs/public-preview-api.md)
+- [Backend preview deployment notes](https://github.com/spotlight-security-ai/sentinel/blob/dev/docs/PUBLIC_PREVIEW.md)
+- [Optional sample handling notes](https://github.com/spotlight-security-ai/sentinel/blob/dev/docs/PUBLIC_PREVIEW_SAMPLES.md)
+- [Website/API contract](https://github.com/spotlight-security-ai/spotlight-website/blob/main/docs/public-preview-api.md)
