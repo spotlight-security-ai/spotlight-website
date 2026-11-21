@@ -124,3 +124,21 @@ test('report token is read only from the URL fragment', () => {
   assert.equal(tokenFromHash('#other=abc'), '');
   assert.equal(tokenFromHash(`#token=${'x'.repeat(4097)}`), '');
 });
+
+test('preview and report pages expose concise accessibility state instead of live-reading full reports', () => {
+  const preview = readFileSync(new URL('../assessment-preview.html', import.meta.url), 'utf8');
+  const report = readFileSync(new URL('../assessment-report.html', import.meta.url), 'utf8');
+  const interactions = readFileSync(new URL('../assets/js/main.js', import.meta.url), 'utf8');
+  const renderer = readFileSync(new URL('../assets/js/assessment-preview.mjs', import.meta.url), 'utf8');
+
+  assert.match(preview, /<noscript>/);
+  assert.match(report, /<noscript>/);
+  assert.equal(preview.match(/data-preview-submit disabled/g)?.length, 4);
+  assert.doesNotMatch(preview, /id="(?:lookup|preview)-results"[^>]*aria-live/);
+  assert.match(report, /id="verified-report"[^>]*aria-busy="true"[^>]*tabindex="-1"/);
+  assert.match(preview, /aria-controls="preview-primary-navigation"/);
+  assert.match(report, /aria-controls="report-primary-navigation"/);
+  assert.match(interactions, /setAttribute\("aria-expanded", String\(open\)\)/);
+  assert.match(renderer, /Configuration preview ready\./);
+  assert.match(renderer, /focusRenderedResult/);
+});

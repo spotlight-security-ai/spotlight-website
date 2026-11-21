@@ -12,6 +12,7 @@ const node = (tag, className = '', content = '') => {
 const add = (parent, tag, className, content) => parent.appendChild(node(tag, className, content));
 const apiBase = window.SPOTLIGHT_PREVIEW_API_BASE || '';
 const sampleSharingEnabled = window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED === true;
+const headingTag = level => `h${Math.min(6, Math.max(2, Number(level) || 4))}`;
 
 function statusBadge(value) {
   const badge = node('span', 'preview-status', text(value).replaceAll('_', ' ') || 'Not verified');
@@ -26,25 +27,25 @@ function message(id, content, tone = 'info') {
   element.textContent = content;
 }
 
-function resultGroup(parent, title) {
+function resultGroup(parent, title, headingLevel = 5) {
   const group = node('div', 'preview-result-group');
-  add(group, 'h5', '', title);
+  add(group, headingTag(headingLevel), 'preview-result-group-title', title);
   parent.appendChild(group);
   return group;
 }
 
-function card(parent, title, status, body) {
+function card(parent, title, status, body, headingLevel = 6) {
   const element = node('article', 'preview-result-item');
   element.appendChild(statusBadge(status));
-  add(element, 'h5', '', title);
+  add(element, headingTag(headingLevel), 'preview-result-item-title', title);
   if (body) add(element, 'p', '', body);
   parent.appendChild(element);
   return element;
 }
 
-function plainList(parent, heading, values) {
+function plainList(parent, heading, values, headingLevel = 5) {
   if (!list(values).length) return;
-  const group = resultGroup(parent, heading);
+  const group = resultGroup(parent, heading, headingLevel);
   const ul = node('ul');
   for (const value of values) {
     const item = typeof value === 'object' && value !== null
@@ -55,14 +56,41 @@ function plainList(parent, heading, values) {
   group.appendChild(ul);
 }
 
-function renderRoutes(parent, routes) {
+function renderRoutes(parent, routes, headingLevel = 5) {
   if (!list(routes).length) return;
-  const group = resultGroup(parent, 'What the evidence says about collection');
+  const group = resultGroup(parent, 'What the evidence says about collection', headingLevel);
   for (const route of routes) {
     const label = text(route.label || route.mode || route.route).replaceAll('_', ' ') || 'Collection route';
-    const entry = card(group, label, route.status, text(route.reason || route.detail));
-    plainList(entry, 'Evidence', route.evidence);
+    const itemLevel = Math.min(headingLevel + 1, 6);
+    const entry = card(group, label, route.status, text(route.reason || route.detail), itemLevel);
+    plainList(entry, 'Evidence', route.evidence, Math.min(itemLevel + 1, 6));
   }
+}
+
+function resetFormA11y(form) {
+  form.removeAttribute('aria-busy');
+  for (const field of form.querySelectorAll('[aria-invalid="true"]')) {
+    field.removeAttribute('aria-invalid');
+    field.removeAttribute('aria-describedby');
+  }
+}
+
+function setFormBusy(form, busy) {
+  form.setAttribute('aria-busy', String(busy));
+}
+
+function focusFormError(form, messageId, preferredField = null) {
+  const field = form.querySelector(':invalid') || preferredField;
+  if (!field) return;
+  field.setAttribute('aria-invalid', 'true');
+  field.setAttribute('aria-describedby', messageId);
+  field.focus();
+}
+
+export function focusRenderedResult(target) {
+  const focusTarget = target.querySelector('.preview-results-title') || target;
+  focusTarget.setAttribute('tabindex', '-1');
+  focusTarget.focus();
 }
 
 function renderLookup(payload) {
@@ -70,19 +98,19 @@ function renderLookup(payload) {
   target.replaceChildren();
   target.hidden = false;
   target.appendChild(statusBadge(payload.status));
-  add(target, 'h4', '', 'Device lookup');
+  add(target, 'h4', 'preview-results-title', 'Device lookup');
   add(target, 'p', '', payload.summary);
   for (const device of payload.devices.slice(0, 20)) {
     const name = [device.make, device.model].map(text).filter(Boolean).join(' ') || 'Device record';
     const basis = device.match_basis === 'vendor_family'
       ? 'Evidence covers a vendor or export family. This exact model is not hardware qualified.'
       : 'The entered make and model have not been verified in the public catalog.';
-    const item = card(target, name, payload.status, basis);
-    renderRoutes(item, device.routes);
+    const item = card(target, name, payload.status, basis, 5);
+    renderRoutes(item, device.routes, 6);
     if (list(device.capabilities).length) {
-      const group = resultGroup(item, 'Recorded capabilities');
+      const group = resultGroup(item, 'Recorded capabilities', 6);
       for (const capability of device.capabilities.slice(0, 20)) {
-        card(group, text(capability.name || capability.label) || 'Capability', capability.status, text(capability.reason));
+        card(group, text(capability.name || capability.label) || 'Capability', capability.status, text(capability.reason), 6);
       }
     }
   }
@@ -90,23 +118,26 @@ function renderLookup(payload) {
   if (!payload.devices.length) add(target, 'p', 'preview-result-caveat', 'No verified make and model match was returned. This does not mean the device is unsupported.');
 }
 
-export function renderPreview(payload, target = byId('preview-results')) {
+export function renderPreview(payload, target = byId('preview-results'), options = {}) {
+  const titleLevel = Math.min(4, Math.max(2, Number(options.headingLevel) || 4));
+  const groupLevel = Math.min(titleLevel + 1, 6);
+  const itemLevel = Math.min(groupLevel + 1, 6);
   target.replaceChildren();
   target.hidden = false;
   target.appendChild(statusBadge(payload.status));
-  add(target, 'h4', '', 'Your configuration preview');
+  add(target, headingTag(titleLevel), 'preview-results-title', 'Your configuration preview');
   add(target, 'p', '', payload.summary);
   if (payload.files.length) {
-    const group = resultGroup(target, 'Files reviewed');
+    const group = resultGroup(target, 'Files reviewed', groupLevel);
     for (const file of payload.files.slice(0, 5)) {
       const name = text(file.name || file.filename) || 'File';
-      card(group, name, file.status, [file.format, file.reason || file.detail].map(text).filter(Boolean).join(' · '));
+      card(group, name, file.status, [file.format, file.reason || file.detail].map(text).filter(Boolean).join(' · '), itemLevel);
     }
   }
   if (list(payload.findings).length) {
-    const group = resultGroup(target, 'Prioritized findings');
+    const group = resultGroup(target, 'Prioritized findings', groupLevel);
     for (const finding of payload.findings.slice(0, 50)) {
-      const entry = card(group, text(finding.title || finding.description || finding.type) || 'Finding', finding.severity || finding.status, text(finding.description));
+      const entry = card(group, text(finding.title || finding.description || finding.type) || 'Finding', finding.severity || finding.status, text(finding.description), itemLevel);
       if (finding.evidence) add(entry, 'p', '', `Evidence: ${text(finding.evidence)}`);
       if (finding.recommendation) add(entry, 'p', '', `Next action: ${text(finding.recommendation)}`);
       if (finding.file_name || finding.source) add(entry, 'p', '', `Source: ${text(finding.file_name || finding.source)}`);
@@ -117,28 +148,28 @@ export function renderPreview(payload, target = byId('preview-results')) {
     add(target, 'p', 'preview-result-caveat', 'No findings were produced by the completed checks. Unassessed areas remain unknown.');
   }
   if (list(payload.devices).length) {
-    const group = resultGroup(target, 'Observed devices');
+    const group = resultGroup(target, 'Observed devices', groupLevel);
     for (const device of payload.devices.slice(0, 20)) {
       const name = [device.make, device.model].map(text).filter(Boolean).join(' ') || text(device.name) || 'Observed device';
-      const entry = card(group, name, device.status || 'not_verified', text(device.reason || device.match_basis));
-      renderRoutes(entry, device.routes);
+      const entry = card(group, name, device.status || 'not_verified', text(device.reason || device.match_basis), itemLevel);
+      renderRoutes(entry, device.routes, Math.min(itemLevel + 1, 6));
     }
   }
   if (list(payload.coverage).length) {
-    const group = resultGroup(target, 'Checks and coverage');
+    const group = resultGroup(target, 'Checks and coverage', groupLevel);
     for (const check of payload.coverage.slice(0, 50)) {
-      card(group, text(check.check || check.name || check.method) || 'Check', check.status, text(check.reason || check.detail));
+      card(group, text(check.check || check.name || check.method) || 'Check', check.status, text(check.reason || check.detail), itemLevel);
     }
   }
   if (list(payload.advisories).length) {
-    const group = resultGroup(target, 'Advisory context');
+    const group = resultGroup(target, 'Advisory context', groupLevel);
     for (const advisory of payload.advisories.slice(0, 20)) {
       card(group, text(advisory.id || advisory.advisory_id) || 'Advisory', advisory.status,
-        [advisory.basis || advisory.reason, advisory.source_status ? `Source status: ${advisory.source_status}` : ''].map(text).filter(Boolean).join(' · '));
+        [advisory.basis || advisory.reason, advisory.source_status ? `Source status: ${advisory.source_status}` : ''].map(text).filter(Boolean).join(' · '), itemLevel);
     }
   }
-  plainList(target, 'Recommended next steps', payload.recommendations);
-  plainList(target, 'Limits of this preview', payload.limitations);
+  plainList(target, 'Recommended next steps', payload.recommendations, groupLevel);
+  plainList(target, 'Limits of this preview', payload.limitations, groupLevel);
 }
 
 export async function fetchJson(url, options = {}, purpose = 'preview') {
@@ -172,6 +203,7 @@ export async function fetchJson(url, options = {}, purpose = 'preview') {
 
 const lookupForm = byId('lookup-form');
 if (lookupForm) {
+for (const button of document.querySelectorAll('[data-preview-submit]')) button.disabled = false;
 let reportHandle = null;
 let reportContext = null;
 let shareableFiles = [];
@@ -207,17 +239,23 @@ function showSampleOptions(files, reportedFiles) {
 lookupForm.addEventListener('submit', async event => {
   event.preventDefault();
   const button = lookupForm.querySelector('button[type=submit]');
+  resetFormA11y(lookupForm);
+  setFormBusy(lookupForm, true);
   button.disabled = true;
   byId('lookup-results').hidden = true;
   message('lookup-message', 'Checking the recorded device evidence…');
   try {
     const url = buildLookupUrl(byId('device-make').value, byId('device-model').value, apiBase, window.location.origin);
     const payload = validateResponse(await fetchJson(url), 'lookup');
-    message('lookup-message', '');
     renderLookup(payload);
+    message('lookup-message', 'Device evidence loaded.');
+    focusRenderedResult(byId('lookup-results'));
   } catch (error) {
     message('lookup-message', error instanceof Error ? error.message : 'Device lookup failed.', 'error');
+    const blankField = [byId('device-make'), byId('device-model')].find(field => !field.value.trim());
+    focusFormError(lookupForm, 'lookup-message', blankField);
   } finally {
+    setFormBusy(lookupForm, false);
     button.disabled = false;
   }
 });
@@ -249,6 +287,9 @@ const previewForm = byId('preview-form');
 previewForm.addEventListener('submit', async event => {
   event.preventDefault();
   const button = previewForm.querySelector('button[type=submit]');
+  resetFormA11y(previewForm);
+  setFormBusy(previewForm, true);
+  let errorField = fileInput;
   button.disabled = true;
   fileInput.disabled = true;
   byId('preview-results').hidden = true;
@@ -259,8 +300,11 @@ previewForm.addEventListener('submit', async event => {
   message('preview-message', 'Checking files before upload…');
   try {
     const files = validateFiles(fileInput.files);
-    if (!byId('sanitized-confirm').checked) throw new Error('Confirm that these copies have been sanitized before upload.');
+    errorField = byId('sanitized-confirm');
+    if (!errorField.checked) throw new Error('Confirm that these copies have been sanitized before upload.');
+    errorField = byId('observed-at');
     const observedAt = observedAtIso(byId('observed-at').value);
+    errorField = fileInput;
     for (const file of files) {
       const content = await file.text();
       if (looksBinary(content)) throw new Error(`${file.name} appears to be binary. Use a text export.`);
@@ -275,8 +319,9 @@ previewForm.addEventListener('submit', async event => {
     if (observedAt) body.append('observed_at', observedAt);
     message('preview-message', 'Reviewing the supported evidence in your files…');
     const payload = validateResponse(await fetchJson(apiUrl('/api/public/config-preview', apiBase, window.location.origin), { method: 'POST', body }), 'preview');
-    message('preview-message', '');
     renderPreview(payload);
+    message('preview-message', 'Configuration preview ready.');
+    focusRenderedResult(byId('preview-results'));
     showSampleOptions(files, payload.files);
     reportHandle = typeof payload.report_handle === 'string' && payload.report_handle ? payload.report_handle : null;
     if (reportHandle) {
@@ -288,7 +333,10 @@ previewForm.addEventListener('submit', async event => {
     else add(byId('preview-results'), 'p', 'preview-result-caveat', 'Email delivery is unavailable for this preview. Your on-page results remain available.');
   } catch (error) {
     message('preview-message', error instanceof Error ? error.message : 'Configuration preview failed.', 'error');
+    fileInput.disabled = false;
+    focusFormError(previewForm, 'preview-message', errorField);
   } finally {
+    setFormBusy(previewForm, false);
     button.disabled = false;
     fileInput.disabled = false;
   }
@@ -297,6 +345,8 @@ previewForm.addEventListener('submit', async event => {
 sampleForm.addEventListener('submit', async event => {
   event.preventDefault();
   const button = sampleForm.querySelector('button[type=submit]');
+  resetFormA11y(sampleForm);
+  setFormBusy(sampleForm, true);
   button.disabled = true;
   const previewButton = previewForm.querySelector('button[type=submit]');
   previewButton.disabled = true;
@@ -322,7 +372,9 @@ sampleForm.addEventListener('submit', async event => {
     message('sample-message', 'Sample received for manual review. It will not change this preview or create an automatic report or follow-up.');
   } catch (error) {
     message('sample-message', error instanceof Error ? error.message : 'Sample sharing failed.', 'error');
+    focusFormError(sampleForm, 'sample-message', byId('sample-consent'));
   } finally {
+    setFormBusy(sampleForm, false);
     button.disabled = false;
     previewButton.disabled = false;
     fileInput.disabled = false;
@@ -333,6 +385,8 @@ const emailForm = byId('report-email-form');
 emailForm.addEventListener('submit', async event => {
   event.preventDefault();
   const button = emailForm.querySelector('button[type=submit]');
+  resetFormA11y(emailForm);
+  setFormBusy(emailForm, true);
   button.disabled = true;
   message('report-email-message', 'Requesting a verification email…');
   try {
@@ -351,7 +405,14 @@ emailForm.addEventListener('submit', async event => {
     message('report-email-message', confirmation);
   } catch (error) {
     message('report-email-message', error instanceof Error ? error.message : 'Email request failed.', 'error');
+    const email = byId('lead-email');
+    const invalidContact = !byId('lead-name').value.trim() ? byId('lead-name')
+      : !email.value.trim() || !email.validity.valid ? email
+        : !byId('lead-company').value.trim() ? byId('lead-company')
+          : !byId('lead-consent').checked ? byId('lead-consent') : null;
+    focusFormError(emailForm, 'report-email-message', invalidContact);
   } finally {
+    setFormBusy(emailForm, false);
     button.disabled = false;
   }
 });

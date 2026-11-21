@@ -15,10 +15,21 @@
   const nav = document.querySelector(".nav");
   const toggle = document.querySelector(".nav__toggle");
   if (toggle && nav) {
-    toggle.addEventListener("click", () => nav.classList.toggle("open"));
+    const setNavOpen = (open) => {
+      nav.classList.toggle("open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+    };
+    setNavOpen(nav.classList.contains("open"));
+    toggle.addEventListener("click", () => setNavOpen(!nav.classList.contains("open")));
     nav.querySelectorAll(".nav__links a").forEach((a) =>
-      a.addEventListener("click", () => nav.classList.remove("open"))
+      a.addEventListener("click", () => setNavOpen(false))
     );
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && nav.classList.contains("open")) {
+        setNavOpen(false);
+        toggle.focus();
+      }
+    });
   }
 
   /* ---- Scroll reveal -------------------------------------------------- */

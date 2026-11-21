@@ -21,7 +21,7 @@
     <div class="container">
       <nav class="nav" aria-label="Main navigation">
         <a class="nav__logo" href="index.html" aria-label="Spotlight Security home"><img src="assets/img/logo-header.png" alt="Spotlight Security" /></a>
-        <ul class="nav__links">
+        <ul id="preview-primary-navigation" class="nav__links">
           <li><a href="platform.html">Platform</a></li>
           <li><a href="demo.html">See it work</a></li>
           <li><a href="index.html#pricing">Pricing</a></li>
@@ -32,7 +32,7 @@
         <div class="nav__cta">
           <a class="nav__login" href="https://dashboard.spotlightsecurity.ai/signin">Log in</a>
           <a class="btn btn--primary" href="contact.html">Book a Demo</a>
-          <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+          <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="preview-primary-navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         </div>
       </nav>
     </div>
@@ -40,6 +40,7 @@
 
   <main id="main">
     <section class="preview-hero">
+      <noscript><div class="container"><p class="preview-message">JavaScript is required to search devices or review configuration files. You can still request a tailored assessment from the contact page.</p></div></noscript>
       <div class="container preview-hero__grid">
         <div>
           <a class="preview-back" href="index.html#assessment">Spotlight assessments</a>
@@ -86,10 +87,10 @@
                 <div class="preview-field"><label for="device-make">Make</label><input id="device-make" name="make" type="text" maxlength="80" required autocomplete="off" placeholder="e.g. Cisco" /></div>
                 <div class="preview-field"><label for="device-model">Model</label><input id="device-model" name="model" type="text" maxlength="120" required autocomplete="off" placeholder="e.g. Catalyst 9300" /></div>
               </div>
-              <button class="btn btn--primary" type="submit">Check this model</button>
+              <button class="btn btn--primary" type="submit" data-preview-submit disabled>Check this model</button>
             </form>
             <div id="lookup-message" class="preview-message" role="status" aria-live="polite" hidden></div>
-            <div id="lookup-results" class="preview-results" aria-live="polite" hidden></div>
+            <div id="lookup-results" class="preview-results" hidden></div>
           </section>
 
           <section id="config-preview" class="preview-panel" aria-labelledby="config-title">
@@ -104,11 +105,11 @@
               </div>
               <div class="preview-field"><label for="observed-at">When were these files exported? <span class="preview-optional">optional</span></label><input id="observed-at" name="observed_at" type="datetime-local" /><p>Use the collection time, not the upload time. Leave blank if unknown; that limits what the preview can verify.</p></div>
               <label class="preview-confirm"><input id="sanitized-confirm" type="checkbox" required /><span>I have removed passwords, tokens, private keys, and other secrets from these copies.</span></label>
-              <button class="btn btn--primary" type="submit">Review sanitized files</button>
+              <button class="btn btn--primary" type="submit" data-preview-submit disabled>Review sanitized files</button>
             </form>
             <p class="preview-privacy">Before upload, your browser checks for common secret patterns and stops if it finds one. This check cannot prove a file is free of secrets.</p>
             <div id="preview-message" class="preview-message" role="status" aria-live="polite" hidden></div>
-            <div id="preview-results" class="preview-results" aria-live="polite" hidden></div>
+            <div id="preview-results" class="preview-results" hidden></div>
             <div id="sample-contribution" class="preview-share" hidden>
               <span class="preview-kicker">OPTIONAL FORMAT SAMPLE</span>
               <h4>Help us recognize this export</h4>
@@ -116,7 +117,7 @@
               <form id="sample-contribution-form" novalidate>
                 <div class="preview-field"><label for="sample-file">File to share</label><select id="sample-file" name="sample_file"></select></div>
                 <label class="preview-confirm"><input id="sample-consent" type="checkbox" required /><span>I have removed secrets from this selected file and agree to encrypted storage and manual review to improve format support. Staff access ends after 30 days.</span></label>
-                <button class="btn btn--ghost" type="submit">Share sanitized sample</button>
+                <button class="btn btn--ghost" type="submit" data-preview-submit disabled>Share sanitized sample</button>
               </form>
               <div id="sample-message" class="preview-message" role="status" aria-live="polite" hidden></div>
             </div>
@@ -131,7 +132,7 @@
                 </div>
                 <div class="preview-field"><label for="lead-company">Organization</label><input id="lead-company" name="company" type="text" autocomplete="organization" maxlength="120" required /></div>
                 <label class="preview-confirm"><input id="lead-consent" type="checkbox" required /><span>Email my report and allow Spotlight to follow up about this preview.</span></label>
-                <button class="btn btn--primary" type="submit">Send verification link</button>
+                <button class="btn btn--primary" type="submit" data-preview-submit disabled>Send verification link</button>
               </form>
               <div id="report-email-message" class="preview-message" role="status" aria-live="polite" hidden></div>
             </div>

@@ -1,5 +1,5 @@
 import { apiUrl, tokenFromHash, validateResponse } from './assessment-preview-core.mjs';
-import { fetchJson, renderPreview } from './assessment-preview.mjs';
+import { fetchJson, focusRenderedResult, renderPreview } from './assessment-preview.mjs';
 
 const status = document.getElementById('report-status');
 const target = document.getElementById('verified-report');
@@ -9,8 +9,11 @@ if (window.location.hash) window.history.replaceState(null, '', window.location.
 
 async function loadReport() {
   if (!token) {
+    target.setAttribute('aria-busy', 'false');
     status.dataset.tone = 'error';
     status.textContent = 'Open the verification link from your email, or start a new preview.';
+    status.setAttribute('tabindex', '-1');
+    status.focus();
     return;
   }
   try {
@@ -20,7 +23,7 @@ async function loadReport() {
     }, 'verify');
     if (response?.status !== 'verified') throw new Error('This report could not be verified. Start a new preview.');
     const report = validateResponse(response.report, 'preview');
-    renderPreview(report, target);
+    renderPreview(report, target, { headingLevel: 2 });
     const contact = response.contact;
     if (contact && typeof contact === 'object') {
       const parts = [contact.name, contact.company, contact.client_label].filter(value => typeof value === 'string' && value.trim());
@@ -29,10 +32,16 @@ async function loadReport() {
         contactTarget.hidden = false;
       }
     }
-    status.hidden = true;
+    target.setAttribute('aria-busy', 'false');
+    status.dataset.tone = 'info';
+    status.textContent = 'Preview report verified.';
+    focusRenderedResult(target);
   } catch (error) {
+    target.setAttribute('aria-busy', 'false');
     status.dataset.tone = 'error';
     status.textContent = error instanceof Error ? error.message : 'This report could not be verified. Start a new preview.';
+    status.setAttribute('tabindex', '-1');
+    status.focus();
   }
 }
 
