@@ -14,7 +14,7 @@ The first working version is built and ready for review.
 - Assessment/intelligence dependency: [Sentinel PR #492](https://github.com/spotlight-security-ai/sentinel/pull/492)
 - Assessment API: [Sentinel PR #491](https://github.com/spotlight-security-ai/sentinel/pull/491)
 - Website validation: 16 tests passed, plus desktop/mobile review and accessibility hardening
-- Backend validation: 58 focused tests passed locally; the new focused and PostgreSQL 17 GitHub jobs also passed
+- Backend validation: 66 public-preview and migration tests passed locally with three PostgreSQL-only tests skipped; dependency packaging and frozen interop passed on Ubuntu and Windows
 - Nothing has been merged or launched
 - All public features are off by default
 - No AI is used today
@@ -32,7 +32,7 @@ These are unfinished release tasks, not optional improvements:
 3. **Website-to-API connection:** the Netlify site has no API proxy, its configured API base is currently empty, and its explicit core switch is off.
 4. **Public data notice:** the site explains sanitization beside the upload, but it does not currently provide a general privacy-policy or terms page/link covering the report, CRM, Slack, and optional sample flows. The founders must approve and publish the appropriate notice before collecting contact details or samples.
 
-Engineering has fixed case-insensitive vendor-name normalization and added regression coverage. The website now also stays inert until its separate core switch is enabled. The optional sample panel remains hidden by default at both the website and backend gates, so the core preview can launch without presenting a dead sample-retention flow.
+Engineering has fixed case-insensitive vendor-name normalization and added regression coverage. Uploads now remain inside route-bounded memory, parser failures cannot log uploaded values, browser origins must match an exact allowlist, and report verification no longer waits for CRM or Slack. The website also stays inert until its separate core switch is enabled. The optional sample panel remains hidden by default at both the website and backend gates, so the core preview can launch without presenting a dead sample-retention flow.
 
 ## Start here: the seven finish steps
 
@@ -126,10 +126,11 @@ A dark deployment installs the code without exposing the feature.
 - [ ] Put the API behind HTTPS.
 - [ ] Set edge request-size and rate limits.
 - [ ] Ensure the proxy forwards the real client address only from trusted proxy hops.
+- [ ] Set `SPOTLIGHT_PUBLIC_PREVIEW_ALLOWED_ORIGINS` to the exact approved website origin or origins.
 - [ ] Restrict browser access to the approved website origin, or use a same-origin proxy.
 - [ ] Confirm the cleanup and delivery-retry scheduler is running.
 
-The current Sentinel application uses permissive CORS globally. For a public launch, use a trusted same-origin proxy or have engineering narrow the production CORS policy to approved origins.
+The current Sentinel application retains permissive CORS for legacy routes, but the public-preview middleware rejects browser requests outside `SPOTLIGHT_PUBLIC_PREVIEW_ALLOWED_ORIGINS` and returns the approved origin exactly. Keep edge limits too; the application allowlist is not a replacement for ingress abuse controls.
 
 ### Stage 3: Connect and test the website in staging
 
@@ -137,7 +138,7 @@ The website currently has its core switch off. Its empty API base means same-ori
 
 - [ ] Set `assets/js/preview-config.js` to the approved HTTPS API origin with no path, key, or credential; or install a trusted same-origin proxy.
 - [ ] If using a separate API origin, add that exact origin to `connect-src` for both assessment pages in `netlify.toml`.
-- [ ] Allow the staging website origin at the API edge.
+- [ ] Put the staging website origin in `SPOTLIGHT_PUBLIC_PREVIEW_ALLOWED_ORIGINS` and allow it at the API edge.
 - [ ] Enable only `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED` in staging.
 - [ ] Set `window.SPOTLIGHT_PREVIEW_ENABLED = true` and deploy the static site to staging only after the API and CSP are ready.
 - [ ] Test make/model lookup.
@@ -182,6 +183,7 @@ The recommended initial launch leaves sample collection off. Turn it on only whe
 - [ ] Approve the consent and 30-day retention wording.
 - [ ] Confirm only platform operators can list or download samples.
 - [ ] Confirm the server encrypts accepted samples.
+- [x] Confirm duplicate-content rejection and database-backed per-IP/global capacity limits have automated coverage.
 - [ ] Confirm the hourly purge job is running.
 - [ ] Test 30-day access expiry and deletion in staging.
 - [ ] Document the internal review procedure.
@@ -196,6 +198,7 @@ These values belong in the server's secret/configuration system. Never put a sec
 
 ```dotenv
 SPOTLIGHT_PUBLIC_PREVIEW_ENABLED=false
+SPOTLIGHT_PUBLIC_PREVIEW_ALLOWED_ORIGINS=https://spotlightsecurity.ai
 SPOTLIGHT_PREVIEW_REPORT_SIGNING_KEY=<random secret, at least 32 characters>
 SENTINEL_SECRETS_KEY=<production encryption key>
 SPOTLIGHT_ADVISORY_BUNDLE=<absolute server path to the current advisory bundle>
