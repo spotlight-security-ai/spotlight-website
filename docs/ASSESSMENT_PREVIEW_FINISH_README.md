@@ -378,4 +378,3 @@ The initial launch is finished when:
 - [Backend preview deployment notes](https://github.com/spotlight-security-ai/sentinel/blob/feat/public-config-preview/docs/PUBLIC_PREVIEW.md)
 - [Optional sample handling notes](https://github.com/spotlight-security-ai/sentinel/blob/feat/public-config-preview/docs/PUBLIC_PREVIEW_SAMPLES.md)
 - [Website/API contract](https://github.com/spotlight-security-ai/spotlight-website/blob/feat/device-lookup-config-preview/docs/public-preview-api.md)
-
