@@ -1,0 +1,55 @@
+name: Assessment preview
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'assessment-preview.html'
+      - 'assessment-report.html'
+      - 'assets/css/assessment-preview.css'
+      - 'assets/js/assessment-preview*.mjs'
+      - 'assets/js/assessment-report.mjs'
+      - 'assets/js/main.js'
+      - 'assets/js/preview-config.js'
+      - 'docs/ASSESSMENT_PREVIEW_FINISH_README.md'
+      - 'docs/public-preview-api.md'
+      - 'netlify.toml'
+      - 'package.json'
+      - 'tests/assessment-preview.test.mjs'
+      - '.github/workflows/assessment-preview.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: assessment-preview-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Static preview checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+      - name: JavaScript syntax
+        run: |
+          node --check assets/js/main.js
+          node --check assets/js/preview-config.js
+          node --check assets/js/assessment-preview-core.mjs
+          node --check assets/js/assessment-preview.mjs
+          node --check assets/js/assessment-report.mjs
+      - name: Whitespace check
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git diff --check "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}"
+          else
+            git diff --check HEAD^
+          fi

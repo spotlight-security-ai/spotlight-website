@@ -67,3 +67,24 @@
   for = "/media/dashboard/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
+
+# Verification tokens are consumed in the browser and report content is loaded
+# only after API verification. Do not index or cache the report page.
+# [[headers]] entries cannot interpolate preview-config.js. If a separate API
+# origin is selected, add that exact HTTPS origin to connect-src in both scoped
+# policies below as part of the same reviewed deployment change.
+[[headers]]
+  # The trailing wildcard also covers Netlify Pretty URL variants such as
+  # /assessment-preview and /assessment-preview/.
+  for = "/assessment-preview*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+
+[[headers]]
+  # Keep report protections on both the source filename and Pretty URL forms.
+  for = "/assessment-report*"
+  [headers.values]
+    Cache-Control = "no-store"
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Referrer-Policy = "no-referrer"
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"

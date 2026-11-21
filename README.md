@@ -12,6 +12,8 @@ the WordPress export in plain HTML/CSS/JS — no build step, no framework, hosts
 | `industries.html`  | Industries (5 tabbed sectors + local-gov deep dive) |
 | `about.html`       | About (in the news, problem, credibility, team & advisors) |
 | `contact.html`     | Book a Demo / contact — embedded Pipedrive lead form |
+| `assessment-preview.html` | Public device lookup and sanitized multi-file configuration preview |
+| `assessment-report.html` | Verified preview report (`noindex`, `no-store`) |
 
 ## Structure
 
@@ -81,3 +83,38 @@ dashboard (a different subdomain) can read `clips.json`.
   async loader snippet, just before `</head>`).
 - All interactivity from the original is reproduced (terminal typing, counters,
   tabs, hover states, scroll-in animations).
+
+## Public assessment preview (feature branch)
+
+`assessment-preview.html` is a deterministic front end for the public API described in
+[`docs/public-preview-api.md`](docs/public-preview-api.md). It makes no AI request,
+does not contact a device, and has no browser-side API key. It sends only the
+visitor-selected text exports to the configured API after a basic local secret
+check; that check cannot certify that a file is sanitized. The backend must repeat
+file, secret, and size validation. No result is fabricated when the API is off.
+When a file is only partially recognized or unsupported, visitors may separately
+opt in to share one sanitized text sample for manual format review. The sample
+request has its own consent checkbox, endpoint, and default-off backend gate; it
+does not affect the preview or report.
+The panel also remains hidden until
+`window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED` is explicitly set to `true` in
+`assets/js/preview-config.js`.
+
+The core controls remain disabled until `window.SPOTLIGHT_PREVIEW_ENABLED` is
+explicitly set to `true`. An empty API base means this site's origin only after
+that switch is enabled. To use a separate HTTPS API origin, set
+`window.SPOTLIGHT_PREVIEW_API_BASE` in `assets/js/preview-config.js`, allow this
+site origin in the API's CORS policy, and add that exact API origin to the
+assessment-page `connect-src` policies in `netlify.toml`. Never put a credential
+in either file.
+The backend's `SPOTLIGHT_PUBLIC_PREVIEW_ENABLED` gate is off by default.
+Netlify only serves this repository's static files; `netlify.toml` has no
+`/api/public/*` proxy. If someone enabled the core switch with the empty default,
+requests would go to the Netlify site origin and would not reach a separate
+backend. Before releasing this feature,
+configure the actual HTTPS API origin or add a proxy to a known backend, then
+verify CSP, CORS, and the backend gate before enabling the static switch. No
+production API origin is assumed here.
+
+Run the built-in frontend checks with `npm test` (Node 22; no install required).
+The static site can still be served with `python -m http.server 8891`.
