@@ -13,7 +13,7 @@ The first working version is built and ready for review.
 - Website: [spotlight-website PR #33](https://github.com/spotlight-security-ai/spotlight-website/pull/33)
 - Assessment/intelligence dependency: [Sentinel PR #492](https://github.com/spotlight-security-ai/sentinel/pull/492)
 - Assessment API: [Sentinel PR #491](https://github.com/spotlight-security-ai/sentinel/pull/491)
-- Website validation: 13 tests passed, plus desktop and mobile review
+- Website validation: 14 tests passed, plus desktop and mobile review
 - Backend validation: 58 focused tests passed locally; the new focused and PostgreSQL 17 GitHub jobs also passed
 - Nothing has been merged or launched
 - All public features are off by default

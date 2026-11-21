@@ -1,11 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 import {
   apiUrl, buildLeadPayload, buildLookupUrl, looksBinary, observedAtIso, sampleCandidates, secretWarnings, tokenFromHash,
   validateFiles, validateResponse, validateSampleFile, verificationMessage,
 } from '../assets/js/assessment-preview-core.mjs';
 
 const file = (name, size) => ({ name, size });
+
+test('static preview configuration contains only a public origin and boolean feature flags', () => {
+  const sandbox = { window: {} };
+  runInNewContext(readFileSync(new URL('../assets/js/preview-config.js', import.meta.url), 'utf8'), sandbox);
+  assert.deepEqual(Object.keys(sandbox.window).sort(), [
+    'SPOTLIGHT_PREVIEW_API_BASE', 'SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED',
+  ]);
+  assert.equal(typeof sandbox.window.SPOTLIGHT_PREVIEW_SAMPLE_SHARING_ENABLED, 'boolean');
+  assert.doesNotThrow(() => apiUrl(
+    '/api/public/device-lookup', sandbox.window.SPOTLIGHT_PREVIEW_API_BASE, 'https://spotlightsecurity.ai',
+  ));
+  assert.equal(Object.keys(sandbox.window).some(key => /key|token|secret|credential/i.test(key)), false);
+});
 
 test('lookup URL preserves exact make/model text and targets the configured API origin', () => {
   const url = buildLookupUrl(' Cisco ', ' Catalyst 9300 / 48P ', 'https://api.example.test', 'https://spotlightsecurity.ai');
